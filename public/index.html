@@ -100,8 +100,7 @@
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         
         .filter-container {
-            position: sticky;
-            top: var(--nav-height);
+            position: relative; /* diubah dari sticky untuk mencegah overlap */
             background: var(--bg-deep);
             padding: 15px 5px;
             display: flex;
@@ -109,7 +108,7 @@
             overflow-x: auto;
             white-space: nowrap;
             scroll-behavior: smooth;
-            margin-bottom: 5px;
+            margin-bottom: 20px; /* jarak bawah diperbesar */
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -144,12 +143,12 @@
         .filter-btn[data-category="viu"] i { color: var(--viu-yellow); }
         .filter-btn[data-category="all"] i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Product grid - perbaikan untuk mobile: kategori tidak lagi tumpang tindih */
+        /* Product grid */
         .product-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-top: 10px;
+            margin-top: 0; /* diatur ulang */
             position: relative;
             z-index: 1;
         }
@@ -330,6 +329,8 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .hot-effect::after { display: none; } }
         @media (max-width: 768px) {
+            .container { padding: 105px 15px 10px; }
+            .filter-container { margin-bottom: 20px; }
             .filter-btn { padding: 10px 20px; font-size: 0.8rem; }
             .product-card { padding: 12px 12px 40px; }
             .p-title { font-size: 0.8rem; }
