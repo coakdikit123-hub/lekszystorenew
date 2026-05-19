@@ -47,7 +47,7 @@
         body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; overflow-x: hidden; }
         header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); transform: translateZ(0); }
         .logo-wrapper { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); will-change: transform; }
+        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
         
@@ -59,12 +59,9 @@
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 15px; }
         .close-sidebar { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border: none; border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: transform 0.2s; }
         .sidebar-menu-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
-        /* Scroll bar sidebar (kanan) */
         .sidebar-menu-wrapper::-webkit-scrollbar { width: 4px; }
         .sidebar-menu-wrapper::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
         .sidebar-menu-wrapper::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple)); border-radius: 10px; }
-        .sidebar-menu-wrapper::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
-        
         .guide-details { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; margin-bottom: 20px; }
         .guide-summary { padding: 12px 15px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; }
         .guide-summary::after { content: '\f0d7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: transform 0.2s; }
@@ -83,10 +80,10 @@
         .menu-btn i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
         
         /* Hero & stats */
-        .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); transform: translateZ(0); }
+        .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); }
         .hero-slider img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .stats-container { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 25px; }
-        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 15px 10px; border-radius: 15px; text-align: center; transition: transform 0.2s, box-shadow 0.2s; will-change: transform; }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 15px 10px; border-radius: 15px; text-align: center; transition: transform 0.2s; }
         .stat-card:active { transform: scale(0.98); }
         .stat-card i { color: var(--primary-blue); font-size: 1.1rem; display: block; margin-bottom: 5px; }
         .stat-number { font-weight: 800; font-size: 1rem; }
@@ -102,7 +99,6 @@
         .search-input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 2px rgba(88,166,255,0.1); }
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         
-        /* Filter container - scroll bar horizontal disembunyikan */
         .filter-container {
             position: sticky;
             top: var(--nav-height);
@@ -118,9 +114,7 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
-        .filter-container::-webkit-scrollbar {
-            display: none;
-        }
+        .filter-container::-webkit-scrollbar { display: none; }
         
         .filter-btn {
             padding: 12px 24px;
@@ -137,12 +131,10 @@
             backdrop-filter: blur(10px);
             transition: all 0.2s;
             flex-shrink: 0;
-            will-change: transform;
         }
         .filter-btn i { font-size: 1.2rem; transition: transform 0.2s; }
         .filter-btn:active i { transform: scale(1.1); }
         .filter-btn.active { background: linear-gradient(135deg,#58a6ff20,#bc66ff20); border-color: rgba(188,102,255,0.4); color: white; }
-        /* Warna ikon filter */
         .filter-btn[data-category="netflix"] i { color: var(--netflix-red); }
         .filter-btn[data-category="youtube"] i { color: var(--youtube-red); }
         .filter-btn[data-category="spotify"] i { color: var(--spotify-green); }
@@ -152,31 +144,155 @@
         .filter-btn[data-category="viu"] i { color: var(--viu-yellow); }
         .filter-btn[data-category="all"] i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* Product grid */
-        .product-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; margin-top: 10px; }
-        @media (min-width:768px) { .product-grid { grid-template-columns: repeat(4,1fr); } }
-        .product-card { background: var(--bg-surface); border-radius: 20px; padding: 15px 15px 40px; border: 1px solid transparent; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; overflow: hidden; will-change: transform; transform: translateZ(0); }
-        .product-card:hover { transform: scale(1.02); border-color: var(--primary-blue); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
-        .hot-effect::after { content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%; background: rgba(255,255,255,0.05); transform: rotate(30deg); animation: shine-loop 4s infinite; pointer-events: none; will-change: left; }
-        @keyframes shine-loop { 0% { left: -60%; } 20% { left: 140%; } 100% { left: 140%; } }
-        .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#58a6ff,#2563eb); color: white; font-size: 0.6rem; padding: 6px 10px; border-radius: 8px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 10; backdrop-filter: blur(5px); }
-        .stock-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); border-top: 1px solid var(--border-subtle); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; border-radius: 0 0 20px 20px; }
-        .p-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: transform 0.2s; background: var(--bg-main); will-change: transform; }
+        /* Product grid - perbaikan untuk mobile: kategori tidak lagi tumpang tindih */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        @media (min-width: 768px) {
+            .product-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .product-card {
+            background: var(--bg-surface);
+            border-radius: 20px;
+            padding: 15px 15px 45px 15px;
+            border: 1px solid transparent;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            transform: translateZ(0);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: scale(1.02);
+            border-color: var(--primary-blue);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .hot-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 25%;
+            height: 200%;
+            background: rgba(255,255,255,0.05);
+            transform: rotate(30deg);
+            animation: shine-loop 4s infinite;
+            pointer-events: none;
+        }
+        @keyframes shine-loop {
+            0% { left: -60%; }
+            20% { left: 140%; }
+            100% { left: 140%; }
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #58a6ff, #2563eb);
+            color: white;
+            font-size: 0.6rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        .stock-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid var(--border-subtle);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .stock-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stock-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .stock-dot.high { background: var(--stock-high); box-shadow: 0 0 8px var(--stock-high); }
+        .stock-dot.medium { background: var(--stock-medium); }
+        .stock-dot.low { background: var(--stock-low); }
+        .stock-number.high { color: var(--stock-high); }
+        .stock-number.medium { color: var(--stock-medium); }
+        .stock-number.low { color: var(--stock-low); }
+        .p-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: transform 0.2s;
+            background: var(--bg-main);
+        }
         .product-card:hover .p-img { transform: scale(1.05); }
-        .p-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .p-price { font-size: 1rem; font-weight: 800; color: var(--primary-blue); display: flex; justify-content: space-between; align-items: center; }
-        .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; }
+        .p-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.3;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            min-height: 2.2em;
+        }
+        .p-price {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--primary-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .btn-buy-mini {
+            width: 35px;
+            height: 35px;
+            background: var(--gradient-logo);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
         .product-card:active .btn-buy-mini { transform: rotate(90deg); }
         
-        /* Empty state - tampilan ketika tidak ada produk */
+        /* Empty state */
         .empty-state {
+            grid-column: 1 / -1;
             text-align: center;
             padding: 60px 20px;
             background: var(--bg-surface);
             border-radius: 30px;
             border: 1px solid var(--border-subtle);
             margin-top: 20px;
-            backdrop-filter: blur(5px);
         }
         .empty-state i {
             font-size: 5rem;
@@ -186,31 +302,10 @@
             margin-bottom: 20px;
             display: inline-block;
         }
-        .empty-state h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-        .empty-state p {
-            color: var(--text-muted);
-            margin-bottom: 25px;
-            max-width: 300px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .empty-state button {
-            background: var(--gradient-logo);
-            border: none;
-            padding: 12px 24px;
-            border-radius: 40px;
-            color: white;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .empty-state button:active {
-            transform: scale(0.96);
-        }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--text-main); }
+        .empty-state p { color: var(--text-muted); margin-bottom: 25px; max-width: 300px; margin-left: auto; margin-right: auto; }
+        .empty-state button { background: var(--gradient-logo); border: none; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+        .empty-state button:active { transform: scale(0.96); }
         
         /* Modal */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(10px); }
@@ -226,26 +321,20 @@
         .pay-btn { width: 100%; background: var(--gradient-logo); color: white; padding: 18px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
         .pay-btn:active { transform: scale(0.98); }
         
-        /* Toast & back to top */
         #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-logo); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 800; z-index: 3000; display: none; pointer-events: none; white-space: nowrap; }
-        .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.2s, transform 0.2s; will-change: transform, opacity; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.2s, transform 0.2s; }
         .back-to-top.visible { opacity: 1; transform: translateY(0); }
         .footer { background: var(--bg-surface); border-radius: 20px 20px 0 0; padding: 25px; margin-top: 30px; text-align: center; border-top: 1px solid var(--border-subtle); }
         .footer-logo { font-size: 1.5rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 15px; }
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Optimasi untuk device low-end */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .hot-effect::after { display: none; }
-        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } .hot-effect::after { display: none; } }
         @media (max-width: 768px) {
             .filter-btn { padding: 10px 20px; font-size: 0.8rem; }
-            .product-card { padding: 12px 12px 35px; }
+            .product-card { padding: 12px 12px 40px; }
             .p-title { font-size: 0.8rem; }
             .p-price { font-size: 0.9rem; }
-            .toast { white-space: normal; text-align: center; }
+            #toast { white-space: normal; text-align: center; }
         }
     </style>
 </head>
@@ -363,7 +452,7 @@
     function renderEmptyState() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = `
-            <div class="empty-state" style="grid-column: 1/-1;">
+            <div class="empty-state">
                 <i class="fas fa-box-open"></i>
                 <h3>Oops, belum ada produk</h3>
                 <p>Sepertinya toko masih kosong. Coba lagi nanti atau hubungi admin.</p>
