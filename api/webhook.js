@@ -1,10 +1,11 @@
 import clientPromise from '../lib/db';
 
 // Helper functions
-async function sendPhoto(chatId, photoUrl, caption = null) {
+async function sendPhoto(chatId, photoUrl, caption = null, parseMode = null) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const payload = { chat_id: chatId, photo: photoUrl };
   if (caption) payload.caption = caption;
+  if (parseMode) payload.parse_mode = parseMode;
   await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -105,13 +106,12 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /start command - tampilan profesional dengan banner, tanpa tombol
+    // /start command - tampilan profesional dengan banner dan Markdown
     if (text === '/start') {
       await deleteSession(chatId);
-      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png'; // Ganti dengan URL banner Anda
+      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
       
       if (isAdmin) {
-        // Caption untuk owner panel (tanpa tombol)
         const ownerCaption = `📋 *MENU OWNER* 📋
 🌎 https://lekszystore.my.id
 
@@ -127,9 +127,8 @@ export default async function handler(req, res) {
 
 Ketik perintah di atas untuk mengelola toko.`;
         
-        await sendPhoto(chatId, bannerUrl, ownerCaption);
+        await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
       } else {
-        // User biasa
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
         const userCaption = `*Solusi Produk Digital Terbaik*
 
@@ -156,7 +155,7 @@ Total Pengguna: ${stats.totalUsers.toLocaleString()}
 
 Selamat berbelanja!`;
         
-        await sendPhoto(chatId, bannerUrl, userCaption);
+        await sendPhoto(chatId, bannerUrl, userCaption, 'Markdown');
       }
       return res.status(200).json({ ok: true });
     }
@@ -332,7 +331,7 @@ Selamat berbelanja!`;
     return res.status(200).json({ ok: true });
   }
 
-  // Callback query (jika ada, misal dari pesan lama) - beri tahu bahwa tombol tidak digunakan
+  // Callback query (jika ada pesan lama dengan tombol)
   if (update.callback_query) {
     const callback = update.callback_query;
     const chatId = callback.message.chat.id;
