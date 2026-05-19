@@ -44,31 +44,24 @@
             --viu-yellow: #ffc107;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; overflow-x: hidden; }
-        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); transform: translateZ(0); }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); }
         .logo-wrapper { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); will-change: transform; }
+        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
         
         /* Sidebar */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
-        .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1); border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); will-change: transform; }
+        .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
         .sidebar.active { transform: translateX(0); left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 15px; }
-        .close-sidebar { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border: none; border-radius: 10px; color: var(--text-muted); cursor: pointer; transition: transform 0.2s; }
-        .sidebar-menu-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
-        /* Scroll bar sidebar (kanan) - tipis dan gradien */
-        .sidebar-menu-wrapper::-webkit-scrollbar { width: 4px; }
-        .sidebar-menu-wrapper::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
-        .sidebar-menu-wrapper::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple)); border-radius: 10px; }
-        .sidebar-menu-wrapper::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
-        
+        .close-sidebar { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border: none; border-radius: 10px; color: var(--text-muted); cursor: pointer; }
+        .sidebar-menu-wrapper { flex-grow: 1; overflow-y: auto; }
         .guide-details { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; margin-bottom: 20px; }
         .guide-summary { padding: 12px 15px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; }
-        .guide-summary::after { content: '\f0d7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: transform 0.2s; }
-        .guide-details[open] .guide-summary::after { transform: rotate(180deg); }
+        .guide-summary::after { content: '\f0d7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .guide-content { padding: 0 15px 15px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
         .nav-links { display: flex; flex-direction: column; gap: 8px; }
         .nav-item { padding: 14px 18px; border-radius: 12px; text-decoration: none; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); border: 1px solid transparent; transition: all 0.2s; }
@@ -78,31 +71,28 @@
         .social-row { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
         .social-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); background: rgba(255,255,255,0.03); transition: all 0.2s; }
         .social-icon.ig { color: #ff85e0; } .social-icon.tk { color: #fff; } .social-icon.wa { color: #25D366; }
-        .menu-btn { width: 45px; height: 45px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-        .menu-btn:active { transform: rotate(90deg); }
+        .menu-btn { width: 45px; height: 45px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .menu-btn i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
         
         /* Hero & stats */
-        .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); transform: translateZ(0); }
-        .hero-slider img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); }
+        .hero-slider img { width: 100%; height: 100%; object-fit: cover; }
         .stats-container { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 25px; }
-        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 15px 10px; border-radius: 15px; text-align: center; transition: transform 0.2s, box-shadow 0.2s; will-change: transform; }
-        .stat-card:active { transform: scale(0.98); }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 15px 10px; border-radius: 15px; text-align: center; transition: 0.2s; }
         .stat-card i { color: var(--primary-blue); font-size: 1.1rem; display: block; margin-bottom: 5px; }
         .stat-number { font-weight: 800; font-size: 1rem; }
         .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; }
         .intro-box { text-align: center; background: var(--bg-surface); padding: 25px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; }
-        .intro-box::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(88,166,255,0.05), transparent); transform: rotate(45deg); pointer-events: none; }
         .intro-box h2 { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.4rem; font-weight: 800; }
         .intro-box p { color: var(--text-muted); }
         
         /* Search & filter */
         .search-container { position: relative; margin-bottom: 20px; }
-        .search-input { width: 100%; padding: 15px 20px 15px 50px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 15px; color: var(--text-main); font-size: 0.9rem; outline: none; transition: border 0.2s, box-shadow 0.2s; }
-        .search-input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 2px rgba(88,166,255,0.1); }
+        .search-input { width: 100%; padding: 15px 20px 15px 50px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 15px; color: var(--text-main); font-size: 0.9rem; outline: none; }
+        .search-input:focus { border-color: var(--primary-blue); }
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         
-        /* Filter container - scroll bar disembunyikan */
+        /* Filter container dengan scroll bar kustom */
         .filter-container {
             position: sticky;
             top: var(--nav-height);
@@ -114,13 +104,22 @@
             white-space: nowrap;
             scroll-behavior: smooth;
             margin-bottom: 5px;
-            -webkit-overflow-scrolling: touch;
-            /* Sembunyikan scroll bar horizontal */
-            scrollbar-width: none;
-            -ms-overflow-style: none;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-blue) var(--bg-surface);
         }
         .filter-container::-webkit-scrollbar {
-            display: none;
+            height: 6px;
+        }
+        .filter-container::-webkit-scrollbar-track {
+            background: var(--bg-surface);
+            border-radius: 10px;
+        }
+        .filter-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(90deg, var(--primary-blue), var(--accent-purple));
+            border-radius: 10px;
+        }
+        .filter-container::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
         }
         
         .filter-btn {
@@ -136,15 +135,23 @@
             align-items: center;
             gap: 10px;
             backdrop-filter: blur(10px);
-            transition: all 0.2s;
+            transition: 0.2s;
             flex-shrink: 0;
-            will-change: transform;
         }
-        .filter-btn i { font-size: 1.2rem; transition: transform 0.2s; }
-        .filter-btn:active i { transform: scale(1.1); }
-        .filter-btn.active { background: linear-gradient(135deg,#58a6ff20,#bc66ff20); border-color: rgba(188,102,255,0.4); color: white; }
+        .filter-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+        .filter-btn:hover i {
+            transform: scale(1.1);
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg,#58a6ff20,#bc66ff20);
+            border-color: rgba(188,102,255,0.4);
+            color: white;
+        }
         /* Warna ikon filter */
-        .filter-btn[data-category="netflix"] i { color: var(--netflix-red); }
+        .filter-btn[data-category="netflix"] i { color: var(--netflix-red); text-shadow: 0 0 4px rgba(229,9,20,0.5); }
         .filter-btn[data-category="youtube"] i { color: var(--youtube-red); }
         .filter-btn[data-category="spotify"] i { color: var(--spotify-green); }
         .filter-btn[data-category="capcut"] i { color: var(--capcut-red); }
@@ -156,54 +163,47 @@
         /* Product grid */
         .product-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; margin-top: 10px; }
         @media (min-width:768px) { .product-grid { grid-template-columns: repeat(4,1fr); } }
-        .product-card { background: var(--bg-surface); border-radius: 20px; padding: 15px 15px 40px; border: 1px solid transparent; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; overflow: hidden; will-change: transform; transform: translateZ(0); }
+        .product-card { background: var(--bg-surface); border-radius: 20px; padding: 15px 15px 40px; border: 1px solid transparent; transition: 0.2s; position: relative; cursor: pointer; overflow: hidden; }
         .product-card:hover { transform: scale(1.02); border-color: var(--primary-blue); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
-        .hot-effect::after { content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%; background: rgba(255,255,255,0.05); transform: rotate(30deg); animation: shine-loop 4s infinite; pointer-events: none; will-change: left; }
+        .hot-effect::after { content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%; background: rgba(255,255,255,0.05); transform: rotate(30deg); animation: shine-loop 4s infinite; pointer-events: none; }
         @keyframes shine-loop { 0% { left: -60%; } 20% { left: 140%; } 100% { left: 140%; } }
         .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#58a6ff,#2563eb); color: white; font-size: 0.6rem; padding: 6px 10px; border-radius: 8px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 10; backdrop-filter: blur(5px); }
         .stock-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); border-top: 1px solid var(--border-subtle); padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; border-radius: 0 0 20px 20px; }
-        .p-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: transform 0.2s; background: var(--bg-main); will-change: transform; }
+        .stock-label { display: flex; align-items: center; gap: 6px; }
+        .stock-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .stock-dot.high { background: var(--stock-high); box-shadow: 0 0 8px var(--stock-high); }
+        .stock-dot.medium { background: var(--stock-medium); }
+        .stock-dot.low { background: var(--stock-low); }
+        .stock-number.high { color: var(--stock-high); }
+        .stock-number.medium { color: var(--stock-medium); }
+        .stock-number.low { color: var(--stock-low); }
+        .p-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: transform 0.2s; background: var(--bg-main); }
         .product-card:hover .p-img { transform: scale(1.05); }
         .p-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .p-price { font-size: 1rem; font-weight: 800; color: var(--primary-blue); display: flex; justify-content: space-between; align-items: center; }
         .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; }
-        .product-card:active .btn-buy-mini { transform: rotate(90deg); }
         
         /* Modal */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(10px); }
         .modal.active { display: flex; opacity: 1; }
-        .modal-content { background: var(--bg-main); width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1); border: 1px solid var(--border-subtle); max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: var(--bg-main); width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; transform: translateY(100%); transition: transform 0.3s; border: 1px solid var(--border-subtle); max-height: 90vh; overflow-y: auto; }
         @media(min-width:768px) { .modal { align-items: center; } .modal-content { border-radius: 30px; transform: scale(0.9); } }
         .modal.active .modal-content { transform: translateY(0) scale(1); }
-        .qris-box { background: white; border-radius: 15px; padding: 12px; width: 180px; margin: 0 auto 20px; cursor: pointer; transition: transform 0.2s; }
-        .qris-img { width: 100%; border-radius: 5px; display: block; }
+        .qris-box { background: white; border-radius: 15px; padding: 12px; width: 180px; margin: 0 auto 20px; cursor: pointer; transition: 0.2s; }
+        .qris-img { width: 100%; border-radius: 5px; }
         .checkout-details { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-subtle); }
         .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .detail-row.total { border-top: 1px dashed var(--border-subtle); padding-top: 10px; margin-top: 10px; font-weight: 800; }
-        .pay-btn { width: 100%; background: var(--gradient-logo); color: white; padding: 18px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
-        .pay-btn:active { transform: scale(0.98); }
+        .pay-btn { width: 100%; background: var(--gradient-logo); color: white; padding: 18px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; }
         
         /* Toast & back to top */
-        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-logo); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 800; z-index: 3000; display: none; pointer-events: none; white-space: nowrap; }
-        .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.2s, transform 0.2s; will-change: transform, opacity; }
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-logo); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 800; z-index: 3000; display: none; pointer-events: none; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: 0.2s; }
         .back-to-top.visible { opacity: 1; transform: translateY(0); }
         .footer { background: var(--bg-surface); border-radius: 20px 20px 0 0; padding: 25px; margin-top: 30px; text-align: center; border-top: 1px solid var(--border-subtle); }
         .footer-logo { font-size: 1.5rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 15px; }
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Optimasi untuk device low-end */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .hot-effect::after { display: none; }
-        }
-        @media (max-width: 768px) {
-            .filter-btn { padding: 10px 20px; font-size: 0.8rem; }
-            .product-card { padding: 12px 12px 35px; }
-            .p-title { font-size: 0.8rem; }
-            .p-price { font-size: 0.9rem; }
-            .toast { white-space: normal; text-align: center; }
-        }
     </style>
 </head>
 <body>
@@ -213,17 +213,17 @@
 
 <header>
     <div class="logo-wrapper">
-        <img src="/gambar/logo2.png" alt="Logo" class="brand-logo" loading="eager" width="45" height="45">
+        <img src="/gambar/logo2.png" alt="Logo" class="brand-logo" loading="eager">
         <div class="logo-text">LekszyStore</div>
     </div>
-    <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()" aria-label="Menu"><i class="fas fa-grip"></i></button>
+    <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()"><i class="fas fa-grip"></i></button>
 </header>
 
 <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
-<aside class="sidebar" id="sidebar" aria-hidden="true">
+<aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="logo-wrapper"><i class="fas fa-compass"></i><span class="logo-text" style="font-size:1.2rem;">Menu Utama</span></div>
-        <button class="close-sidebar" onclick="toggleSidebar()" aria-label="Tutup"><i class="fas fa-xmark"></i></button>
+        <button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="sidebar-menu-wrapper">
         <details class="guide-details">
@@ -231,25 +231,25 @@
             <div class="guide-content">1. Pilih produk<br>2. Klik tombol keranjang.<br>3. Scan QRIS.<br>4. Klik Konfirmasi &amp; kirim bukti transfer Whatsapp.<br><b>Pesanan akan di proses oleh Admin kami!</b></div>
         </details>
         <nav class="nav-links">
-            <a href="#" class="nav-item active" aria-current="page"><i class="fas fa-house"></i> Beranda</a>
-            <a href="https://wa.me/6285810630431?text=Halo%20Admin%20,%20saya%20mengalami%20kendala%20dengan%20pesanan%20saya.%20%0A%0ABerikut%20detailnya:%0A%F0%9F%93%A6%20Produk:%20%5BSebutkan%20Nama%20Produk%5D%20%0A%F0%9F%93%A7%20Email/Akun:%20%5BEmail%20Akun%20yang%20Bermasalah%5D%20%0A%F0%9F%9B%A0%20Jenis%20Kendala:%20%5BMisal:%20Akun%20Terlogout%20/%20Kena%20On%20Hold%20/%20Salah%20Password%5D%20%0A%F0%9F%86%94%20ID%20Trx:%20%5BSebutkan%20ID%20Transaksi" class="nav-item" target="_blank" rel="noopener"><i class="fas fa-headset"></i> Claim Garansi</a>
-            <a href="https://www.instagram.com/stories/highlights/18064938496620531/" class="nav-item" target="_blank" rel="noopener"><i class="fas fa-star"></i> Testimoni</a>
-            <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" class="nav-item" target="_blank" rel="noopener"><i class="fas fa-bullhorn"></i> Saluran</a>
-            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank" rel="noopener"><i class="fas fa-lightbulb"></i> Tips &amp; Trik</a>
+            <a href="#" class="nav-item active"><i class="fas fa-house"></i> Beranda</a>
+            <a href="https://wa.me/6285810630431?text=Halo%20Admin%20,%20saya%20mengalami%20kendala%20dengan%20pesanan%20saya.%20%0A%0ABerikut%20detailnya:%0A%F0%9F%93%A6%20Produk:%20%5BSebutkan%20Nama%20Produk%5D%20%0A%F0%9F%93%A7%20Email/Akun:%20%5BEmail%20Akun%20yang%20Bermasalah%5D%20%0A%F0%9F%9B%A0%20Jenis%20Kendala:%20%5BMisal:%20Akun%20Terlogout%20/%20Kena%20On%20Hold%20/%20Salah%20Password%5D%20%0A%F0%9F%86%94%20ID%20Trx:%20%5BSebutkan%20ID%20Transaksi" class="nav-item" target="_blank"><i class="fas fa-headset"></i> Claim Garansi</a>
+            <a href="https://www.instagram.com/stories/highlights/18064938496620531/" class="nav-item" target="_blank"><i class="fas fa-star"></i> Testimoni</a>
+            <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" class="nav-item" target="_blank"><i class="fas fa-bullhorn"></i> Saluran</a>
+            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank"><i class="fas fa-lightbulb"></i> Tips &amp; Trik</a>
         </nav>
     </div>
     <div class="sidebar-footer">
         <p class="social-title">Social Media</p>
         <div class="social-row">
-            <a href="https://www.instagram.com/lekszystore" class="social-icon ig" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@lekszystore" class="social-icon tk" target="_blank" rel="noopener"><i class="fab fa-tiktok"></i></a>
-            <a href="https://wa.me/6285810630431" class="social-icon wa" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/lekszystore" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/@lekszystore" class="social-icon tk" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="https://wa.me/6285810630431" class="social-icon wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
         </div>
     </div>
 </aside>
 
 <main class="container">
-    <div class="hero-slider"><img src="/gambar/banner.png" alt="Banner LekszyStore" loading="lazy" width="800" height="342"></div>
+    <div class="hero-slider"><img src="/gambar/banner.png" alt="Banner" loading="lazy"></div>
     <div class="stats-container">
         <div class="stat-card"><i class="fas fa-shopping-bag"></i><div class="stat-number" id="countOrder">0</div><div class="stat-label">Terjual</div></div>
         <div class="stat-card"><i class="fas fa-users"></i><div class="stat-number">200+</div><div class="stat-label">Pelanggan</div></div>
@@ -257,8 +257,9 @@
     </div>
     <div class="intro-box"><h2>Welcome to LekszyStore</h2><p>Solusi Premium tanpa Mahal - Dapatkan akses premium ke aplikasi favorit dengan harga terjangkau!</p></div>
     
-    <div class="search-container"><i class="fas fa-search search-icon"></i><input type="search" class="search-input" id="searchInput" placeholder="Cari aplikasi premium kamu..." onkeyup="searchProduct()" aria-label="Cari produk"></div>
+    <div class="search-container"><i class="fas fa-search search-icon"></i><input type="search" class="search-input" id="searchInput" placeholder="Cari aplikasi premium kamu..." onkeyup="searchProduct()"></div>
     
+    <!-- Filter dengan ikon yang disesuaikan (Netflix pakai TV karena FA6 free tidak punya brand) -->
     <div class="filter-container" id="filterContainer">
         <button class="filter-btn active" data-category="all" onclick="filterProduct('all', this)"><i class="fas fa-layer-group"></i> Semua</button>
         <button class="filter-btn" data-category="netflix" onclick="filterProduct('netflix', this)"><i class="fas fa-tv"></i> Netflix</button>
@@ -279,10 +280,10 @@
     <div class="copyright">© 2026 LekszyStore. All rights reserved.</div>
 </footer>
 
-<div class="modal" id="payModal" onclick="closeModalOutside(event)" role="dialog" aria-modal="false" aria-labelledby="mTitle">
+<div class="modal" id="payModal" onclick="closeModalOutside(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div style="text-align:center; margin-bottom:20px;"><h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3><h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1></div>
-        <div class="qris-box" onclick="copyQRIS()"><img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img" loading="lazy"></div>
+        <div class="qris-box" onclick="copyQRIS()"><img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img"></div>
         <div class="checkout-details">
             <div class="detail-row"><span>ID Trx:</span><span id="mTrxID" style="color:var(--primary-blue); font-weight:700">#LS-00000</span></div>
             <div class="detail-row"><span>Metode:</span><span>QRIS / Transfer Bank</span></div>
@@ -297,13 +298,12 @@
 <script>
     let allProducts = [];
     let selectedProduct = null;
-    let isLoading = false;
 
     function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.textContent = msg;
         toast.style.display = 'block';
-        setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        setTimeout(() => toast.style.display = 'none', 3000);
     }
 
     function escapeHtml(str) {
@@ -323,8 +323,7 @@
             grid.innerHTML = '<div style="text-align:center; padding:40px;">Tidak ada produk ditemukan</div>';
             return;
         }
-        // Gunakan fragment untuk mengurangi reflow
-        const fragment = document.createDocumentFragment();
+        grid.innerHTML = '';
         products.forEach((p, idx) => {
             const stockClass = getStockClass(p.stock);
             const card = document.createElement('div');
@@ -332,7 +331,7 @@
             card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
             card.innerHTML = `
                 ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
-                <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'" width="200" height="200">
+                <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
                 <div class="p-title">${escapeHtml(p.name)}</div>
                 <div class="p-price">Rp ${p.price.toLocaleString()} <div class="btn-buy-mini" data-id="${p.id}"><i class="fas fa-cart-plus"></i></div></div>
                 <div class="stock-info">
@@ -344,28 +343,19 @@
                     </div>
                 </div>
             `;
-            fragment.appendChild(card);
+            grid.appendChild(card);
         });
-        grid.innerHTML = '';
-        grid.appendChild(fragment);
-        
-        // Event listener dengan delegation lebih ringan
-        grid.querySelectorAll('.btn-buy-mini').forEach(btn => {
-            btn.removeEventListener('click', buyClickHandler);
-            btn.addEventListener('click', buyClickHandler);
+        document.querySelectorAll('.btn-buy-mini').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const product = allProducts.find(p => p.id === id);
+                if (product) openModal(product);
+            });
         });
-    }
-
-    function buyClickHandler(e) {
-        e.stopPropagation();
-        const id = parseInt(e.currentTarget.dataset.id);
-        const product = allProducts.find(p => p.id === id);
-        if (product) openModal(product);
     }
 
     async function loadProducts() {
-        if (isLoading) return;
-        isLoading = true;
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             if (!res.ok) throw new Error('Gagal fetch');
@@ -377,8 +367,6 @@
             console.error(err);
             showToast('Gagal memuat produk. Refresh halaman.');
             document.getElementById('productGrid').innerHTML = '<div style="text-align:center;padding:40px;">⚠️ Gagal memuat data produk</div>';
-        } finally {
-            isLoading = false;
         }
     }
 
@@ -392,9 +380,8 @@
     };
 
     window.searchProduct = function() {
-        const activeBtn = document.querySelector('.filter-btn.active');
-        const category = activeBtn ? activeBtn.dataset.category : 'all';
-        let filtered = category === 'all' ? [...allProducts] : allProducts.filter(p => p.category === category);
+        const activeCat = document.querySelector('.filter-btn.active').dataset.category;
+        let filtered = activeCat === 'all' ? [...allProducts] : allProducts.filter(p => p.category === activeCat);
         const search = document.getElementById('searchInput').value.trim().toLowerCase();
         if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
         renderProducts(filtered);
@@ -425,25 +412,14 @@ Mohon diproses. Terima kasih.`;
     };
 
     window.toggleSidebar = () => {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
     };
     window.scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-    // Pasang scroll listener untuk back-to-top
-    let ticking = false;
     window.addEventListener('scroll', () => {
-        if (!ticking) {
-            requestAnimationFrame(() => {
-                const btn = document.getElementById('backToTop');
-                if (window.scrollY > 300) btn.classList.add('visible');
-                else btn.classList.remove('visible');
-                ticking = false;
-            });
-            ticking = true;
-        }
+        const btn = document.getElementById('backToTop');
+        if (window.scrollY > 300) btn.classList.add('visible');
+        else btn.classList.remove('visible');
     });
 
     document.addEventListener('DOMContentLoaded', () => {
