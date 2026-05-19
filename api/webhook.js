@@ -134,39 +134,27 @@ export default async function handler(req, res) {
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png'; // Ganti dengan URL banner Anda
       
       if (isAdmin) {
-        // Caption profesional untuk owner panel
-        const ownerCaption = `*LEKSZY STORE*
+        // Caption untuk owner panel (tanpa tombol inline, berisi petunjuk perintah)
+        const ownerCaption = `📋 *MENU OWNER* 📋
+🌎 [lekszystore.my.id](https://lekszystore.my.id)
 
-@lekszystore
-lekszystore
-0858-1063-0431
-*EST. 2023*
-*TRUSTED 100%*
+👤 Name: @${username || 'Admin'}
+📃 ID: \`${chatId}\`
+👑 Role: Owner
 
-*MENU OWNER PANEL*
-[lekszystore.my.id](https://lekszystore.my.id)
+*🔗 Perintah tersedia:*
+/add - Tambah produk
+/edit - Edit produk
+/delete - Hapus produk
+/list - Lihat semua produk
+/stok - Cek stok produk
+/saldo - Cek saldo
+/start - Menu utama
 
-Halo @${username || 'Admin'}
-ID: \`${chatId}\`
-Nama Pengguna: @${username || '-'}
-
-*Pintas:*
-
-Pilih menu di bawah:`;
+Ketik perintah di atas untuk mengelola toko.`;
         
         await sendPhoto(chatId, bannerUrl, ownerCaption, null);
-        // Tombol inline dikirim dengan teks "🔽 MENU" agar profesional
-        const replyMarkup = {
-          inline_keyboard: [
-            [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
-            [{ text: '➕ Tambah Produk', callback_data: 'owner_add' }],
-            [{ text: '✏️ Edit Produk', callback_data: 'owner_edit' }],
-            [{ text: '🗑️ Hapus Produk', callback_data: 'owner_delete' }],
-            [{ text: '📊 Statistik', callback_data: 'owner_stats' }],
-            [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
-          ]
-        };
-        await sendMessage(chatId, '🔽 MENU', replyMarkup);
+        // Tidak mengirim tombol inline
       } else {
         // User biasa
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -188,13 +176,14 @@ Saldo: Rp ${user.saldo.toLocaleString()}
 Total Terjual: ${stats.totalTerjual.toLocaleString()}
 Total Pengguna: ${stats.totalUsers.toLocaleString()}
 
-*Pintas:*
+*🔗 Perintah:*
+/start - Menu utama
+/stok - Lihat stok produk
+/saldo - Cek saldo
 
-Pilih menu di bawah:`;
+Selamat berbelanja!`;
         
         await sendPhoto(chatId, bannerUrl, userCaption, null);
-        const replyMarkup = { inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]] };
-        await sendMessage(chatId, '🔽 MENU', replyMarkup);
       }
       return res.status(200).json({ ok: true });
     }
@@ -227,7 +216,7 @@ Pilih menu di bawah:`;
       return res.status(200).json({ ok: true });
     }
 
-    // Admin commands (list, add, edit, delete)
+    // Admin commands
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -267,7 +256,7 @@ Pilih menu di bawah:`;
       return res.status(200).json({ ok: true });
     }
 
-    // Handle active session (add, edit, delete) - kode lengkap (sama seperti sebelumnya, tidak diubah)
+    // Handle active session (add, edit, delete) - lengkap
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -370,7 +359,7 @@ Pilih menu di bawah:`;
     return res.status(200).json({ ok: true });
   }
 
-  // Handle callback query (inline buttons)
+  // Handle callback query (tombol inline) - karena sudah dihapus, mungkin tidak akan ada callback, tapi kita tetap handle minimal
   if (update.callback_query) {
     const callback = update.callback_query;
     const chatId = callback.message.chat.id;
@@ -379,90 +368,8 @@ Pilih menu di bawah:`;
     const isAdmin = (chatId === ADMIN_ID);
     await answerCallback(callback.id);
 
-    if (data === 'owner_stok' && isAdmin) {
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const products = await db.collection('products').find({}).toArray();
-        if (!products.length) { await editMessage(chatId, messageId, '📦 Belum ada produk.'); return res.status(200).json({ ok: true }); }
-        let msg = '*📦 Stok Produk Tersedia:*\n\n';
-        products.forEach(p => { msg += `• *${p.name}*: ${p.stock} tersisa\n`; });
-        await editMessage(chatId, messageId, msg, null, 'Markdown');
-      } catch (err) { await editMessage(chatId, messageId, '❌ Error mengambil data.'); }
-    } else if (data === 'owner_add' && isAdmin) {
-      await deleteSession(chatId);
-      await saveSession(chatId, 'add_name', {});
-      await editMessage(chatId, messageId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.', null, 'Markdown');
-    } else if (data === 'owner_edit' && isAdmin) {
-      await deleteSession(chatId);
-      await editMessage(chatId, messageId, '✏️ *Edit Produk*\nKirimkan *ID produk* yang akan diedit.\nCek ID dengan /list', null, 'Markdown');
-      await saveSession(chatId, 'edit_wait_id', {});
-    } else if (data === 'owner_delete' && isAdmin) {
-      await deleteSession(chatId);
-      await editMessage(chatId, messageId, '🗑️ *Hapus Produk*\nKirimkan *ID produk* yang akan dihapus.\nCek ID dengan /list', null, 'Markdown');
-      await saveSession(chatId, 'delete_wait_id', {});
-    } else if (data === 'owner_stats' && isAdmin) {
-      const stats = await getBotStats();
-      const client = await clientPromise;
-      const db = client.db('lekszystore');
-      const products = await db.collection('products').find({}).toArray();
-      const totalProducts = products.length;
-      const totalStock = products.reduce((sum,p)=>sum+p.stock,0);
-      let statsMsg = `📊 *Statistik Bot*\n\n👥 Total Pengguna: ${stats.totalUsers}\n📦 Total Produk: ${totalProducts}\n📦 Total Stok: ${totalStock}\n💰 Total Terjual: Rp ${stats.totalTerjual.toLocaleString()}`;
-      await editMessage(chatId, messageId, statsMsg, null, 'Markdown');
-    } else if (data === 'owner_back' && isAdmin) {
-      // Kembali ke menu utama owner: kirim ulang banner dan tombol
-      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
-      const ownerCaption = `*LEKSZY STORE*
-
-@lekszystore
-lekszystore
-0858-1063-0431
-*EST. 2023*
-*TRUSTED 100%*
-
-*MENU OWNER PANEL*
-[lekszystore.my.id](https://lekszystore.my.id)
-
-Halo @${callback.from.username || 'Admin'}
-ID: \`${chatId}\`
-Nama Pengguna: @${callback.from.username || '-'}
-
-*Pintas:*
-
-Pilih menu di bawah:`;
-      
-      await sendPhoto(chatId, bannerUrl, ownerCaption, null);
-      const replyMarkup = {
-        inline_keyboard: [
-          [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
-          [{ text: '➕ Tambah Produk', callback_data: 'owner_add' }],
-          [{ text: '✏️ Edit Produk', callback_data: 'owner_edit' }],
-          [{ text: '🗑️ Hapus Produk', callback_data: 'owner_delete' }],
-          [{ text: '📊 Statistik', callback_data: 'owner_stats' }],
-          [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
-        ]
-      };
-      await sendMessage(chatId, '🔽 MENU', replyMarkup);
-      // Hapus pesan callback yang lama agar tidak mengganggu
-      try {
-        await fetch(`https://api.telegram.org/bot${token}/deleteMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, message_id: messageId })
-        });
-      } catch(e) {}
-    } else if (data === 'list_products') {
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const products = await db.collection('products').find({}).toArray();
-        if (!products.length) { await editMessage(chatId, messageId, '📦 Belum ada produk.'); return res.status(200).json({ ok: true }); }
-        let msg = '📋 *Daftar Produk:*\n\n';
-        products.forEach(p => { msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ ${p.category}\n\n`; });
-        await editMessage(chatId, messageId, msg, null, 'Markdown');
-      } catch (err) { await editMessage(chatId, messageId, `❌ Error: ${err.message}`); }
-    }
+    // Beri tahu bahwa tombol tidak digunakan lagi
+    await editMessage(chatId, messageId, '❌ Menu tombol telah diganti dengan perintah teks.\nGunakan /start untuk melihat perintah yang tersedia.', null, null);
     return res.status(200).json({ ok: true });
   }
 
