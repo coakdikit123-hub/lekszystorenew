@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* Root variables dan styling (sama seperti yang Anda miliki, tidak diubah) */
+        /* Root variables */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -50,7 +50,8 @@
         .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
-        /* Sidebar & overlay (singkat) */
+        
+        /* Sidebar */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
@@ -64,7 +65,7 @@
         .guide-content { padding: 0 15px 15px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
         .nav-links { display: flex; flex-direction: column; gap: 8px; }
         .nav-item { padding: 14px 18px; border-radius: 12px; text-decoration: none; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); border: 1px solid transparent; transition: all 0.2s; }
-        .nav-item i { width: 20px; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-item i { width: 20px; text-align: center; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .nav-item:hover { background: rgba(188,102,255,0.15); color: var(--text-main); border-color: rgba(188,102,255,0.3); transform: translateX(5px); }
         .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-subtle); text-align: center; }
         .social-row { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
@@ -72,6 +73,8 @@
         .social-icon.ig { color: #ff85e0; } .social-icon.tk { color: #fff; } .social-icon.wa { color: #25D366; }
         .menu-btn { width: 45px; height: 45px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .menu-btn i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
+        
+        /* Hero & stats */
         .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); }
         .hero-slider img { width: 100%; height: 100%; object-fit: cover; }
         .stats-container { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 25px; }
@@ -82,14 +85,28 @@
         .intro-box { text-align: center; background: var(--bg-surface); padding: 25px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; }
         .intro-box h2 { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.4rem; font-weight: 800; }
         .intro-box p { color: var(--text-muted); }
+        
+        /* Search & filter */
         .search-container { position: relative; margin-bottom: 20px; }
         .search-input { width: 100%; padding: 15px 20px 15px 50px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 15px; color: var(--text-main); font-size: 0.9rem; outline: none; }
         .search-input:focus { border-color: var(--primary-blue); }
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         .filter-container { position: sticky; top: var(--nav-height); background: var(--bg-deep); padding: 15px 5px; display: flex; gap: 12px; overflow-x: auto; white-space: nowrap; scroll-behavior: smooth; margin-bottom: 5px; }
         .filter-btn { padding: 12px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.05); background: rgba(26,29,46,0.8); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; backdrop-filter: blur(10px); transition: 0.2s; }
-        .filter-btn i { font-size: 1.2rem; }
+        .filter-btn i { font-size: 1.2rem; transition: transform 0.2s; }
+        .filter-btn:hover i { transform: scale(1.1); }
         .filter-btn.active { background: linear-gradient(135deg,#58a6ff20,#bc66ff20); border-color: rgba(188,102,255,0.4); color: white; }
+        /* Warna ikon brand pada filter */
+        .filter-btn[data-category="netflix"] i { color: var(--netflix-red); text-shadow: 0 0 4px rgba(229,9,20,0.5); }
+        .filter-btn[data-category="youtube"] i { color: var(--youtube-red); }
+        .filter-btn[data-category="spotify"] i { color: var(--spotify-green); }
+        .filter-btn[data-category="capcut"] i { color: var(--capcut-red); }
+        .filter-btn[data-category="canva"] i { color: var(--canva-cyan); }
+        .filter-btn[data-category="alight"] i { color: var(--alight-green); }
+        .filter-btn[data-category="viu"] i { color: var(--viu-yellow); }
+        .filter-btn[data-category="all"] i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Product grid */
         .product-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; margin-top: 10px; }
         @media (min-width:768px) { .product-grid { grid-template-columns: repeat(4,1fr); } }
         .product-card { background: var(--bg-surface); border-radius: 20px; padding: 15px 15px 40px; border: 1px solid transparent; transition: 0.2s; position: relative; cursor: pointer; overflow: hidden; }
@@ -111,6 +128,8 @@
         .p-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .p-price { font-size: 1rem; font-weight: 800; color: var(--primary-blue); display: flex; justify-content: space-between; align-items: center; }
         .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; }
+        
+        /* Modal */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(10px); }
         .modal.active { display: flex; opacity: 1; }
         .modal-content { background: var(--bg-main); width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; transform: translateY(100%); transition: transform 0.3s; border: 1px solid var(--border-subtle); max-height: 90vh; overflow-y: auto; }
@@ -122,6 +141,8 @@
         .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
         .detail-row.total { border-top: 1px dashed var(--border-subtle); padding-top: 10px; margin-top: 10px; font-weight: 800; }
         .pay-btn { width: 100%; background: var(--gradient-logo); color: white; padding: 18px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; }
+        
+        /* Toast & back to top */
         #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-logo); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 800; z-index: 3000; display: none; pointer-events: none; }
         .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: 0.2s; }
         .back-to-top.visible { opacity: 1; transform: translateY(0); }
@@ -160,7 +181,7 @@
             <a href="https://wa.me/6285810630431?text=Halo%20Admin%20,%20saya%20mengalami%20kendala%20dengan%20pesanan%20saya.%20%0A%0ABerikut%20detailnya:%0A%F0%9F%93%A6%20Produk:%20%5BSebutkan%20Nama%20Produk%5D%20%0A%F0%9F%93%A7%20Email/Akun:%20%5BEmail%20Akun%20yang%20Bermasalah%5D%20%0A%F0%9F%9B%A0%20Jenis%20Kendala:%20%5BMisal:%20Akun%20Terlogout%20/%20Kena%20On%20Hold%20/%20Salah%20Password%5D%20%0A%F0%9F%86%94%20ID%20Trx:%20%5BSebutkan%20ID%20Transaksi" class="nav-item" target="_blank"><i class="fas fa-headset"></i> Claim Garansi</a>
             <a href="https://www.instagram.com/stories/highlights/18064938496620531/" class="nav-item" target="_blank"><i class="fas fa-star"></i> Testimoni</a>
             <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" class="nav-item" target="_blank"><i class="fas fa-bullhorn"></i> Saluran</a>
-            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank"><i class="fas fa-shield-halved"></i> Tips &amp; Trik</a>
+            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank"><i class="fas fa-lightbulb"></i> Tips &amp; Trik</a>
         </nav>
     </div>
     <div class="sidebar-footer">
@@ -254,7 +275,7 @@
             card.className = `product-card ${p.hot ? 'hot-effect' : ''}`;
             card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
             card.innerHTML = `
-                ${p.hot ? '<div class="badge hot-badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
+                ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
                 <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
                 <div class="p-title">${escapeHtml(p.name)}</div>
                 <div class="p-price">Rp ${p.price.toLocaleString()} <div class="btn-buy-mini" data-id="${p.id}"><i class="fas fa-cart-plus"></i></div></div>
