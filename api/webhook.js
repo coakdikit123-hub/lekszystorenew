@@ -109,7 +109,7 @@ export default async function handler(req, res) {
     // /start command - tampilan profesional dengan banner dan Markdown
     if (text === '/start') {
       await deleteSession(chatId);
-      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
+      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/ownermenu.png';
       
       if (isAdmin) {
         const ownerCaption = `📋 *MENU OWNER* 📋
