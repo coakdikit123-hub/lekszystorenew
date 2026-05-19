@@ -1,0 +1,12 @@
+{
+  "name": "lekszystore-bot",
+  "version": "1.0.0",
+  "scripts": {
+    "vercel-build": "echo build"
+  },
+  "dependencies": {
+    "mongodb": "^6.3.0",
+    "node-telegram-bot-api": "^0.64.0",
+    "express": "^4.18.2"
+  }
+}
