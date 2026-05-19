@@ -34,30 +34,30 @@ async function answerCallback(callbackId) {
   });
 }
 
-// Pending listener management
-let pendingListener = null;
-let pendingTimeout = null;
+// Pending listener management - menggunakan Map per user
+const pendingListeners = new Map(); // key: userId, value: { resolve, timeout }
 
-function setPendingListener(chatId, userId, resolve) {
-  // Clear existing listener jika ada
-  if (pendingListener) {
-    if (pendingTimeout) clearTimeout(pendingTimeout);
-    pendingListener = null;
+function setPendingListener(userId, resolve) {
+  // Hapus jika sudah ada untuk user ini
+  if (pendingListeners.has(userId)) {
+    const old = pendingListeners.get(userId);
+    clearTimeout(old.timeout);
+    pendingListeners.delete(userId);
   }
-  pendingListener = { chatId, userId, resolve };
-  pendingTimeout = setTimeout(() => {
-    if (pendingListener) {
-      pendingListener.resolve(null);
-      pendingListener = null;
-      pendingTimeout = null;
+  const timeout = setTimeout(() => {
+    if (pendingListeners.has(userId)) {
+      pendingListeners.get(userId).resolve(null);
+      pendingListeners.delete(userId);
     }
   }, 60000);
+  pendingListeners.set(userId, { resolve, timeout });
 }
 
-function clearPendingListener() {
-  if (pendingTimeout) clearTimeout(pendingTimeout);
-  pendingListener = null;
-  pendingTimeout = null;
+function clearPendingListener(userId) {
+  if (pendingListeners.has(userId)) {
+    clearTimeout(pendingListeners.get(userId).timeout);
+    pendingListeners.delete(userId);
+  }
 }
 
 export default async function handler(req, res) {
@@ -68,11 +68,20 @@ export default async function handler(req, res) {
   const ADMIN_ID = parseInt(process.env.ADMIN_ID) || 0;
   const update = req.body;
 
-  // Jika ada pending listener dan update sesuai chat/user, kirim ke listener
-  if (pendingListener && update.message && update.message.chat.id === pendingListener.chatId && update.message.from.id === pendingListener.userId) {
+  // Jika ada pending listener untuk user ini, dan update adalah pesan teks dari user yang sama
+  if (update.message && update.message.text && pendingListeners.has(update.message.from.id)) {
+    const userId = update.message.from.id;
     const text = update.message.text;
-    pendingListener.resolve(text);
-    clearPendingListener();
+    // Jika user mengirim /cancel, batalkan listener
+    if (text === '/cancel') {
+      clearPendingListener(userId);
+      await sendMessage(update.message.chat.id, '❌ Operasi dibatalkan.');
+      return res.status(200).json({ ok: true });
+    }
+    // Kirim ke listener
+    const { resolve } = pendingListeners.get(userId);
+    clearPendingListener(userId);
+    resolve(text);
     return res.status(200).json({ ok: true });
   }
 
@@ -83,16 +92,22 @@ export default async function handler(req, res) {
     const userId = update.message.from.id;
     const isAdmin = (chatId === ADMIN_ID);
 
-    // Perintah cancel untuk membatalkan operasi yang sedang berlangsung
-    if (text === '/cancel' && pendingListener && pendingListener.chatId === chatId) {
-      clearPendingListener();
-      await sendMessage(chatId, '❌ Operasi dibatalkan.');
-      return res.status(200).json({ ok: true });
+    // Jika ada pending listener untuk user ini, tapi tidak tertangkap di atas? Seharusnya sudah. Tapi jika masih, batalkan.
+    if (pendingListeners.has(userId)) {
+      // Ini untuk jaga-jaga, misal user kirim command saat listener aktif
+      if (text === '/cancel') {
+        clearPendingListener(userId);
+        await sendMessage(chatId, '❌ Operasi dibatalkan.');
+        return res.status(200).json({ ok: true });
+      } else {
+        // Jika tidak /cancel, abaikan command dan beri tahu user
+        await sendMessage(chatId, '⚠️ Ada operasi sedang berjalan. Kirim /cancel untuk membatalkan, atau selesaikan operasi.');
+        return res.status(200).json({ ok: true });
+      }
     }
 
+    // START
     if (text === '/start') {
-      // Jika ada pending listener untuk user ini, batalkan dulu
-      if (pendingListener && pendingListener.chatId === chatId) clearPendingListener();
       const keyboard = {
         inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]]
       };
@@ -128,45 +143,42 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ADD - menggunakan pending listener
+    // ADD
     if (text === '/add') {
-      // Batalkan listener sebelumnya jika ada
-      if (pendingListener) clearPendingListener();
+      // Hapus listener sebelumnya jika ada (seharusnya sudah, tapi amankan)
+      clearPendingListener(userId);
       try {
         await sendMessage(chatId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.');
-        const name = await new Promise((resolve) => {
-          setPendingListener(chatId, userId, resolve);
-        });
+        const name = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!name) { await sendMessage(chatId, '⏱️ Timeout atau dibatalkan.'); return; }
 
         await sendMessage(chatId, '💰 Kirimkan *harga* (angka)');
-        let price = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let price = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!price || isNaN(parseInt(price))) { await sendMessage(chatId, '❌ Harga tidak valid.'); return; }
         price = parseInt(price);
 
         await sendMessage(chatId, '🏷️ Kirimkan *kategori* (netflix, capcut, youtube, alight, canva, spotify, viu)');
-        let category = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let category = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!category) { await sendMessage(chatId, '❌ Kategori tidak valid.'); return; }
         category = category.toLowerCase();
 
         await sendMessage(chatId, '📦 Kirimkan *stok* (angka)');
-        let stock = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let stock = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!stock || isNaN(parseInt(stock))) { await sendMessage(chatId, '❌ Stok tidak valid.'); return; }
         stock = parseInt(stock);
 
         await sendMessage(chatId, '⏱️ Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)');
-        let duration = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let duration = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!duration) duration = '-';
 
         await sendMessage(chatId, '🔥 Hot? (1 untuk ya, 0 untuk tidak)');
-        let hotFlag = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let hotFlag = await new Promise((resolve) => setPendingListener(userId, resolve));
         const hot = (hotFlag === '1');
 
         await sendMessage(chatId, '🖼️ URL gambar (contoh: /gambar/netflix.png) atau kirim "default"');
-        let image = await new Promise((resolve) => { setPendingListener(chatId, userId, resolve); });
+        let image = await new Promise((resolve) => setPendingListener(userId, resolve));
         if (!image || image === 'default') image = '/gambar/placeholder.png';
 
-        // Simpan ke MongoDB
         const client = await clientPromise;
         const db = client.db('lekszystore');
         const collection = db.collection('products');
@@ -179,11 +191,12 @@ export default async function handler(req, res) {
         console.error(err);
         await sendMessage(chatId, `❌ Gagal: ${err.message}`);
       } finally {
-        clearPendingListener();
+        clearPendingListener(userId);
       }
       return res.status(200).json({ ok: true });
     }
 
+    // EDIT dan DELETE (ringkas)
     if (text === '/edit' || text === '/delete') {
       await sendMessage(chatId, `Fitur ${text} sedang dalam perbaikan. Gunakan /add dan /list dulu.`);
       return res.status(200).json({ ok: true });
@@ -219,7 +232,7 @@ export default async function handler(req, res) {
         await editMessage(chatId, messageId, `❌ Error DB: ${err.message}`);
       }
     } else if (data === 'admin_panel' && chatId === ADMIN_ID) {
-      const adminMsg = `👑 *Panel Admin*\nGunakan perintah:\n/list - Lihat produk\n/add - Tambah produk\n/edit - Edit\n/delete - Hapus\n\nKirim perintah langsung.\nKetik /cancel untuk membatalkan operasi.`;
+      const adminMsg = `👑 *Panel Admin*\nGunakan perintah:\n/list - Lihat produk\n/add - Tambah produk\n/edit - Edit\n/delete - Hapus\n\nKirim perintah langsung.\nKetik /cancel untuk membatalkan operasi berjalan.`;
       await editMessage(chatId, messageId, adminMsg, null, 'Markdown');
     }
     return res.status(200).json({ ok: true });
