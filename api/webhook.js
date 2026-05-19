@@ -77,7 +77,7 @@ async function getBotStats() {
   let totalTerjual = 0;
   const statsDoc = await db.collection('stats').findOne({ key: 'total_sold' });
   if (statsDoc) totalTerjual = statsDoc.value;
-  else totalTerjual = 29483131; // dummy sementara
+  else totalTerjual = 29483131;
   return { totalUsers, totalTerjual };
 }
 
@@ -89,7 +89,7 @@ export default async function handler(req, res) {
   const ADMIN_ID = parseInt(process.env.ADMIN_ID) || 0;
   const update = req.body;
 
-  // Session helpers (sama seperti sebelumnya)
+  // Session helpers
   async function getSession(chatId) {
     const client = await clientPromise;
     const db = client.db('lekszystore');
@@ -122,23 +122,22 @@ export default async function handler(req, res) {
     const user = await getOrCreateUser(userId, username);
     const stats = await getBotStats();
 
-    // Cancel command
     if (text === '/cancel') {
       await deleteSession(chatId);
       await sendMessage(chatId, '❌ Operasi dibatalkan.');
       return res.status(200).json({ ok: true });
     }
 
-    // /start command
+    // /start command - teks menyatu dengan gambar melalui caption
     if (text === '/start') {
       await deleteSession(chatId);
-      // Kirim banner (ganti URL dengan banner Anda)
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
-      await sendPhoto(chatId, bannerUrl);
       
       if (isAdmin) {
-        // Teks untuk owner panel sesuai gambar
-        const ownerText = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+        // Kirim foto dengan caption berisi teks owner panel (menyatu)
+        const ownerCaption = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+        await sendPhoto(chatId, bannerUrl, ownerCaption, null);
+        // Kirim tombol inline sebagai pesan terpisah
         const replyMarkup = {
           inline_keyboard: [
             [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
@@ -149,13 +148,14 @@ export default async function handler(req, res) {
             [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
           ]
         };
-        await sendMessage(chatId, ownerText, replyMarkup, 'Markdown');
+        await sendMessage(chatId, '👋 Pilih menu di bawah:', replyMarkup);
       } else {
-        // Teks untuk user biasa
+        // User biasa: kirim foto dengan caption info user
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        let infoText = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+        const userCaption = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+        await sendPhoto(chatId, bannerUrl, userCaption, null);
         const replyMarkup = { inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]] };
-        await sendMessage(chatId, infoText, replyMarkup, 'Markdown');
+        await sendMessage(chatId, 'Pilih menu:', replyMarkup);
       }
       return res.status(200).json({ ok: true });
     }
@@ -188,7 +188,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Admin commands (sama seperti sebelumnya)
+    // Admin commands
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -228,7 +228,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Handle active session (add, edit, delete) - kode lengkap sama seperti sebelumnya
+    // Handle active session (add, edit, delete) - kode lengkap
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -372,8 +372,16 @@ export default async function handler(req, res) {
       let statsMsg = `📊 *Statistik Bot*\n\nTotal Pengguna: ${stats.totalUsers}\nTotal Produk: ${totalProducts}\nTotal Stok: ${totalStock}\nTotal Terjual (pendapatan): Rp ${stats.totalTerjual.toLocaleString()}`;
       await editMessage(chatId, messageId, statsMsg, null, 'Markdown');
     } else if (data === 'owner_back' && isAdmin) {
-      // Kembali ke menu owner (teks seperti awal)
-      const ownerText = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+      // Kembali ke menu owner dengan caption foto
+      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
+      const ownerCaption = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+      // Kita perlu mengirim pesan baru karena editMessage tidak bisa mengubah foto
+      // Lebih mudah kirim pesan baru dan hapus pesan lama? 
+      // Alternatif: kirim foto baru sebagai balasan dan hapus pesan tombol? 
+      // Untuk sederhana, kita edit teks pesan tombol menjadi menu (tanpa foto)
+      // Tapi karena admin ingin foto, kita kirim foto baru lalu hapus pesan lama? 
+      // Saya akan kirim foto baru dan edit pesan tombol menjadi teks menu.
+      await sendPhoto(chatId, bannerUrl, ownerCaption, null);
       const replyMarkup = {
         inline_keyboard: [
           [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
@@ -384,7 +392,15 @@ export default async function handler(req, res) {
           [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
         ]
       };
-      await editMessage(chatId, messageId, ownerText, replyMarkup, 'Markdown');
+      await sendMessage(chatId, '👋 Pilih menu di bawah:', replyMarkup);
+      // Hapus pesan callback (yang lama) agar tidak mengganggu
+      try {
+        await fetch(`https://api.telegram.org/bot${token}/deleteMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: chatId, message_id: messageId })
+        });
+      } catch(e) {}
     } else if (data === 'list_products') {
       try {
         const client = await clientPromise;
