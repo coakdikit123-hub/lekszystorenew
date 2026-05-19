@@ -137,7 +137,7 @@ export default async function handler(req, res) {
       await sendPhoto(chatId, bannerUrl);
       
       const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      let infoText = `*Solusi Produk Digital Terbaik*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+      let infoText = `*OWNER PANEL WEBSITE*\nlekszystore.my.id\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\n\n*Pintas:*\n`;
       
       let replyMarkup = null;
       if (isAdmin) {
