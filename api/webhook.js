@@ -136,12 +136,10 @@ export default async function handler(req, res) {
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
       await sendPhoto(chatId, bannerUrl);
       
-      const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      let infoText = `*OWNER PANEL WEBSITE*\nlekszystore.my.id\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\n\n*Pintas:*\n`;
-      
-      let replyMarkup = null;
       if (isAdmin) {
-        replyMarkup = {
+        // Teks untuk owner panel sesuai gambar
+        const ownerText = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+        const replyMarkup = {
           inline_keyboard: [
             [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
             [{ text: '➕ Tambah Produk', callback_data: 'owner_add' }],
@@ -151,10 +149,14 @@ export default async function handler(req, res) {
             [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
           ]
         };
+        await sendMessage(chatId, ownerText, replyMarkup, 'Markdown');
       } else {
-        replyMarkup = { inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]] };
+        // Teks untuk user biasa
+        const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        let infoText = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+        const replyMarkup = { inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]] };
+        await sendMessage(chatId, infoText, replyMarkup, 'Markdown');
       }
-      await sendMessage(chatId, infoText, replyMarkup, 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
@@ -186,7 +188,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /list command
+    // Admin commands (sama seperti sebelumnya)
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -205,7 +207,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /add command
     if (text === '/add') {
       await deleteSession(chatId);
       await saveSession(chatId, 'add_name', {});
@@ -213,7 +214,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /edit command
     if (text === '/edit') {
       await deleteSession(chatId);
       await sendMessage(chatId, '✏️ *Edit Produk*\nKirimkan *ID produk* yang akan diedit.\nCek ID dengan /list', null, 'Markdown');
@@ -221,7 +221,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /delete command
     if (text === '/delete') {
       await deleteSession(chatId);
       await sendMessage(chatId, '🗑️ *Hapus Produk*\nKirimkan *ID produk* yang akan dihapus.\nCek ID dengan /list', null, 'Markdown');
@@ -229,7 +228,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Handle active session
+    // Handle active session (add, edit, delete) - kode lengkap sama seperti sebelumnya
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -373,11 +372,8 @@ export default async function handler(req, res) {
       let statsMsg = `📊 *Statistik Bot*\n\nTotal Pengguna: ${stats.totalUsers}\nTotal Produk: ${totalProducts}\nTotal Stok: ${totalStock}\nTotal Terjual (pendapatan): Rp ${stats.totalTerjual.toLocaleString()}`;
       await editMessage(chatId, messageId, statsMsg, null, 'Markdown');
     } else if (data === 'owner_back' && isAdmin) {
-      // Kembali ke menu utama (seperti /start)
-      const user = await getOrCreateUser(chatId, callback.from.username);
-      const stats = await getBotStats();
-      const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      let infoText = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo @${callback.from.username || 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${chatId}\nNama Pengguna: @${callback.from.username || '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+      // Kembali ke menu owner (teks seperti awal)
+      const ownerText = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
       const replyMarkup = {
         inline_keyboard: [
           [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
@@ -388,7 +384,7 @@ export default async function handler(req, res) {
           [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
         ]
       };
-      await editMessage(chatId, messageId, infoText, replyMarkup, 'Markdown');
+      await editMessage(chatId, messageId, ownerText, replyMarkup, 'Markdown');
     } else if (data === 'list_products') {
       try {
         const client = await clientPromise;
