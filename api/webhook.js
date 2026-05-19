@@ -128,16 +128,16 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /start command - teks menyatu dengan gambar melalui caption
+    // /start command - teks menyatu dengan banner melalui caption
     if (text === '/start') {
       await deleteSession(chatId);
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
       
       if (isAdmin) {
-        // Kirim foto dengan caption berisi teks owner panel (menyatu)
-        const ownerCaption = `*MENU OWNER PENEL*\nlekszystore.my.id\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\n\n*Pintas:`;
+        // Caption berisi semua info, termasuk "Pilih menu di bawah:"
+        const ownerCaption = `*LEKSZY STORE*\n\n@lekszystore\nlekszystore\n0858-1063-0431\n*EST. 2023*\n*TRUSTED 100%*\n\n*MENU OWNER PANEL*\nlekszystore.my.id\n\nHalo @${username || 'Admin'} 🐢\nID: ${chatId}\nNama Pengguna: @${username || '-'}\n\n*Pintas:*\n\nPilih menu di bawah:`;
         await sendPhoto(chatId, bannerUrl, ownerCaption, null);
-        // Kirim tombol inline sebagai pesan terpisah
+        // Kirim tombol dengan teks kecil (⚡) agar tidak mengganggu, tombol tetap berfungsi
         const replyMarkup = {
           inline_keyboard: [
             [{ text: '📦 Stok Produk', callback_data: 'owner_stok' }],
@@ -148,14 +148,14 @@ export default async function handler(req, res) {
             [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
           ]
         };
-        await sendMessage(chatId, '👋 Pilih menu di bawah:', replyMarkup);
+        await sendMessage(chatId, '⚡', replyMarkup);
       } else {
-        // User biasa: kirim foto dengan caption info user
+        // User biasa
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const userCaption = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n/start - Mulai BOT\n/stok - Stok produk tersedia\n/saldo - Saldo pengguna`;
+        const userCaption = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*Pintas:*\n\nPilih menu di bawah:`;
         await sendPhoto(chatId, bannerUrl, userCaption, null);
         const replyMarkup = { inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]] };
-        await sendMessage(chatId, 'Pilih menu:', replyMarkup);
+        await sendMessage(chatId, '⚡', replyMarkup);
       }
       return res.status(200).json({ ok: true });
     }
@@ -372,15 +372,9 @@ export default async function handler(req, res) {
       let statsMsg = `📊 *Statistik Bot*\n\nTotal Pengguna: ${stats.totalUsers}\nTotal Produk: ${totalProducts}\nTotal Stok: ${totalStock}\nTotal Terjual (pendapatan): Rp ${stats.totalTerjual.toLocaleString()}`;
       await editMessage(chatId, messageId, statsMsg, null, 'Markdown');
     } else if (data === 'owner_back' && isAdmin) {
-      // Kembali ke menu owner dengan caption foto
+      // Kembali ke menu utama: kirim foto baru dengan caption lengkap, lalu tombol
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
-      const ownerCaption = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
-      // Kita perlu mengirim pesan baru karena editMessage tidak bisa mengubah foto
-      // Lebih mudah kirim pesan baru dan hapus pesan lama? 
-      // Alternatif: kirim foto baru sebagai balasan dan hapus pesan tombol? 
-      // Untuk sederhana, kita edit teks pesan tombol menjadi menu (tanpa foto)
-      // Tapi karena admin ingin foto, kita kirim foto baru lalu hapus pesan lama? 
-      // Saya akan kirim foto baru dan edit pesan tombol menjadi teks menu.
+      const ownerCaption = `*LEKSZY STORE*\n\n@lekszystore\nlekszystore\n0858-1063-0431\n*EST. 2023*\n*TRUSTED 100%*\n\n*MENU OWNER PANEL*\nlekszystore.my.id\n\nHalo @${callback.from.username || 'Admin'} 🐢\nID: ${chatId}\nNama Pengguna: @${callback.from.username || '-'}\n\n*Pintas:*\n\nPilih menu di bawah:`;
       await sendPhoto(chatId, bannerUrl, ownerCaption, null);
       const replyMarkup = {
         inline_keyboard: [
@@ -392,8 +386,8 @@ export default async function handler(req, res) {
           [{ text: '🔙 Kembali', callback_data: 'owner_back' }]
         ]
       };
-      await sendMessage(chatId, '👋 Pilih menu di bawah:', replyMarkup);
-      // Hapus pesan callback (yang lama) agar tidak mengganggu
+      await sendMessage(chatId, '⚡', replyMarkup);
+      // Hapus pesan callback yang lama (opsional)
       try {
         await fetch(`https://api.telegram.org/bot${token}/deleteMessage`, {
           method: 'POST',
