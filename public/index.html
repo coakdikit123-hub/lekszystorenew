@@ -100,7 +100,7 @@
         .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
         
         .filter-container {
-            position: relative; /* diubah dari sticky untuk mencegah overlap */
+            position: relative;
             background: var(--bg-deep);
             padding: 15px 5px;
             display: flex;
@@ -108,7 +108,7 @@
             overflow-x: auto;
             white-space: nowrap;
             scroll-behavior: smooth;
-            margin-bottom: 20px; /* jarak bawah diperbesar */
+            margin-bottom: 20px;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -148,7 +148,7 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-top: 0; /* diatur ulang */
+            margin-top: 0;
             position: relative;
             z-index: 1;
         }
@@ -283,7 +283,7 @@
         }
         .product-card:active .btn-buy-mini { transform: rotate(90deg); }
         
-        /* Empty state */
+        /* Empty state - ikon refresh putih */
         .empty-state {
             grid-column: 1 / -1;
             text-align: center;
@@ -303,7 +303,26 @@
         }
         .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; color: var(--text-main); }
         .empty-state p { color: var(--text-muted); margin-bottom: 25px; max-width: 300px; margin-left: auto; margin-right: auto; }
-        .empty-state button { background: var(--gradient-logo); border: none; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 700; cursor: pointer; transition: transform 0.2s; }
+        .empty-state button {
+            background: var(--gradient-logo);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 40px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .empty-state button i {
+            font-size: 1rem;
+            background: none;
+            -webkit-text-fill-color: white;
+            color: white;
+            margin: 0;
+        }
         .empty-state button:active { transform: scale(0.96); }
         
         /* Modal */
