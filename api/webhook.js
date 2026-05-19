@@ -1,6 +1,6 @@
 import clientPromise from '../lib/db';
 
-// Helper functions
+// Helper functions (sama seperti sebelumnya)
 async function sendMessage(chatId, text, replyMarkup = null, parseMode = null) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const payload = { chat_id: chatId, text };
@@ -34,32 +34,6 @@ async function answerCallback(callbackId) {
   });
 }
 
-// Pending listener management - menggunakan Map per user
-const pendingListeners = new Map(); // key: userId, value: { resolve, timeout }
-
-function setPendingListener(userId, resolve) {
-  // Hapus jika sudah ada untuk user ini
-  if (pendingListeners.has(userId)) {
-    const old = pendingListeners.get(userId);
-    clearTimeout(old.timeout);
-    pendingListeners.delete(userId);
-  }
-  const timeout = setTimeout(() => {
-    if (pendingListeners.has(userId)) {
-      pendingListeners.get(userId).resolve(null);
-      pendingListeners.delete(userId);
-    }
-  }, 60000);
-  pendingListeners.set(userId, { resolve, timeout });
-}
-
-function clearPendingListener(userId) {
-  if (pendingListeners.has(userId)) {
-    clearTimeout(pendingListeners.get(userId).timeout);
-    pendingListeners.delete(userId);
-  }
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   
@@ -68,21 +42,26 @@ export default async function handler(req, res) {
   const ADMIN_ID = parseInt(process.env.ADMIN_ID) || 0;
   const update = req.body;
 
-  // Jika ada pending listener untuk user ini, dan update adalah pesan teks dari user yang sama
-  if (update.message && update.message.text && pendingListeners.has(update.message.from.id)) {
-    const userId = update.message.from.id;
-    const text = update.message.text;
-    // Jika user mengirim /cancel, batalkan listener
-    if (text === '/cancel') {
-      clearPendingListener(userId);
-      await sendMessage(update.message.chat.id, '❌ Operasi dibatalkan.');
-      return res.status(200).json({ ok: true });
-    }
-    // Kirim ke listener
-    const { resolve } = pendingListeners.get(userId);
-    clearPendingListener(userId);
-    resolve(text);
-    return res.status(200).json({ ok: true });
+  // Helper untuk baca/tulis session
+  async function getSession(chatId) {
+    const client = await clientPromise;
+    const db = client.db('lekszystore');
+    const session = await db.collection('sessions').findOne({ chatId });
+    return session || null;
+  }
+  async function saveSession(chatId, step, tempData = {}) {
+    const client = await clientPromise;
+    const db = client.db('lekszystore');
+    await db.collection('sessions').updateOne(
+      { chatId },
+      { $set: { step, tempData, updatedAt: new Date() } },
+      { upsert: true }
+    );
+  }
+  async function deleteSession(chatId) {
+    const client = await clientPromise;
+    const db = client.db('lekszystore');
+    await db.collection('sessions').deleteOne({ chatId });
   }
 
   // Handle pesan teks
@@ -92,22 +71,16 @@ export default async function handler(req, res) {
     const userId = update.message.from.id;
     const isAdmin = (chatId === ADMIN_ID);
 
-    // Jika ada pending listener untuk user ini, tapi tidak tertangkap di atas? Seharusnya sudah. Tapi jika masih, batalkan.
-    if (pendingListeners.has(userId)) {
-      // Ini untuk jaga-jaga, misal user kirim command saat listener aktif
-      if (text === '/cancel') {
-        clearPendingListener(userId);
-        await sendMessage(chatId, '❌ Operasi dibatalkan.');
-        return res.status(200).json({ ok: true });
-      } else {
-        // Jika tidak /cancel, abaikan command dan beri tahu user
-        await sendMessage(chatId, '⚠️ Ada operasi sedang berjalan. Kirim /cancel untuk membatalkan, atau selesaikan operasi.');
-        return res.status(200).json({ ok: true });
-      }
+    // Perintah /cancel menghapus session
+    if (text === '/cancel') {
+      await deleteSession(chatId);
+      await sendMessage(chatId, '❌ Operasi dibatalkan.');
+      return res.status(200).json({ ok: true });
     }
 
-    // START
+    // Perintah /start (hapus session apapun yang sedang berjalan)
     if (text === '/start') {
+      await deleteSession(chatId);
       const keyboard = {
         inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]]
       };
@@ -121,7 +94,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // LIST
+    // Perintah /list tanpa session
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -143,70 +116,100 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ADD
+    // Perintah /add -> mulai session step 1
     if (text === '/add') {
-      // Hapus listener sebelumnya jika ada (seharusnya sudah, tapi amankan)
-      clearPendingListener(userId);
-      try {
-        await sendMessage(chatId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.');
-        const name = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!name) { await sendMessage(chatId, '⏱️ Timeout atau dibatalkan.'); return; }
+      await deleteSession(chatId); // hapus session lama jika ada
+      await saveSession(chatId, 'add_name', {});
+      await sendMessage(chatId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.');
+      return res.status(200).json({ ok: true });
+    }
 
+    // Jika ada session yang sedang berjalan, lanjutkan step
+    const session = await getSession(chatId);
+    if (session) {
+      const step = session.step;
+      let temp = session.tempData || {};
+
+      if (step === 'add_name') {
+        temp.name = text;
+        await saveSession(chatId, 'add_price', temp);
         await sendMessage(chatId, '💰 Kirimkan *harga* (angka)');
-        let price = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!price || isNaN(parseInt(price))) { await sendMessage(chatId, '❌ Harga tidak valid.'); return; }
-        price = parseInt(price);
-
+      } 
+      else if (step === 'add_price') {
+        const price = parseInt(text);
+        if (isNaN(price)) {
+          await sendMessage(chatId, '❌ Harga tidak valid. Kirimkan angka.');
+          return res.status(200).json({ ok: true });
+        }
+        temp.price = price;
+        await saveSession(chatId, 'add_category', temp);
         await sendMessage(chatId, '🏷️ Kirimkan *kategori* (netflix, capcut, youtube, alight, canva, spotify, viu)');
-        let category = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!category) { await sendMessage(chatId, '❌ Kategori tidak valid.'); return; }
-        category = category.toLowerCase();
-
+      }
+      else if (step === 'add_category') {
+        temp.category = text.toLowerCase();
+        await saveSession(chatId, 'add_stock', temp);
         await sendMessage(chatId, '📦 Kirimkan *stok* (angka)');
-        let stock = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!stock || isNaN(parseInt(stock))) { await sendMessage(chatId, '❌ Stok tidak valid.'); return; }
-        stock = parseInt(stock);
-
+      }
+      else if (step === 'add_stock') {
+        const stock = parseInt(text);
+        if (isNaN(stock)) {
+          await sendMessage(chatId, '❌ Stok tidak valid. Kirimkan angka.');
+          return res.status(200).json({ ok: true });
+        }
+        temp.stock = stock;
+        await saveSession(chatId, 'add_duration', temp);
         await sendMessage(chatId, '⏱️ Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)');
-        let duration = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!duration) duration = '-';
+      }
+      else if (step === 'add_duration') {
+        temp.duration = text;
+        await saveSession(chatId, 'add_hot', temp);
+        await sendMessage(chatId, '🔥 Apakah produk *hot*? (kirim 1 untuk ya, 0 untuk tidak)');
+      }
+      else if (step === 'add_hot') {
+        const hot = (text === '1');
+        temp.hot = hot;
+        await saveSession(chatId, 'add_image', temp);
+        await sendMessage(chatId, '🖼️ Kirimkan *URL gambar* (contoh: /gambar/netflix.png) atau kirim "default"');
+      }
+      else if (step === 'add_image') {
+        let image = (text === 'default' || !text) ? '/gambar/placeholder.png' : text;
+        temp.image = image;
 
-        await sendMessage(chatId, '🔥 Hot? (1 untuk ya, 0 untuk tidak)');
-        let hotFlag = await new Promise((resolve) => setPendingListener(userId, resolve));
-        const hot = (hotFlag === '1');
-
-        await sendMessage(chatId, '🖼️ URL gambar (contoh: /gambar/netflix.png) atau kirim "default"');
-        let image = await new Promise((resolve) => setPendingListener(userId, resolve));
-        if (!image || image === 'default') image = '/gambar/placeholder.png';
-
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const collection = db.collection('products');
-        const existing = await collection.find({}).toArray();
-        const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
-        const newProduct = { id: newId, name, price, category, stock, duration, hot, image };
-        await collection.insertOne(newProduct);
-        await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${name}\nHarga: Rp${price.toLocaleString()}\nStok: ${stock}`);
-      } catch (err) {
-        console.error(err);
-        await sendMessage(chatId, `❌ Gagal: ${err.message}`);
-      } finally {
-        clearPendingListener(userId);
+        // Simpan ke database products
+        try {
+          const client = await clientPromise;
+          const db = client.db('lekszystore');
+          const collection = db.collection('products');
+          const existing = await collection.find({}).toArray();
+          const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
+          const newProduct = {
+            id: newId,
+            name: temp.name,
+            price: temp.price,
+            category: temp.category,
+            stock: temp.stock,
+            duration: temp.duration,
+            hot: temp.hot,
+            image: temp.image
+          };
+          await collection.insertOne(newProduct);
+          await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${temp.name}\nHarga: Rp${temp.price.toLocaleString()}\nStok: ${temp.stock}`);
+        } catch (err) {
+          console.error(err);
+          await sendMessage(chatId, `❌ Gagal menyimpan: ${err.message}`);
+        } finally {
+          await deleteSession(chatId);
+        }
       }
       return res.status(200).json({ ok: true });
     }
 
-    // EDIT dan DELETE (ringkas)
-    if (text === '/edit' || text === '/delete') {
-      await sendMessage(chatId, `Fitur ${text} sedang dalam perbaikan. Gunakan /add dan /list dulu.`);
-      return res.status(200).json({ ok: true });
-    }
-
+    // Jika tidak ada session dan bukan command yang dikenali
     await sendMessage(chatId, 'Gunakan /start untuk menu.');
     return res.status(200).json({ ok: true });
   }
 
-  // Handle callback query
+  // Handle callback query (tombol inline)
   if (update.callback_query) {
     const callback = update.callback_query;
     const chatId = callback.message.chat.id;
@@ -232,7 +235,7 @@ export default async function handler(req, res) {
         await editMessage(chatId, messageId, `❌ Error DB: ${err.message}`);
       }
     } else if (data === 'admin_panel' && chatId === ADMIN_ID) {
-      const adminMsg = `👑 *Panel Admin*\nGunakan perintah:\n/list - Lihat produk\n/add - Tambah produk\n/edit - Edit\n/delete - Hapus\n\nKirim perintah langsung.\nKetik /cancel untuk membatalkan operasi berjalan.`;
+      const adminMsg = `👑 *Panel Admin*\nGunakan perintah:\n/list - Lihat produk\n/add - Tambah produk\n/edit - Edit (coming soon)\n/delete - Hapus (coming soon)\n\nKirim perintah langsung.\nKetik /cancel untuk membatalkan operasi.`;
       await editMessage(chatId, messageId, adminMsg, null, 'Markdown');
     }
     return res.status(200).json({ ok: true });
