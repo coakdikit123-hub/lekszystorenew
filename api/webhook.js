@@ -1,3 +1,5 @@
+import clientPromise from '../lib/db';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -5,89 +7,109 @@ export default async function handler(req, res) {
 
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
-    console.error('Token missing');
-    return res.status(500).json({ error: 'Token not set' });
+    console.error('TELEGRAM_BOT_TOKEN missing');
+    return res.status(500).json({ error: 'Bot token not set' });
   }
 
+  const ADMIN_ID = parseInt(process.env.ADMIN_ID) || 0;
   const update = req.body;
-  console.log('Webhook received:', JSON.stringify(update));
 
-  // Handle pesan teks
+  // Helper: kirim pesan ke Telegram
+  async function sendMessage(chatId, text, replyMarkup = null) {
+    const payload = { chat_id: chatId, text };
+    if (replyMarkup) payload.reply_markup = replyMarkup;
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  // Helper: edit pesan yang sudah ada (untuk callback query)
+  async function editMessage(chatId, messageId, text, replyMarkup = null) {
+    const payload = { chat_id: chatId, message_id: messageId, text };
+    if (replyMarkup) payload.reply_markup = replyMarkup;
+    await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  // Handler untuk pesan teks (/start)
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
-    const text = update.message.text;
-    const userId = update.message.from.id;
-    const isAdmin = (userId.toString() === process.env.ADMIN_ID);
+    const text = update.message.text.trim();
 
     if (text === '/start') {
-      const webAppUrl = `https://${req.headers.host}`; // Domain Vercel Anda
-      let replyMarkup = {
+      // Buat tombol inline
+      const keyboard = {
         inline_keyboard: [
-          [{ text: '🛒 Buka Toko', web_app: { url: webAppUrl } }],
           [{ text: '📋 Daftar Produk', callback_data: 'list_products' }]
         ]
       };
-      if (isAdmin) {
-        replyMarkup.inline_keyboard.push([{ text: '⚙️ Admin Panel', callback_data: 'admin_panel' }]);
+      // Jika user adalah admin, tambahkan tombol admin panel
+      if (chatId === ADMIN_ID) {
+        keyboard.inline_keyboard.push([{ text: '⚙️ Admin Panel', callback_data: 'admin_panel' }]);
       }
-      await sendMessage(token, chatId, `Selamat datang ${update.message.from.first_name}!\nKlik tombol di bawah untuk berbelanja.`, replyMarkup);
-      return res.status(200).json({ ok: true });
+      await sendMessage(chatId, `Halo! Selamat datang di LekszyStore.\nKlik tombol di bawah untuk melihat produk.`, keyboard);
     } else {
-      // Respon pesan lain
-      await sendMessage(token, chatId, 'Gunakan /start untuk memulai.');
-      return res.status(200).json({ ok: true });
+      // Untuk pesan selain /start, balas dengan menu
+      const keyboard = {
+        inline_keyboard: [[{ text: '📋 Daftar Produk', callback_data: 'list_products' }]]
+      };
+      if (chatId === ADMIN_ID) {
+        keyboard.inline_keyboard.push([{ text: '⚙️ Admin Panel', callback_data: 'admin_panel' }]);
+      }
+      await sendMessage(chatId, `Gunakan /start untuk memulai.`, keyboard);
     }
   }
 
-  // Handle callback query (tombol inline)
-  if (update.callback_query) {
-    const chatId = update.callback_query.message.chat.id;
-    const data = update.callback_query.data;
-    const userId = update.callback_query.from.id;
-    const isAdmin = (userId.toString() === process.env.ADMIN_ID);
+  // Handler untuk callback query (klik tombol inline)
+  else if (update.callback_query) {
+    const callback = update.callback_query;
+    const chatId = callback.message.chat.id;
+    const messageId = callback.message.message_id;
+    const data = callback.data;
+
+    // Jawab callback query agar loading hilang (wajib)
+    await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ callback_query_id: callback.id })
+    });
 
     if (data === 'list_products') {
-      // Ambil daftar produk dari database (menggunakan API internal atau langsung dari MongoDB)
-      const products = await fetchProductsFromDB(); // Fungsi terpisah
-      let text = '📦 *Daftar Produk:*\n\n';
-      products.forEach(p => {
-        text += `*${p.id}.* ${p.name}\n   💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n   🏷️ ${p.category}\n\n`;
-      });
-      await sendMessage(token, chatId, text, null, 'Markdown');
-    } else if (data === 'admin_panel' && isAdmin) {
-      await sendMessage(token, chatId, '👑 *Panel Admin*\nGunakan perintah:\n/add - Tambah produk\n/edit - Edit produk\n/delete - Hapus produk\n/list - Lihat semua produk', null, 'Markdown');
+      try {
+        // Ambil data dari MongoDB
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const products = await db.collection('products').find({}).toArray();
+
+        if (!products.length) {
+          await editMessage(chatId, messageId, '📦 Belum ada produk.', null);
+          return;
+        }
+
+        let text = '📦 *Daftar Produk:*\n\n';
+        products.forEach(p => {
+          text += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ *${p.category}*\n\n`;
+        });
+        await editMessage(chatId, messageId, text, { parse_mode: 'Markdown' });
+      } catch (err) {
+        console.error(err);
+        await editMessage(chatId, messageId, '❌ Gagal mengambil data produk.');
+      }
+    } 
+    else if (data === 'admin_panel' && chatId === ADMIN_ID) {
+      const adminText = `👑 *Panel Admin*\nGunakan perintah berikut melalui chat:\n\n/add - Tambah produk\n/edit - Edit produk\n/delete - Hapus produk\n/list - Lihat semua produk\n\nAtau gunakan API admin (dokumentasi menyusul).`;
+      await editMessage(chatId, messageId, adminText, { parse_mode: 'Markdown' });
     }
-    await answerCallbackQuery(token, update.callback_query.id);
-    return res.status(200).json({ ok: true });
+    else {
+      await editMessage(chatId, messageId, 'Tombol tidak dikenali.');
+    }
   }
 
+  // Selalu balas 200 OK ke Telegram
   res.status(200).json({ ok: true });
-}
-
-// Helper functions
-async function sendMessage(token, chatId, text, replyMarkup = null, parseMode = null) {
-  const body = { chat_id: chatId, text };
-  if (replyMarkup) body.reply_markup = replyMarkup;
-  if (parseMode) body.parse_mode = parseMode;
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
-  });
-}
-
-async function answerCallbackQuery(token, callbackQueryId) {
-  await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ callback_query_id: callbackQueryId })
-  });
-}
-
-async function fetchProductsFromDB() {
-  // Gunakan koneksi MongoDB yang sudah ada di lib/db.js
-  const clientPromise = require('../lib/db').default;
-  const client = await clientPromise;
-  const db = client.db('lekszystore');
-  return await db.collection('products').find({}).toArray();
 }
