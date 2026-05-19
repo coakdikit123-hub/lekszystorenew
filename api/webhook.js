@@ -135,7 +135,7 @@ export default async function handler(req, res) {
       
       if (isAdmin) {
         // Kirim foto dengan caption berisi teks owner panel (menyatu)
-        const ownerCaption = `*LEKSZY STORE*\n\nlekszystore\nlekszystore\n0858-1063-0431\n*TRUSTED 100%*\n\n*EST. 2023*\n\n*OWNER PANEL WEBSITE*\nlekszystore.my.id`;
+        const ownerCaption = `*MENU OWNER PENEL*\nlekszystore.my.id\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\nID: ${userId}\nNama Pengguna: ${username ? '@'+username : '-'}\n\n*Pintas:`;
         await sendPhoto(chatId, bannerUrl, ownerCaption, null);
         // Kirim tombol inline sebagai pesan terpisah
         const replyMarkup = {
