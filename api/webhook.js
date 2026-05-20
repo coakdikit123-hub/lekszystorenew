@@ -1,6 +1,5 @@
 import clientPromise from '../lib/db';
 
-// Helper functions
 async function sendPhoto(chatId, photoUrl, caption = null, parseMode = null) {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const payload = { chat_id: chatId, photo: photoUrl };
@@ -24,7 +23,8 @@ async function sendMessage(chatId, text, parseMode = null) {
   });
 }
 
-async function getOrCreateUser(userId, username) {
+// Fungsi untuk mendapatkan atau membuat user (untuk admin)
+async function getOrCreateAdminUser(userId, username) {
   const client = await clientPromise;
   const db = client.db('lekszystore');
   let user = await db.collection('users').findOne({ userId });
@@ -36,17 +36,6 @@ async function getOrCreateUser(userId, username) {
     user.username = username;
   }
   return user;
-}
-
-async function getBotStats() {
-  const client = await clientPromise;
-  const db = client.db('lekszystore');
-  const totalUsers = await db.collection('users').countDocuments();
-  let totalTerjual = 0;
-  const statsDoc = await db.collection('stats').findOne({ key: 'total_sold' });
-  if (statsDoc) totalTerjual = statsDoc.value;
-  else totalTerjual = 29483131;
-  return { totalUsers, totalTerjual };
 }
 
 export default async function handler(req, res) {
@@ -76,7 +65,6 @@ export default async function handler(req, res) {
     await db.collection('sessions').deleteOne({ chatId });
   }
 
-  // Handle text messages
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text.trim();
@@ -84,8 +72,13 @@ export default async function handler(req, res) {
     const username = update.message.from.username;
     const isAdmin = (chatId === ADMIN_ID);
 
-    const user = await getOrCreateUser(userId, username);
-    const stats = await getBotStats();
+    // Jika bukan admin, abaikan atau balas bahwa bot hanya untuk owner
+    if (!isAdmin) {
+      await sendMessage(chatId, '🤖 *Bot ini hanya untuk owner.*', 'Markdown');
+      return res.status(200).json({ ok: true });
+    }
+
+    const user = await getOrCreateAdminUser(userId, username);
 
     if (text === '/cancel') {
       await deleteSession(chatId);
@@ -96,8 +89,7 @@ export default async function handler(req, res) {
     if (text === '/start') {
       await deleteSession(chatId);
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
-      if (isAdmin) {
-        const ownerCaption = `✨ *SELAMAT DATANG DI PANEL OWNER* ✨
+      const ownerCaption = `✨ *SELAMAT DATANG DI PANEL OWNER* ✨
 ━━━━━━━━━━━━━━━━━━━━━
 🌐 *Website:* [lekszystore.my.id](https://lekszystore.my.id)
 
@@ -112,65 +104,12 @@ export default async function handler(req, res) {
 /list 📋 Lihat semua produk
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
-━━━━━━━━━━━━━━━━━━━━━
-✅ *Bot siap digunakan!*`;
-        await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
-      } else {
-        const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const userCaption = `🌟 *Solusi Produk Digital Terbaik* 🌟
-━━━━━━━━━━━━━━━━━━━━━
-💎 *JASA APLIKASI PREMIUM*
-🔗 premiumtime.co
-
-👋 Halo ${username ? '@'+username : 'Pengguna'}
-📅 ${date}
-
-📋 *Informasi Pengguna:*
-🆔 ID: \`${userId}\`
-👤 Username: ${username ? '@'+username : '-'}
-💸 Total Transaksi: Rp ${user.transaksiTotal.toLocaleString()}
-💰 Saldo: Rp ${user.saldo.toLocaleString()}
-
-📊 *Statistik Bot:*
-📦 Total Terjual: ${stats.totalTerjual.toLocaleString()}
-👥 Total Pengguna: ${stats.totalUsers.toLocaleString()}
-
-🔧 *Perintah:*
-/start 🏠 Menu utama
-/stok 📦 Lihat stok produk
-/saldo 💰 Cek saldo
-
-━━━━━━━━━━━━━━━━━━━━━
-✨ *Selamat berbelanja!* ✨`;
-        await sendPhoto(chatId, bannerUrl, userCaption, 'Markdown');
-      }
+━━━━━━━━━━━━━━━━━━━━━*`;
+      await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
-    if (text === '/stok') {
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const products = await db.collection('products').find({}).toArray();
-        if (!products.length) return await sendMessage(chatId, '📭 *Belum ada produk.*', 'Markdown');
-        let msg = '📦 *Stok Produk Tersedia:*\n━━━━━━━━━━━━━━━━━━━━━\n';
-        products.forEach(p => msg += `• *${p.name}*: ${p.stock} tersisa\n`);
-        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Terima kasih*';
-        await sendMessage(chatId, msg, 'Markdown');
-      } catch (err) { await sendMessage(chatId, '❌ *Error mengambil stok.*', 'Markdown'); }
-      return res.status(200).json({ ok: true });
-    }
-
-    if (text === '/saldo') {
-      await sendMessage(chatId, `💰 *Saldo Anda:* Rp ${user.saldo.toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━\n🔔 *Gunakan /start untuk menu utama*`, 'Markdown');
-      return res.status(200).json({ ok: true });
-    }
-
-    if (!isAdmin) {
-      await sendMessage(chatId, '❌ *Akses ditolak.* Perintah ini hanya untuk owner.', 'Markdown');
-      return res.status(200).json({ ok: true });
-    }
-
+    // Admin commands
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -216,7 +155,7 @@ export default async function handler(req, res) {
       const step = session.step;
       let temp = session.tempData || {};
 
-      // ADD FLOW (dengan createdAt)
+      // ADD FLOW
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
@@ -264,9 +203,7 @@ export default async function handler(req, res) {
         } catch (err) { await sendMessage(chatId, `❌ *Gagal menyimpan:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
-      }
-      // EDIT FLOW
-      else if (step === 'edit_wait_id') {
+      } else if (step === 'edit_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         const client = await clientPromise;
@@ -296,9 +233,7 @@ export default async function handler(req, res) {
           await sendMessage(chatId, `✅ *Update berhasil!*\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field: ${field}\n🆕 Nilai baru: ${newValue}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
         } catch (err) { await sendMessage(chatId, `❌ *Error:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
-      }
-      // DELETE FLOW
-      else if (step === 'delete_wait_id') {
+      } else if (step === 'delete_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.*', 'Markdown'); return res.status(200).json({ ok: true }); }
         try {
