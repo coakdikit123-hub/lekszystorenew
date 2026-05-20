@@ -1,277 +1,561 @@
-import clientPromise from '../lib/db';
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="LekszyStore - Toko Premium Terbaik dengan Harga Terjangkau">
+    <title>LekszyStore - Best Cheap Premium Store</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #05060a;
+            --bg-main: #0f111a;
+            --bg-surface: #1a1d2e;
+            --bg-surface-light: #24283f;
+            --primary-blue: #58a6ff;
+            --accent-purple: #bc66ff;
+            --accent-pink: #ff85e0;
+            --gradient-logo: linear-gradient(135deg, #58a6ff 0%, #bc66ff 50%, #ff85e0 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #94a3b8;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --radius-xl: 20px;
+            --nav-height: 85px;
+            --stock-high: #10b981;
+            --stock-medium: #f59e0b;
+            --stock-low: #ef4444;
+            --netflix-red: #e50914;
+            --capcut-red: #ff4d4d;
+            --youtube-red: #ff0000;
+            --spotify-green: #1DB954;
+            --canva-cyan: #00c4cc;
+            --alight-green: #34e89e;
+            --viu-yellow: #ffc107;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; overflow-x: hidden; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); transform: translateZ(0); }
+        .logo-wrapper { display: flex; align-items: center; gap: 12px; }
+        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
+        .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
+        .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+        .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
+        .sidebar.active { transform: translateX(0); left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 15px; }
+        .close-sidebar { width: 35px; height: 35px; background: rgba(255,255,255,0.05); border: none; border-radius: 10px; color: var(--text-muted); cursor: pointer; }
+        .sidebar-menu-wrapper { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        .sidebar-menu-wrapper::-webkit-scrollbar { width: 4px; }
+        .sidebar-menu-wrapper::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
+        .sidebar-menu-wrapper::-webkit-scrollbar-thumb { background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple)); border-radius: 10px; }
+        .guide-details { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 12px; margin-bottom: 20px; }
+        .guide-summary { padding: 12px 15px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; justify-content: space-between; }
+        .guide-summary::after { content: '\f0d7'; font-family: 'Font Awesome 6 Free'; font-weight: 900; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .guide-content { padding: 0 15px 15px; font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+        .nav-links { display: flex; flex-direction: column; gap: 8px; }
+        .nav-item { padding: 14px 18px; border-radius: 12px; text-decoration: none; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); border: 1px solid transparent; transition: all 0.2s; }
+        .nav-item i { width: 20px; text-align: center; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-item:hover { background: rgba(188,102,255,0.15); color: var(--text-main); border-color: rgba(188,102,255,0.3); transform: translateX(5px); }
+        .sidebar-footer { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border-subtle); text-align: center; }
+        .social-row { display: flex; gap: 12px; justify-content: center; margin-top: 10px; }
+        .social-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-subtle); background: rgba(255,255,255,0.03); transition: all 0.2s; }
+        .social-icon.ig { color: #ff85e0; } .social-icon.tk { color: #fff; } .social-icon.wa { color: #25D366; }
+        .menu-btn { width: 45px; height: 45px; background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.2); border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .menu-btn i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.2rem; }
+        .hero-slider { width: 100%; aspect-ratio: 21/9; border-radius: 20px; overflow: hidden; margin-bottom: 25px; border: 1px solid var(--border-subtle); background: var(--bg-surface); }
+        .hero-slider img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .stats-container { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 25px; }
+        .stat-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 15px 10px; border-radius: 15px; text-align: center; transition: transform 0.2s; }
+        .stat-card i { color: var(--primary-blue); font-size: 1.1rem; display: block; margin-bottom: 5px; }
+        .stat-number { font-weight: 800; font-size: 1rem; }
+        .stat-label { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; }
+        .intro-box { text-align: center; background: var(--bg-surface); padding: 25px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--border-subtle); position: relative; overflow: hidden; }
+        .intro-box h2 { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.4rem; font-weight: 800; }
+        .intro-box p { color: var(--text-muted); }
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-input { width: 100%; padding: 15px 20px 15px 50px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 15px; color: var(--text-main); font-size: 0.9rem; outline: none; }
+        .search-input:focus { border-color: var(--primary-blue); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+        .filter-container { position: relative; background: var(--bg-deep); padding: 15px 5px; display: flex; gap: 12px; overflow-x: auto; white-space: nowrap; scroll-behavior: smooth; margin-bottom: 20px; scrollbar-width: none; }
+        .filter-container::-webkit-scrollbar { display: none; }
+        .filter-btn { padding: 12px 24px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.05); background: rgba(26,29,46,0.8); color: var(--text-muted); font-weight: 700; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; backdrop-filter: blur(10px); transition: 0.2s; flex-shrink: 0; }
+        .filter-btn i { font-size: 1.2rem; }
+        .filter-btn.active { background: linear-gradient(135deg,#58a6ff20,#bc66ff20); border-color: rgba(188,102,255,0.4); color: white; }
+        .filter-btn[data-category="netflix"] i { color: var(--netflix-red); }
+        .filter-btn[data-category="youtube"] i { color: var(--youtube-red); }
+        .filter-btn[data-category="spotify"] i { color: var(--spotify-green); }
+        .filter-btn[data-category="capcut"] i { color: var(--capcut-red); }
+        .filter-btn[data-category="canva"] i { color: var(--canva-cyan); }
+        .filter-btn[data-category="alight"] i { color: var(--alight-green); }
+        .filter-btn[data-category="viu"] i { color: var(--viu-yellow); }
+        .filter-btn[data-category="all"] i { background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .product-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 15px; margin-top: 0; }
+        @media (min-width:768px) { .product-grid { grid-template-columns: repeat(4,1fr); } }
+        .product-card { background: var(--bg-surface); border-radius: 20px; padding: 15px 15px 55px; border: 1px solid transparent; transition: 0.2s; position: relative; cursor: pointer; overflow: hidden; display: flex; flex-direction: column; }
+        .product-card:hover { transform: scale(1.02); border-color: var(--primary-blue); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+        .hot-effect::after { content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%; background: rgba(255,255,255,0.05); transform: rotate(30deg); animation: shine-loop 4s infinite; pointer-events: none; }
+        @keyframes shine-loop { 0% { left: -60%; } 20% { left: 140%; } 100% { left: 140%; } }
+        .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#58a6ff,#2563eb); color: white; font-size: 0.6rem; padding: 6px 10px; border-radius: 8px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 10; backdrop-filter: blur(5px); }
+        .stock-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border-top: 1px solid var(--border-subtle); padding: 10px 12px; border-radius: 0 0 20px 20px; }
+        .stock-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .stock-label { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .stock-number { font-weight: 800; font-size: 0.9rem; }
+        .stock-number.high { color: var(--stock-high); }
+        .stock-number.medium { color: var(--stock-medium); }
+        .stock-number.low { color: var(--stock-low); }
+        .stock-bar-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .stock-bar { height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 4px; }
+        .stock-bar.high { background: linear-gradient(90deg, var(--stock-high), #34d399); }
+        .stock-bar.medium { background: linear-gradient(90deg, var(--stock-medium), #fbbf24); }
+        .stock-bar.low { background: linear-gradient(90deg, var(--stock-low), #f87171); }
+        .p-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: transform 0.2s; background: var(--bg-main); }
+        .product-card:hover .p-img { transform: scale(1.05); }
+        .p-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .p-price { font-size: 1rem; font-weight: 800; color: var(--primary-blue); display: flex; justify-content: space-between; align-items: center; }
+        .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; flex-shrink: 0; }
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-surface); border-radius: 30px; border: 1px solid var(--border-subtle); margin-top: 20px; }
+        .empty-state i { font-size: 5rem; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 25px; }
+        .empty-state button { background: var(--gradient-logo); border: none; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .empty-state button i { color: white; }
+        /* MODAL PEMBAYARAN - DIPERBAIKI */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(10px); }
+        .modal.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--bg-main); width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1); border: 1px solid var(--border-subtle); max-height: 90vh; overflow-y: auto; }
+        @media(min-width:768px) { .modal { align-items: center; } .modal-content { border-radius: 30px; transform: scale(0.9); } }
+        .modal.active .modal-content { transform: translateY(0) scale(1); }
+        .qris-box { background: white; border-radius: 15px; padding: 12px; width: 180px; margin: 0 auto 20px; cursor: pointer; transition: transform 0.2s; }
+        .qris-img { width: 100%; border-radius: 5px; display: block; }
+        .checkout-details { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border-subtle); }
+        .detail-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+        .detail-row.total { border-top: 1px dashed var(--border-subtle); padding-top: 10px; margin-top: 10px; font-weight: 800; }
+        .pay-btn { width: 100%; background: var(--gradient-logo); color: white; padding: 18px; border: none; border-radius: 15px; font-weight: 800; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
+        .pay-btn:active { transform: scale(0.98); }
+        #toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--gradient-logo); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 800; z-index: 3000; display: none; pointer-events: none; white-space: nowrap; }
+        .back-to-top { position: fixed; bottom: 25px; right: 25px; width: 45px; height: 45px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity 0.2s, transform 0.2s; }
+        .back-to-top.visible { opacity: 1; transform: translateY(0); }
+        .footer { background: var(--bg-surface); border-radius: 20px 20px 0 0; padding: 25px; margin-top: 30px; text-align: center; border-top: 1px solid var(--border-subtle); }
+        .footer-logo { font-size: 1.5rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 15px; }
+        .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
 
-async function sendPhoto(chatId, photoUrl, caption = null, parseMode = null) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const payload = { chat_id: chatId, photo: photoUrl };
-  if (caption) payload.caption = caption;
-  if (parseMode) payload.parse_mode = parseMode;
-  await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-}
+        /* Popup produk baru horizontal */
+        .new-product-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(12px);
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .new-product-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .new-product-container {
+            width: 90%;
+            max-width: 1100px;
+            background: var(--bg-surface);
+            border-radius: 32px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            animation: modalPop 0.3s cubic-bezier(0.2,0.9,0.4,1.1);
+        }
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-header {
+            padding: 18px 24px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .modal-header i { font-size: 1.8rem; color: var(--primary-blue); }
+        .modal-header h2 { font-size: 1.3rem; font-weight: 700; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .product-scroll {
+            padding: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-blue) var(--bg-surface);
+        }
+        .product-scroll::-webkit-scrollbar { height: 6px; }
+        .product-scroll::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
+        .product-scroll::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
+        .horizontal-list { display: flex; gap: 20px; white-space: normal; }
+        .new-product-card {
+            flex: 0 0 240px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 24px;
+            padding: 16px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            backdrop-filter: blur(4px);
+        }
+        .new-product-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); background: rgba(255,255,255,0.07); }
+        .new-product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 20px; margin-bottom: 12px; background: var(--bg-main); }
+        .new-product-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; white-space: normal; line-height: 1.3; }
+        .new-product-price { color: var(--primary-blue); font-weight: 800; font-size: 1rem; }
+        .new-product-time { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border-subtle); padding-top: 8px; margin-top: 8px; }
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+        }
+        .btn-modal { padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.2s; }
+        .btn-modal:active { transform: scale(0.97); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--text-main); }
+        .btn-primary { background: var(--gradient-logo); color: white; }
+        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-right: auto; font-size: 0.8rem; color: var(--text-muted); }
+        .checkbox-container input { width: 16px; height: 16px; accent-color: var(--primary-blue); cursor: pointer; }
+        @media (max-width:768px) { .new-product-card { flex: 0 0 200px; } .new-product-img { width: 80px; height: 80px; margin: 0 auto 8px; } .new-product-title { font-size: 0.8rem; } .modal-header h2 { font-size: 1rem; } }
+    </style>
+</head>
+<body>
+<div class="back-to-top" id="backToTop" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></div>
+<div id="toast"></div>
 
-async function sendMessage(chatId, text, parseMode = null) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const payload = { chat_id: chatId, text };
-  if (parseMode) payload.parse_mode = parseMode;
-  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-}
+<header>
+    <div class="logo-wrapper"><img src="/gambar/logo2.png" alt="Logo" class="brand-logo" loading="eager"><div class="logo-text">LekszyStore</div></div>
+    <button class="menu-btn" id="menuBtn" onclick="toggleSidebar()"><i class="fas fa-grip"></i></button>
+</header>
 
-async function getOrCreateUser(userId, username) {
-  const client = await clientPromise;
-  const db = client.db('lekszystore');
-  let user = await db.collection('users').findOne({ userId });
-  if (!user) {
-    user = { userId, username: username || null, transaksiTotal: 0, saldo: 0, createdAt: new Date() };
-    await db.collection('users').insertOne(user);
-  } else if (username && user.username !== username) {
-    await db.collection('users').updateOne({ userId }, { $set: { username } });
-    user.username = username;
-  }
-  return user;
-}
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="logo-wrapper"><i class="fas fa-compass"></i><span class="logo-text" style="font-size:1.2rem;">Menu Utama</span></div><button class="close-sidebar" onclick="toggleSidebar()"><i class="fas fa-xmark"></i></button></div>
+    <div class="sidebar-menu-wrapper">
+        <details class="guide-details"><summary class="guide-summary">Panduan Order</summary><div class="guide-content">1. Pilih produk<br>2. Klik tombol keranjang.<br>3. Scan QRIS.<br>4. Klik Konfirmasi &amp; kirim bukti transfer Whatsapp.<br><b>Pesanan akan di proses oleh Admin kami!</b></div></details>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active"><i class="fas fa-house"></i> Beranda</a>
+            <a href="https://wa.me/6285810630431?text=Halo%20Admin%20,%20saya%20mengalami%20kendala%20dengan%20pesanan%20saya." class="nav-item" target="_blank"><i class="fas fa-headset"></i> Claim Garansi</a>
+            <a href="https://www.instagram.com/stories/highlights/18064938496620531/" class="nav-item" target="_blank"><i class="fas fa-star"></i> Testimoni</a>
+            <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" class="nav-item" target="_blank"><i class="fas fa-bullhorn"></i> Saluran</a>
+            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank"><i class="fas fa-lightbulb"></i> Tips &amp; Trik</a>
+        </nav>
+    </div>
+    <div class="sidebar-footer"><p class="social-title">Social Media</p><div class="social-row"><a href="https://www.instagram.com/lekszystore" class="social-icon ig" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://www.tiktok.com/@lekszystore" class="social-icon tk" target="_blank"><i class="fab fa-tiktok"></i></a><a href="https://wa.me/6285810630431" class="social-icon wa" target="_blank"><i class="fab fa-whatsapp"></i></a></div></div>
+</aside>
 
-async function getBotStats() {
-  const client = await clientPromise;
-  const db = client.db('lekszystore');
-  const totalUsers = await db.collection('users').countDocuments();
-  const statsDoc = await db.collection('stats').findOne({ key: 'total_sold' });
-  let totalTerjual = statsDoc ? statsDoc.value : 29483131;
-  return { totalUsers, totalTerjual };
-}
+<main class="container">
+    <div class="hero-slider"><img src="/gambar/banner.png" alt="Banner" loading="lazy"></div>
+    <div class="stats-container"><div class="stat-card"><i class="fas fa-shopping-bag"></i><div class="stat-number" id="countOrder">0</div><div class="stat-label">Terjual</div></div><div class="stat-card"><i class="fas fa-users"></i><div class="stat-number">200+</div><div class="stat-label">Pelanggan</div></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="stat-number">100%</div><div class="stat-label">Legal</div></div></div>
+    <div class="intro-box"><h2>Welcome to LekszyStore</h2><p>Solusi Premium tanpa Mahal - Dapatkan akses premium ke aplikasi favorit dengan harga terjangkau!</p></div>
+    <div class="search-container"><i class="fas fa-search search-icon"></i><input type="search" class="search-input" id="searchInput" placeholder="Cari aplikasi premium kamu..." onkeyup="searchProduct()"></div>
+    <div class="filter-container" id="filterContainer">
+        <button class="filter-btn active" data-category="all" onclick="filterProduct('all', this)"><i class="fas fa-layer-group"></i> Semua</button>
+        <button class="filter-btn" data-category="netflix" onclick="filterProduct('netflix', this)"><i class="fas fa-tv"></i> Netflix</button>
+        <button class="filter-btn" data-category="capcut" onclick="filterProduct('capcut', this)"><i class="fas fa-video"></i> Capcut</button>
+        <button class="filter-btn" data-category="youtube" onclick="filterProduct('youtube', this)"><i class="fab fa-youtube"></i> Youtube</button>
+        <button class="filter-btn" data-category="alight" onclick="filterProduct('alight', this)"><i class="fas fa-film"></i> Alight</button>
+        <button class="filter-btn" data-category="canva" onclick="filterProduct('canva', this)"><i class="fas fa-palette"></i> Canva</button>
+        <button class="filter-btn" data-category="spotify" onclick="filterProduct('spotify', this)"><i class="fab fa-spotify"></i> Spotify</button>
+        <button class="filter-btn" data-category="viu" onclick="filterProduct('viu', this)"><i class="fas fa-circle-play"></i> Viu</button>
+    </div>
+    <div id="productGrid" class="product-grid"></div>
+</main>
 
-export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  if (!token) return res.status(500).json({ error: 'Bot token missing' });
-  const ADMIN_ID = parseInt(process.env.ADMIN_ID) || 0;
-  const update = req.body;
+<footer class="footer"><div class="footer-logo">LekszyStore</div><div class="footer-text">Solusi terbaik untuk mendapatkan akun premium aplikasi favorit Anda dengan harga terjangkau.<br>Garansi 100% aktif, proses cepat, dan support 24/7.</div><div class="copyright">© 2026 LekszyStore. All rights reserved.</div></footer>
 
-  async function getSession(chatId) {
-    const client = await clientPromise;
-    const db = client.db('lekszystore');
-    return await db.collection('sessions').findOne({ chatId });
-  }
-  async function saveSession(chatId, step, tempData = {}) {
-    const client = await clientPromise;
-    const db = client.db('lekszystore');
-    await db.collection('sessions').updateOne(
-      { chatId },
-      { $set: { step, tempData, updatedAt: new Date() } },
-      { upsert: true }
-    );
-  }
-  async function deleteSession(chatId) {
-    const client = await clientPromise;
-    const db = client.db('lekszystore');
-    await db.collection('sessions').deleteOne({ chatId });
-  }
+<!-- MODAL PEMBAYARAN - DIPERBAIKI -->
+<div class="modal" id="payModal" onclick="closeModalOutside(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div style="text-align:center; margin-bottom:20px;"><h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3><h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1></div>
+        <div class="qris-box" onclick="copyQRIS()"><img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img" loading="lazy"></div>
+        <div class="checkout-details">
+            <div class="detail-row"><span>ID Trx:</span><span id="mTrxID" style="color:var(--primary-blue); font-weight:700">#LS-00000</span></div>
+            <div class="detail-row"><span>Metode:</span><span>QRIS / Transfer Bank</span></div>
+            <div class="detail-row"><span>Status:</span><span style="color:var(--warning)">Menunggu Pembayaran</span></div>
+            <div class="detail-row total"><span>Note:</span><span style="color:#25D366">Kirim bukti bayar ke Admin</span></div>
+        </div>
+        <button class="pay-btn" onclick="confirmWA()">Konfirmasi WhatsApp</button>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer;">Kembali</button>
+    </div>
+</div>
 
-  if (update.message && update.message.text) {
-    const chatId = update.message.chat.id;
-    const text = update.message.text.trim();
-    const userId = update.message.from.id;
-    const username = update.message.from.username;
-    const isAdmin = (chatId === ADMIN_ID);
-    const user = await getOrCreateUser(userId, username);
-    const stats = await getBotStats();
+<!-- Popup produk baru -->
+<div id="newProductModal" class="new-product-modal">
+    <div class="new-product-container">
+        <div class="modal-header"><i class="fas fa-gift"></i><h2>✨ Produk Baru Ditambahkan!</h2></div>
+        <div class="product-scroll"><div id="newProductList" class="horizontal-list"></div></div>
+        <div class="modal-footer"><label class="checkbox-container"><input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi</label><button id="closeModalBtn" class="btn-modal btn-secondary">Tutup</button><button id="viewAllBtn" class="btn-modal btn-primary">Lihat Semua</button></div>
+    </div>
+</div>
 
-    if (text === '/cancel') {
-      await deleteSession(chatId);
-      await sendMessage(chatId, '❌ Operasi dibatalkan.');
-      return res.status(200).json({ ok: true });
+<script>
+    let allProducts = [];
+    let selectedProduct = null;
+    let seenProductIds = new Set();
+    let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
+    let isPopupShowing = false; // Cegah double popup
+    let pollingActive = true;
+
+    // Load seen IDs
+    try {
+        const stored = localStorage.getItem('seenProductIds');
+        if (stored) seenProductIds = new Set(JSON.parse(stored));
+    } catch(e) {}
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.style.display = 'block';
+        setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
 
-    if (text === '/start') {
-      await deleteSession(chatId);
-      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
-      if (isAdmin) {
-        const ownerCaption = `📋 *MENU OWNER* 📋\n🌎 https://lekszystore.my.id\n\n👤 Name: @${username || 'Admin'}\n📃 ID: \`${chatId}\`\n👑 Role: Owner\n\n*🔗 Perintah tersedia:*\n/add - Tambah produk\n/edit - Edit produk\n/delete - Hapus produk\n/list - Lihat semua produk\n\nKetik perintah di atas untuk mengelola toko.`;
-        await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
-      } else {
-        const date = new Date().toLocaleString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
-        const userCaption = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: \`${userId}\`\nUsername: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*🔗 Perintah:*\n/start - Menu utama\n/stok - Lihat stok produk\n/saldo - Cek saldo\n\nSelamat berbelanja!`;
-        await sendPhoto(chatId, bannerUrl, userCaption, 'Markdown');
-      }
-      return res.status(200).json({ ok: true });
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
-    if (text === '/stok') {
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const products = await db.collection('products').find({}).toArray();
-        if (!products.length) return await sendMessage(chatId, 'Belum ada produk.');
-        let msg = '*Stok Produk Tersedia:*\n\n';
-        products.forEach(p => msg += `• *${p.name}*: ${p.stock} tersisa\n`);
-        await sendMessage(chatId, msg, 'Markdown');
-      } catch { await sendMessage(chatId, 'Error mengambil stok.'); }
-      return res.status(200).json({ ok: true });
+    function getStockClass(stock) {
+        if (stock <= 0) return 'low';
+        if (stock < 10) return 'low';
+        if (stock < 30) return 'medium';
+        return 'high';
     }
 
-    if (text === '/saldo') {
-      await sendMessage(chatId, `💰 Saldo Anda: Rp ${user.saldo.toLocaleString()}`);
-      return res.status(200).json({ ok: true });
+    function getStockWidth(stock) {
+        if (stock <= 0) return 0;
+        if (stock < 5) return 10;
+        if (stock < 10) return 20;
+        if (stock < 20) return 35;
+        if (stock < 50) return 55;
+        if (stock < 100) return 75;
+        return 100;
     }
 
-    if (!isAdmin) {
-      await sendMessage(chatId, '❌ Perintah ini hanya untuk owner.');
-      return res.status(200).json({ ok: true });
-    }
-
-    if (text === '/list') {
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const products = await db.collection('products').find({}).toArray();
-        if (!products.length) return await sendMessage(chatId, '📦 Belum ada produk. Gunakan /add');
-        let msg = '📋 *Daftar Produk:*\n\n';
-        products.forEach(p => {
-          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ ${p.category}\n`;
-          if (p.createdAt) msg += `📅 ${new Date(p.createdAt).toLocaleString('id-ID')}\n`;
-          msg += '\n';
+    function renderProducts(products) {
+        const grid = document.getElementById('productGrid');
+        if (!products.length) {
+            grid.innerHTML = '<div class="empty-state"><i class="fas fa-box-open"></i><h3>Oops, belum ada produk</h3><p>Sepertinya toko masih kosong. Coba lagi nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>';
+            return;
+        }
+        const fragment = document.createDocumentFragment();
+        products.forEach((p, idx) => {
+            const stockClass = getStockClass(p.stock);
+            const stockWidth = getStockWidth(p.stock);
+            const card = document.createElement('div');
+            card.className = `product-card ${p.hot ? 'hot-effect' : ''}`;
+            card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
+            card.innerHTML = `
+                ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
+                <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
+                <div class="p-title">${escapeHtml(p.name)}</div>
+                <div class="p-price">Rp ${p.price.toLocaleString()} <div class="btn-buy-mini" data-id="${p.id}"><i class="fas fa-cart-plus"></i></div></div>
+                <div class="stock-info">
+                    <div class="stock-header"><div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div><div class="stock-number ${stockClass}">${p.stock} <span style="font-size:0.7rem; font-weight:normal;">tersisa</span></div></div>
+                    <div class="stock-bar-container"><div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div></div>
+                </div>
+            `;
+            fragment.appendChild(card);
         });
-        await sendMessage(chatId, msg, 'Markdown');
-      } catch (err) { await sendMessage(chatId, `❌ Error DB: ${err.message}`); }
-      return res.status(200).json({ ok: true });
+        grid.innerHTML = '';
+        grid.appendChild(fragment);
+        document.querySelectorAll('.btn-buy-mini').forEach(btn => {
+            btn.removeEventListener('click', buyClickHandler);
+            btn.addEventListener('click', buyClickHandler);
+        });
     }
 
-    if (text === '/add') {
-      await deleteSession(chatId);
-      await saveSession(chatId, 'add_name', {});
-      await sendMessage(chatId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.', 'Markdown');
-      return res.status(200).json({ ok: true });
+    function buyClickHandler(e) {
+        e.stopPropagation();
+        const id = parseInt(e.currentTarget.dataset.id);
+        const product = allProducts.find(p => p.id === id);
+        if (product) openModal(product);
     }
 
-    if (text === '/edit') {
-      await deleteSession(chatId);
-      await sendMessage(chatId, '✏️ *Edit Produk*\nKirimkan *ID produk* yang akan diedit.\nCek ID dengan /list', 'Markdown');
-      await saveSession(chatId, 'edit_wait_id', {});
-      return res.status(200).json({ ok: true });
-    }
-
-    if (text === '/delete') {
-      await deleteSession(chatId);
-      await sendMessage(chatId, '🗑️ *Hapus Produk*\nKirimkan *ID produk* yang akan dihapus.\nCek ID dengan /list', 'Markdown');
-      await saveSession(chatId, 'delete_wait_id', {});
-      return res.status(200).json({ ok: true });
-    }
-
-    // Handle active session (add, edit, delete)
-    const session = await getSession(chatId);
-    if (session) {
-      const step = session.step;
-      let temp = session.tempData || {};
-
-      if (step === 'add_name') {
-        temp.name = text;
-        await saveSession(chatId, 'add_price', temp);
-        await sendMessage(chatId, '💰 Kirimkan *harga* (angka)', 'Markdown');
-      } else if (step === 'add_price') {
-        const price = parseInt(text);
-        if (isNaN(price)) { await sendMessage(chatId, '❌ Harga tidak valid.'); return res.status(200).json({ ok: true }); }
-        temp.price = price;
-        await saveSession(chatId, 'add_category', temp);
-        await sendMessage(chatId, '🏷️ Kirimkan *kategori* (netflix, capcut, youtube, alight, canva, spotify, viu)', 'Markdown');
-      } else if (step === 'add_category') {
-        temp.category = text.toLowerCase();
-        await saveSession(chatId, 'add_stock', temp);
-        await sendMessage(chatId, '📦 Kirimkan *stok* (angka)', 'Markdown');
-      } else if (step === 'add_stock') {
-        const stock = parseInt(text);
-        if (isNaN(stock)) { await sendMessage(chatId, '❌ Stok tidak valid.'); return res.status(200).json({ ok: true }); }
-        temp.stock = stock;
-        await saveSession(chatId, 'add_duration', temp);
-        await sendMessage(chatId, '⏱️ Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)', 'Markdown');
-      } else if (step === 'add_duration') {
-        temp.duration = text;
-        await saveSession(chatId, 'add_hot', temp);
-        await sendMessage(chatId, '🔥 Apakah produk *hot*? (kirim 1 untuk ya, 0 untuk tidak)', 'Markdown');
-      } else if (step === 'add_hot') {
-        temp.hot = (text === '1');
-        await saveSession(chatId, 'add_image', temp);
-        await sendMessage(chatId, '🖼️ Kirimkan *URL gambar* (contoh: /gambar/netflix.png) atau kirim "default"', 'Markdown');
-      } else if (step === 'add_image') {
-        let image = (text === 'default' || !text) ? '/gambar/placeholder.png' : text;
-        temp.image = image;
+    async function loadProducts() {
         try {
-          const client = await clientPromise;
-          const db = client.db('lekszystore');
-          const collection = db.collection('products');
-          const existing = await collection.find({}).toArray();
-          const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
-          const newProduct = {
-            id: newId,
-            name: temp.name,
-            price: temp.price,
-            category: temp.category,
-            stock: temp.stock,
-            duration: temp.duration,
-            hot: temp.hot,
-            image: temp.image,
-            createdAt: new Date()
-          };
-          await collection.insertOne(newProduct);
-          await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${temp.name}\nHarga: Rp${temp.price.toLocaleString()}\nStok: ${temp.stock}\n📅 ${new Date().toLocaleString('id-ID')}`, 'Markdown');
-        } catch (err) { await sendMessage(chatId, `❌ Gagal menyimpan: ${err.message}`); }
-        finally { await deleteSession(chatId); }
-        return res.status(200).json({ ok: true });
-      }
-      // Edit & Delete flows (sederhana)
-      else if (step === 'edit_wait_id') {
-        const id = parseInt(text);
-        if (isNaN(id)) { await sendMessage(chatId, '❌ ID tidak valid.'); return res.status(200).json({ ok: true }); }
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const product = await db.collection('products').findOne({ id });
-        if (!product) { await sendMessage(chatId, 'Produk tidak ditemukan.'); await deleteSession(chatId); return res.status(200).json({ ok: true }); }
-        await saveSession(chatId, 'edit_field', { editId: id, product });
-        await sendMessage(chatId, `Produk: *${product.name}*\nField apa yang ingin diubah? (name, price, stock, category, duration, hot, image)`, 'Markdown');
-      } else if (step === 'edit_field') {
-        const allowed = ['name','price','stock','category','duration','hot','image'];
-        if (!allowed.includes(text)) { await sendMessage(chatId, 'Field tidak valid.'); return res.status(200).json({ ok: true }); }
-        temp.field = text;
-        await saveSession(chatId, 'edit_value', temp);
-        let prompt = (text === 'hot') ? 'Kirim 1 untuk ya, 0 untuk tidak' : (text === 'price'||text==='stock') ? 'Kirimkan angka' : `Kirimkan nilai baru untuk ${text}`;
-        await sendMessage(chatId, prompt);
-      } else if (step === 'edit_value') {
-        const field = temp.field;
-        const editId = temp.editId;
-        let newValue = text;
-        if (field === 'price' || field === 'stock') { const num = parseInt(newValue); if (isNaN(num)) { await sendMessage(chatId, 'Harus angka.'); return; } newValue = num; }
-        if (field === 'hot') { if (newValue !== '0' && newValue !== '1') { await sendMessage(chatId, 'Kirim 1 atau 0'); return; } newValue = (newValue === '1'); }
-        if (field === 'image' && newValue === 'default') newValue = '/gambar/placeholder.png';
-        try {
-          const client = await clientPromise;
-          const db = client.db('lekszystore');
-          await db.collection('products').updateOne({ id: editId }, { $set: { [field]: newValue } });
-          await sendMessage(chatId, `✅ Update berhasil: ${field} = ${newValue}`);
-        } catch (err) { await sendMessage(chatId, `Error: ${err.message}`); }
-        finally { await deleteSession(chatId); }
-      } else if (step === 'delete_wait_id') {
-        const id = parseInt(text);
-        if (isNaN(id)) { await sendMessage(chatId, 'ID tidak valid.'); return res.status(200).json({ ok: true }); }
-        try {
-          const client = await clientPromise;
-          const db = client.db('lekszystore');
-          const result = await db.collection('products').deleteOne({ id });
-          if (result.deletedCount) await sendMessage(chatId, `✅ Produk ID ${id} dihapus.`);
-          else await sendMessage(chatId, 'Produk tidak ditemukan.');
-        } catch (err) { await sendMessage(chatId, `Error: ${err.message}`); }
-        finally { await deleteSession(chatId); }
-      }
-      return res.status(200).json({ ok: true });
+            const res = await fetch('/api/products?_=' + Date.now());
+            if (!res.ok) throw new Error();
+            allProducts = await res.json();
+            allProducts.sort((a, b) => a.id - b.id);
+            renderProducts(allProducts);
+            document.getElementById('countOrder').innerText = allProducts.length + '+';
+        } catch (e) {
+            showToast('Gagal memuat produk. Refresh halaman.');
+        }
     }
 
-    await sendMessage(chatId, 'Gunakan /start untuk menu utama.');
-    return res.status(200).json({ ok: true });
-  }
+    window.filterProduct = function(category, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        let filtered = category === 'all' ? [...allProducts] : allProducts.filter(p => p.category === category);
+        const search = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
+        renderProducts(filtered);
+    };
 
-  res.status(200).json({ ok: true });
-}
+    window.searchProduct = function() {
+        const activeBtn = document.querySelector('.filter-btn.active');
+        const category = activeBtn ? activeBtn.dataset.category : 'all';
+        let filtered = category === 'all' ? [...allProducts] : allProducts.filter(p => p.category === category);
+        const search = document.getElementById('searchInput').value.trim().toLowerCase();
+        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
+        renderProducts(filtered);
+    };
+
+    function openModal(product) {
+        selectedProduct = product;
+        document.getElementById('mTitle').innerText = product.name;
+        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
+        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        document.getElementById('mTrxID').innerText = trx;
+        document.getElementById('payModal').classList.add('active');
+    }
+
+    window.closeModal = function() {
+        document.getElementById('payModal').classList.remove('active');
+        selectedProduct = null;
+    };
+    window.closeModalOutside = function(e) {
+        if (e.target === document.getElementById('payModal')) closeModal();
+    };
+    window.copyQRIS = function() {
+        showToast('Screenshot QRIS dan bayar via bank/ewallet.');
+    };
+    window.confirmWA = function() {
+        if (!selectedProduct) return;
+        const trx = document.getElementById('mTrxID').innerText;
+        const msg = `Halo Admin, saya ingin membeli produk berikut:\n*Nama:* ${selectedProduct.name}\n*Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*ID Transaksi:* ${trx}\nMohon diproses. Terima kasih.`;
+        window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
+        closeModal();
+    };
+
+    window.toggleSidebar = function() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
+    };
+    window.scrollToTop = function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('backToTop');
+        if (window.scrollY > 300) btn.classList.add('visible');
+        else btn.classList.remove('visible');
+    });
+
+    // ========== CEK PRODUK BARU ==========
+    async function checkNewProducts() {
+        if (dontShowPopup) return;
+        if (isPopupShowing) return; // Cegah double popup
+        try {
+            const res = await fetch('/api/products?_=' + Date.now());
+            const products = await res.json();
+            if (!products.length) return;
+            const newProducts = products.filter(p => !seenProductIds.has(p.id));
+            if (newProducts.length > 0) {
+                newProducts.forEach(p => seenProductIds.add(p.id));
+                localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+                showPopup(newProducts);
+            }
+        } catch (e) { console.error('Popup error:', e); }
+    }
+
+    function showPopup(products) {
+        if (isPopupShowing) return;
+        isPopupShowing = true;
+        const modal = document.getElementById('newProductModal');
+        const listContainer = document.getElementById('newProductList');
+        listContainer.innerHTML = '';
+        products.forEach(p => {
+            let timeText = 'Baru ditambahkan';
+            if (p.createdAt) {
+                const date = new Date(p.createdAt);
+                if (!isNaN(date.getTime())) {
+                    timeText = date.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                }
+            }
+            const card = document.createElement('div');
+            card.className = 'new-product-card';
+            card.innerHTML = `
+                <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
+                <div class="new-product-title">${escapeHtml(p.name)}</div>
+                <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
+                <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
+            `;
+            listContainer.appendChild(card);
+        });
+        const checkbox = document.getElementById('dontShowAgainCheckbox');
+        checkbox.checked = false;
+        modal.classList.add('active');
+        const closeModalFn = () => {
+            modal.classList.remove('active');
+            isPopupShowing = false;
+            if (checkbox.checked) {
+                localStorage.setItem('dontShowNewProductPopup', 'true');
+                dontShowPopup = true;
+            }
+        };
+        document.getElementById('closeModalBtn').onclick = closeModalFn;
+        document.getElementById('viewAllBtn').onclick = () => {
+            closeModalFn();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        // Jika modal ditutup dengan klik overlay (tidak ada di desain, tapi amankan)
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModalFn();
+        };
+    }
+
+    // ========== POLLING UNTUK TOAST NOTIFIKASI (TIDAK MEMUNCULKAN POPUP LAGI) ==========
+    let prevIds = [];
+    setInterval(async () => {
+        if (!pollingActive) return;
+        try {
+            const res = await fetch('/api/products?_=' + Date.now());
+            const products = await res.json();
+            const currIds = products.map(p => p.id);
+            const newProducts = products.filter(p => !prevIds.includes(p.id));
+            if (newProducts.length) {
+                // Tampilkan toast notifikasi (tidak popup)
+                newProducts.forEach(p => {
+                    const toastDiv = document.createElement('div');
+                    toastDiv.style.cssText = 'position:fixed; bottom:80px; right:20px; background:var(--bg-surface); border-left:4px solid var(--primary-blue); border-radius:12px; padding:12px 16px; color:var(--text-main); font-size:0.85rem; z-index:1500; box-shadow:0 8px 20px rgba(0,0,0,0.4); backdrop-filter:blur(10px); animation:slideInRight 0.3s ease; max-width:280px; display:flex; align-items:center; gap:10px;';
+                    toastDiv.innerHTML = `<i class="fas fa-gift" style="font-size:1.5rem; color:var(--primary-blue);"></i><div style="flex:1"><strong style="color:var(--primary-blue);">✨ Produk Baru!</strong><br>${escapeHtml(p.name)}<br><small>Rp ${p.price.toLocaleString()} | Stok: ${p.stock}</small></div><button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">✕</button>`;
+                    document.body.appendChild(toastDiv);
+                    setTimeout(() => toastDiv.remove(), 8000);
+                });
+                // Refresh data produk di halaman (tanpa popup)
+                allProducts = products;
+                renderProducts(allProducts);
+                // Update seenProductIds juga agar tidak muncul popup nanti
+                newProducts.forEach(p => {
+                    if (!seenProductIds.has(p.id)) {
+                        seenProductIds.add(p.id);
+                        localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+                    }
+                });
+            }
+            prevIds = currIds;
+        } catch (e) {}
+    }, 30000);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadProducts();
+        setTimeout(() => checkNewProducts(), 1500);
+    });
+</script>
+</body>
+</html>
