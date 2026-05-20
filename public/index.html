@@ -144,8 +144,60 @@
         .footer { background: var(--bg-surface); border-radius: 20px 20px 0 0; padding: 25px; margin-top: 30px; text-align: center; border-top: 1px solid var(--border-subtle); }
         .footer-logo { font-size: 1.5rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 15px; }
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
+
+        /* Popup produk baru horizontal */
+        .new-product-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(12px);
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .new-product-modal.active { visibility: visible; opacity: 1; }
+        .new-product-container {
+            width: 90%;
+            max-width: 1100px;
+            background: var(--bg-surface);
+            border-radius: 32px;
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            animation: modalPop 0.3s cubic-bezier(0.2,0.9,0.4,1.1);
+        }
+        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { padding: 18px 24px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px; }
+        .modal-header i { font-size: 1.8rem; color: var(--primary-blue); }
+        .modal-header h2 { font-size: 1.3rem; font-weight: 700; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .product-scroll { padding: 20px; overflow-x: auto; white-space: nowrap; scrollbar-width: thin; scrollbar-color: var(--primary-blue) var(--bg-surface); }
+        .product-scroll::-webkit-scrollbar { height: 6px; }
+        .product-scroll::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
+        .product-scroll::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
+        .horizontal-list { display: flex; gap: 20px; white-space: normal; }
+        .new-product-card { flex: 0 0 240px; background: rgba(255,255,255,0.04); border-radius: 24px; padding: 16px; transition: all 0.2s; border: 1px solid transparent; backdrop-filter: blur(4px); }
+        .new-product-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); background: rgba(255,255,255,0.07); }
+        .new-product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 20px; margin-bottom: 12px; background: var(--bg-main); }
+        .new-product-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; white-space: normal; line-height: 1.3; }
+        .new-product-price { color: var(--primary-blue); font-weight: 800; font-size: 1rem; }
+        .new-product-time { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border-subtle); padding-top: 8px; margin-top: 8px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2); }
+        .btn-modal { padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.2s; }
+        .btn-modal:active { transform: scale(0.97); }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--text-main); }
+        .btn-primary { background: var(--gradient-logo); color: white; }
+        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-right: auto; font-size: 0.8rem; color: var(--text-muted); }
+        .checkbox-container input { width: 16px; height: 16px; accent-color: var(--primary-blue); cursor: pointer; }
+        @media (max-width:768px) { .new-product-card { flex: 0 0 200px; } .new-product-img { width: 80px; height: 80px; margin: 0 auto 8px; } .new-product-title { font-size: 0.8rem; } .modal-header h2 { font-size: 1rem; } }
     </style>
 </head>
 <body>
@@ -209,9 +261,26 @@
     </div>
 </div>
 
+<!-- Popup produk baru (modal horizontal) -->
+<div id="newProductModal" class="new-product-modal">
+    <div class="new-product-container">
+        <div class="modal-header"><i class="fas fa-gift"></i><h2>✨ Produk Baru Ditambahkan!</h2></div>
+        <div class="product-scroll"><div id="newProductList" class="horizontal-list"></div></div>
+        <div class="modal-footer"><label class="checkbox-container"><input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi</label><button id="closeModalBtn" class="btn-modal btn-secondary">Tutup</button><button id="viewAllBtn" class="btn-modal btn-primary">Lihat Semua</button></div>
+    </div>
+</div>
+
 <script>
     let allProducts = [];
     let selectedProduct = null;
+    let seenProductIds = new Set();
+    let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
+    let isPopupShowing = false;
+
+    try {
+        const stored = localStorage.getItem('seenProductIds');
+        if (stored) seenProductIds = new Set(JSON.parse(stored));
+    } catch(e) {}
 
     function showToast(msg) {
         const t = document.getElementById('toast');
@@ -369,13 +438,84 @@
         else btn.classList.remove('visible');
     });
 
-    // Auto refresh setiap 60 detik (opsional, agar produk baru muncul tanpa popup)
-    setInterval(() => {
-        loadProducts();
-    }, 60000);
+    // ========== CEK PRODUK BARU (HANYA POPUP MODAL, TANPA TOAST) ==========
+    async function checkNewProducts() {
+        if (dontShowPopup || isPopupShowing) return;
+        try {
+            const res = await fetch('/api/products?_=' + Date.now());
+            const products = await res.json();
+            if (!products.length) return;
+            const newProducts = products.filter(p => !seenProductIds.has(p.id));
+            if (newProducts.length > 0) {
+                newProducts.forEach(p => seenProductIds.add(p.id));
+                localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+                showPopup(newProducts);
+            }
+        } catch(e) { console.error('Popup error:', e); }
+    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadProducts();
+    function showPopup(products) {
+        if (isPopupShowing) return;
+        isPopupShowing = true;
+        const modal = document.getElementById('newProductModal');
+        const listContainer = document.getElementById('newProductList');
+        listContainer.innerHTML = '';
+        products.forEach(p => {
+            let timeText = 'Baru ditambahkan';
+            if (p.createdAt) {
+                const date = new Date(p.createdAt);
+                if (!isNaN(date.getTime())) {
+                    timeText = date.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                }
+            }
+            const card = document.createElement('div');
+            card.className = 'new-product-card';
+            card.innerHTML = `
+                <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
+                <div class="new-product-title">${escapeHtml(p.name)}</div>
+                <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
+                <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
+            `;
+            listContainer.appendChild(card);
+        });
+        const checkbox = document.getElementById('dontShowAgainCheckbox');
+        checkbox.checked = false;
+        modal.classList.add('active');
+        const closeModalFn = () => {
+            modal.classList.remove('active');
+            isPopupShowing = false;
+            if (checkbox.checked) {
+                localStorage.setItem('dontShowNewProductPopup', 'true');
+                dontShowPopup = true;
+            }
+        };
+        document.getElementById('closeModalBtn').onclick = closeModalFn;
+        document.getElementById('viewAllBtn').onclick = () => {
+            closeModalFn();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
+    }
+
+    // Refresh data dan cek produk baru setiap 30 detik (tanpa toast)
+    let lastRefresh = 0;
+    setInterval(async () => {
+        try {
+            const res = await fetch('/api/products?_=' + Date.now());
+            const products = await res.json();
+            // Update data produk di memori jika ada perubahan
+            if (JSON.stringify(allProducts.map(p => p.id).sort()) !== JSON.stringify(products.map(p => p.id).sort())) {
+                allProducts = products;
+                renderProducts(allProducts);
+                // Cek popup hanya jika ada produk baru (tidak via toast)
+                await checkNewProducts();
+            }
+        } catch(e) {}
+    }, 30000);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadProducts();
+        setTimeout(() => checkNewProducts(), 1500);
     });
 </script>
 </body>
