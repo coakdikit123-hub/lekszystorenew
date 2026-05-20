@@ -104,7 +104,7 @@ export default async function handler(req, res) {
 /list 📋 Lihat semua produk
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
-━━━━━━━━━━━━━━━━━━━━━*`;
+━━━━━━━━━━━━━━━━━━━━━`;
       await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
       return res.status(200).json({ ok: true });
     }
