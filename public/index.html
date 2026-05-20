@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -32,7 +31,7 @@
         .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
-        /* Sidebar (sederhana) */
+        /* Sidebar (disederhanakan tapi tetap fungsional) */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: 0.3s; backdrop-filter: blur(5px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
@@ -101,8 +100,10 @@
         .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; flex-shrink: 0; }
         .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; background: var(--bg-surface); border-radius: 30px; border: 1px solid var(--border-subtle); margin-top: 20px; }
         .empty-state i { font-size: 5rem; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; }
+        .empty-state h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .empty-state p { color: var(--text-muted); margin-bottom: 25px; }
         .empty-state button { background: var(--gradient-logo); border: none; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
-        /* MODAL PEMBAYARAN */
+        /* Modal pembayaran */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s; backdrop-filter: blur(10px); }
         .modal.active { display: flex; opacity: 1; }
         .modal-content { background: var(--bg-main); width: 100%; max-width: 500px; margin: 0 auto; border-radius: 30px 30px 0 0; padding: 30px 25px; transform: translateY(100%); transition: transform 0.3s; border: 1px solid var(--border-subtle); max-height: 90vh; overflow-y: auto; }
@@ -122,7 +123,7 @@
         .footer-logo { font-size: 1.5rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; margin-bottom: 15px; }
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        /* Popup produk baru (horizontal) */
+        /* Popup produk baru */
         .new-product-modal { position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); backdrop-filter:blur(12px); z-index:2001; display:flex; align-items:center; justify-content:center; visibility:hidden; opacity:0; transition:0.3s; }
         .new-product-modal.active { visibility:visible; opacity:1; }
         .new-product-container { width:90%; max-width:1100px; background:var(--bg-surface); border-radius:32px; border:1px solid var(--border-subtle); overflow:hidden; animation:modalPop 0.3s; }
@@ -154,7 +155,20 @@
     <button class="menu-btn" id="menuBtn"><i class="fas fa-grip"></i></button>
 </header>
 <div class="sidebar-overlay" id="overlay"></div>
-<aside class="sidebar" id="sidebar"> ... (isi sidebar sama seperti sebelumnya) ... </aside>
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header"><div class="logo-wrapper"><i class="fas fa-compass"></i><span class="logo-text" style="font-size:1.2rem;">Menu</span></div><button class="close-sidebar"><i class="fas fa-xmark"></i></button></div>
+    <div class="sidebar-menu-wrapper">
+        <details class="guide-details"><summary class="guide-summary">Panduan Order</summary><div class="guide-content">1. Pilih produk<br>2. Klik tombol keranjang.<br>3. Scan QRIS.<br>4. Konfirmasi &amp; kirim bukti ke WA.<br><b>Pesanan diproses admin!</b></div></details>
+        <nav class="nav-links">
+            <a href="#" class="nav-item active"><i class="fas fa-house"></i> Beranda</a>
+            <a href="https://wa.me/6285810630431?text=Halo%20Admin" class="nav-item" target="_blank"><i class="fas fa-headset"></i> Claim Garansi</a>
+            <a href="https://www.instagram.com/stories/highlights/18064938496620531/" class="nav-item" target="_blank"><i class="fas fa-star"></i> Testimoni</a>
+            <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" class="nav-item" target="_blank"><i class="fas fa-bullhorn"></i> Saluran</a>
+            <a href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" class="nav-item" target="_blank"><i class="fas fa-lightbulb"></i> Tips &amp; Trik</a>
+        </nav>
+    </div>
+    <div class="sidebar-footer"><p class="social-title">Social Media</p><div class="social-row"><a href="https://www.instagram.com/lekszystore" class="social-icon ig"><i class="fab fa-instagram"></i></a><a href="https://www.tiktok.com/@lekszystore" class="social-icon tk"><i class="fab fa-tiktok"></i></a><a href="https://wa.me/6285810630431" class="social-icon wa"><i class="fab fa-whatsapp"></i></a></div></div>
+</aside>
 <main class="container">
     <div class="hero-slider"><img src="/gambar/banner.png" alt="Banner"></div>
     <div class="stats-container"><div class="stat-card"><i class="fas fa-shopping-bag"></i><div class="stat-number" id="countOrder">0</div><div class="stat-label">Terjual</div></div><div class="stat-card"><i class="fas fa-users"></i><div class="stat-number">200+</div><div class="stat-label">Pelanggan</div></div><div class="stat-card"><i class="fas fa-check-circle"></i><div class="stat-number">100%</div><div class="stat-label">Legal</div></div></div>
@@ -174,7 +188,7 @@
 </main>
 <footer class="footer"><div class="footer-logo">LekszyStore</div><div class="footer-text">Garansi 100% aktif, proses cepat, support 24/7.</div><div class="copyright">© 2026 LekszyStore</div></footer>
 
-<!-- MODAL PEMBAYARAN (DIPERBAIKI) -->
+<!-- Modal Pembayaran -->
 <div class="modal" id="payModal" onclick="closeModalOutside(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div style="text-align: center; margin-bottom: 20px;">
@@ -205,22 +219,181 @@
 </div>
 
 <script>
-    // Sama seperti script sebelumnya yang sudah berfungsi (tidak perlu diubah)
     let allProducts = [];
     let selectedProduct = null;
-    // ... (semua fungsi JS dari kode sebelumnya yang sudah berjalan baik)
-    // Pastikan fungsi-fungsi seperti showToast, escapeHtml, renderProducts, loadProducts, filterProduct, searchProduct, openModal, closeModal, confirmWA, toggleSidebar, scrollToTop, checkNewProducts, dll sudah ada.
-    // Di sini saya sertakan minimal agar modal bekerja:
+    let seenProductIds = new Set();
+    let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
+
+    try {
+        const stored = localStorage.getItem('seenProductIds');
+        if (stored) seenProductIds = new Set(JSON.parse(stored));
+    } catch(e) {}
+
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m==='&'?'&amp;':m==='<'?'&lt;':'&gt;'); }
     function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
     function copyQRIS() { showToast('Screenshot QRIS dan bayar via bank/ewallet.'); }
-    function confirmWA() { if(selectedProduct){ const trx=document.getElementById('mTrxID').innerText; const msg=`Halo Admin, saya ingin beli:\n${selectedProduct.name}\nHarga: Rp ${selectedProduct.price.toLocaleString()}\nID Trx: ${trx}`; window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`,'_blank'); closeModal(); } }
-    function closeModal() { document.getElementById('payModal').classList.remove('active'); }
+    function getStockClass(stock) { if(stock<=0) return 'low'; if(stock<10) return 'low'; if(stock<30) return 'medium'; return 'high'; }
+    function getStockWidth(stock) { if(stock<=0) return 0; if(stock<5) return 10; if(stock<10) return 20; if(stock<20) return 35; if(stock<50) return 55; if(stock<100) return 75; return 100; }
+
+    function renderProducts(products) {
+        const grid = document.getElementById('productGrid');
+        if(!products.length) { grid.innerHTML='<div class="empty-state"><i class="fas fa-box-open"></i><h3>Oops, belum ada produk</h3><p>Toko masih kosong. Hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>'; return; }
+        const fragment = document.createDocumentFragment();
+        products.forEach((p,idx)=>{
+            const stockClass = getStockClass(p.stock);
+            const stockWidth = getStockWidth(p.stock);
+            const card = document.createElement('div');
+            card.className = `product-card ${p.hot ? 'hot-effect' : ''}`;
+            card.style.animation = `fadeIn 0.2s ease ${idx*0.03}s both`;
+            card.innerHTML = `
+                ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
+                <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" onerror="this.src='/gambar/placeholder.png'">
+                <div class="p-title">${escapeHtml(p.name)}</div>
+                <div class="p-price">Rp ${p.price.toLocaleString()} <div class="btn-buy-mini" data-id="${p.id}"><i class="fas fa-cart-plus"></i></div></div>
+                <div class="stock-info">
+                    <div class="stock-header"><div class="stock-label"><i class="fas fa-boxes"></i> Stok</div><div class="stock-number ${stockClass}">${p.stock} tersisa</div></div>
+                    <div class="stock-bar-container"><div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div></div>
+                </div>
+            `;
+            fragment.appendChild(card);
+        });
+        grid.innerHTML = '';
+        grid.appendChild(fragment);
+        document.querySelectorAll('.btn-buy-mini').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); const id = parseInt(btn.dataset.id); const prod = allProducts.find(p=>p.id===id); if(prod) openModal(prod); }));
+    }
+
+    async function loadProducts() {
+        try {
+            const res = await fetch('/api/products?_='+Date.now());
+            if(!res.ok) throw new Error();
+            allProducts = await res.json();
+            allProducts.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+            renderProducts(allProducts);
+            document.getElementById('countOrder').innerText = allProducts.length+'+';
+        } catch(e) { showToast('Gagal memuat produk.'); }
+    }
+
+    window.filterProduct = function(category, btn) {
+        document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        let filtered = category==='all' ? [...allProducts] : allProducts.filter(p=>p.category===category);
+        const search = document.getElementById('searchInput').value.trim().toLowerCase();
+        if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
+        renderProducts(filtered);
+    };
+    window.searchProduct = function() {
+        const activeBtn = document.querySelector('.filter-btn.active');
+        const category = activeBtn ? activeBtn.dataset.category : 'all';
+        let filtered = category==='all' ? [...allProducts] : allProducts.filter(p=>p.category===category);
+        const search = document.getElementById('searchInput').value.trim().toLowerCase();
+        if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
+        renderProducts(filtered);
+    };
+    function openModal(product) {
+        selectedProduct = product;
+        document.getElementById('mTitle').innerText = product.name;
+        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
+        document.getElementById('mTrxID').innerText = '#LS-'+Date.now()+'-'+Math.floor(Math.random()*1000);
+        document.getElementById('payModal').classList.add('active');
+    }
+    window.closeModal = () => document.getElementById('payModal').classList.remove('active');
     function closeModalOutside(e) { if(e.target===document.getElementById('payModal')) closeModal(); }
-    window.closeModal = closeModal;
-    window.closeModalOutside = closeModalOutside;
-    window.confirmWA = confirmWA;
-    window.copyQRIS = copyQRIS;
-    // ... sisanya lengkapi dari kode sebelumnya yang sudah berfungsi.
+    window.confirmWA = () => {
+        if(!selectedProduct) return;
+        const trx = document.getElementById('mTrxID').innerText;
+        const msg = `Halo Admin, saya ingin beli:\n${selectedProduct.name}\nHarga: Rp ${selectedProduct.price.toLocaleString()}\nID Trx: ${trx}`;
+        window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`,'_blank');
+        closeModal();
+    };
+    window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); };
+    window.scrollToTop = () => window.scrollTo({top:0,behavior:'smooth'});
+    window.addEventListener('scroll', () => { const btn = document.getElementById('backToTop'); if(window.scrollY>300) btn.classList.add('visible'); else btn.classList.remove('visible'); });
+    document.querySelectorAll('.filter-btn').forEach(btn => { btn.onclick = () => filterProduct(btn.dataset.category, btn); });
+    document.getElementById('menuBtn').onclick = toggleSidebar;
+    document.querySelector('.close-sidebar').onclick = toggleSidebar;
+    document.getElementById('overlay').onclick = toggleSidebar;
+
+    // ========== CEK PRODUK BARU ==========
+    async function checkNewProducts() {
+        if (dontShowPopup) return;
+        try {
+            const res = await fetch('/api/products?_='+Date.now());
+            const products = await res.json();
+            if (!products.length) return;
+            const newProducts = products.filter(p => !seenProductIds.has(p.id));
+            if (newProducts.length) {
+                newProducts.forEach(p => seenProductIds.add(p.id));
+                localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+                showPopup(newProducts);
+            }
+        } catch(e) { console.error('Popup error:', e); }
+    }
+
+    function showPopup(products) {
+        const modal = document.getElementById('newProductModal');
+        const listContainer = document.getElementById('newProductList');
+        listContainer.innerHTML = '';
+        products.forEach(p => {
+            let timeText = 'Baru ditambahkan';
+            if (p.createdAt) {
+                const date = new Date(p.createdAt);
+                if (!isNaN(date.getTime())) {
+                    timeText = date.toLocaleString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                }
+            }
+            const card = document.createElement('div');
+            card.className = 'new-product-card';
+            card.innerHTML = `
+                <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
+                <div class="new-product-title">${escapeHtml(p.name)}</div>
+                <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
+                <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
+            `;
+            listContainer.appendChild(card);
+        });
+        const checkbox = document.getElementById('dontShowAgainCheckbox');
+        checkbox.checked = false;
+        modal.classList.add('active');
+        const closeModalFn = () => {
+            modal.classList.remove('active');
+            if (checkbox.checked) {
+                localStorage.setItem('dontShowNewProductPopup', 'true');
+                dontShowPopup = true;
+            }
+        };
+        document.getElementById('closeModalBtn').onclick = closeModalFn;
+        document.getElementById('viewAllBtn').onclick = () => { closeModalFn(); window.scrollTo({ top:0, behavior:'smooth' }); };
+    }
+
+    // Polling untuk notifikasi toast
+    let prevIds = [];
+    setInterval(async () => {
+        try {
+            const res = await fetch('/api/products?_='+Date.now());
+            const products = await res.json();
+            const currIds = products.map(p=>p.id).sort();
+            const newProducts = products.filter(p => !prevIds.includes(p.id));
+            if (newProducts.length) {
+                newProducts.forEach(p => {
+                    const toastDiv = document.createElement('div');
+                    toastDiv.style.cssText = 'position:fixed; bottom:80px; right:20px; background:var(--bg-surface); border-left:4px solid var(--primary-blue); border-radius:12px; padding:12px 16px; z-index:1500; box-shadow:0 8px 20px rgba(0,0,0,0.4); animation:slideInRight 0.3s; max-width:280px; display:flex; align-items:center; gap:10px;';
+                    toastDiv.innerHTML = `<i class="fas fa-gift" style="font-size:1.5rem; color:var(--primary-blue);"></i><div><strong>✨ Produk Baru!</strong><br>${escapeHtml(p.name)}<br><small>Rp ${p.price.toLocaleString()} | Stok: ${p.stock}</small></div><button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted);">✕</button>`;
+                    document.body.appendChild(toastDiv);
+                    setTimeout(()=>toastDiv.remove(), 8000);
+                });
+                allProducts = products;
+                renderProducts(allProducts);
+                newProducts.forEach(p => seenProductIds.add(p.id));
+                localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+            }
+            prevIds = currIds;
+        } catch(e) {}
+    }, 30000);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadProducts();
+        await checkNewProducts();
+    });
 </script>
 </body>
 </html>
