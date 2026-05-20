@@ -106,10 +106,10 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // /start command - tampilan profesional dengan banner dan Markdown
+    // /start command - tampilan owner atau user
     if (text === '/start') {
       await deleteSession(chatId);
-      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/ownermenu.png';
+      const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png'; // ganti dengan URL banner Anda
       
       if (isAdmin) {
         const ownerCaption = `📋 *MENU OWNER* 📋
@@ -126,7 +126,6 @@ export default async function handler(req, res) {
 /list - Lihat semua produk
 
 Ketik perintah di atas untuk mengelola toko.`;
-        
         await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
       } else {
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -154,7 +153,6 @@ Total Pengguna: ${stats.totalUsers.toLocaleString()}
 /saldo - Cek saldo
 
 Selamat berbelanja!`;
-        
         await sendPhoto(chatId, bannerUrl, userCaption, 'Markdown');
       }
       return res.status(200).json({ ok: true });
@@ -200,7 +198,9 @@ Selamat berbelanja!`;
         }
         let msg = '📋 *Daftar Produk:*\n\n';
         products.forEach(p => {
-          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ ${p.category}\n\n`;
+          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ ${p.category}\n`;
+          if (p.createdAt) msg += `📅 ${new Date(p.createdAt).toLocaleString('id-ID')}\n`;
+          msg += `\n`;
         });
         await sendMessage(chatId, msg, 'Markdown');
       } catch (err) { await sendMessage(chatId, `❌ Error DB: ${err.message}`); }
@@ -234,7 +234,7 @@ Selamat berbelanja!`;
       const step = session.step;
       let temp = session.tempData || {};
 
-      // Add flow
+      // Add flow (dengan createdAt)
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
@@ -272,9 +272,19 @@ Selamat berbelanja!`;
           const collection = db.collection('products');
           const existing = await collection.find({}).toArray();
           const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
-          const newProduct = { id: newId, name: temp.name, price: temp.price, category: temp.category, stock: temp.stock, duration: temp.duration, hot: temp.hot, image: temp.image };
+          const newProduct = {
+            id: newId,
+            name: temp.name,
+            price: temp.price,
+            category: temp.category,
+            stock: temp.stock,
+            duration: temp.duration,
+            hot: temp.hot,
+            image: temp.image,
+            createdAt: new Date()   // <-- WAKTU PENAMBAHAN
+          };
           await collection.insertOne(newProduct);
-          await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${temp.name}\nHarga: Rp${temp.price.toLocaleString()}\nStok: ${temp.stock}`, 'Markdown');
+          await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${temp.name}\nHarga: Rp${temp.price.toLocaleString()}\nStok: ${temp.stock}\n📅 ${new Date().toLocaleString('id-ID')}`, 'Markdown');
         } catch (err) { await sendMessage(chatId, `❌ Gagal menyimpan: ${err.message}`); }
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
@@ -328,28 +338,6 @@ Selamat berbelanja!`;
     }
 
     await sendMessage(chatId, 'Gunakan /start untuk menu utama.');
-    return res.status(200).json({ ok: true });
-  }
-
-  // Callback query (jika ada pesan lama dengan tombol)
-  if (update.callback_query) {
-    const callback = update.callback_query;
-    const chatId = callback.message.chat.id;
-    const messageId = callback.message.message_id;
-    await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ callback_query_id: callback.id })
-    });
-    await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        message_id: messageId,
-        text: '❌ Menu tombol sudah tidak digunakan. Gunakan perintah teks: /start untuk melihat perintah yang tersedia.'
-      })
-    });
     return res.status(200).json({ ok: true });
   }
 
