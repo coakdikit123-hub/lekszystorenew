@@ -89,7 +89,7 @@ export default async function handler(req, res) {
 
     if (text === '/cancel') {
       await deleteSession(chatId);
-      await sendMessage(chatId, '❌ Operasi dibatalkan.');
+      await sendMessage(chatId, '❌ *Operasi dibatalkan.*', 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
@@ -97,11 +97,51 @@ export default async function handler(req, res) {
       await deleteSession(chatId);
       const bannerUrl = 'https://testingweb-five.vercel.app/gambar/banner.png';
       if (isAdmin) {
-        const ownerCaption = `📋 *MENU OWNER* 📋\n🌎 https://lekszystore.my.id\n\n👤 Name: @${username || 'Admin'}\n📃 ID: \`${chatId}\`\n👑 Role: Owner\n\n*🔗 Perintah tersedia:*\n/add - Tambah produk\n/edit - Edit produk\n/delete - Hapus produk\n/list - Lihat semua produk\n\nKetik perintah di atas untuk mengelola toko.`;
+        const ownerCaption = `✨ *SELAMAT DATANG DI PANEL OWNER* ✨
+━━━━━━━━━━━━━━━━━━━━━
+🌐 *Website:* [lekszystore.my.id](https://lekszystore.my.id)
+
+👤 *Nama:* @${username || 'Admin'}
+🆔 *ID:* \`${chatId}\`
+👑 *Role:* Owner
+
+📌 *Perintah Tersedia:*
+/add ➕ Tambah produk
+/edit ✏️ Edit produk
+/delete 🗑️ Hapus produk
+/list 📋 Lihat semua produk
+
+💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
+━━━━━━━━━━━━━━━━━━━━━
+✅ *Bot siap digunakan!*`;
         await sendPhoto(chatId, bannerUrl, ownerCaption, 'Markdown');
       } else {
         const date = new Date().toLocaleString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const userCaption = `*Solusi Produk Digital Terbaik*\n\n*JASA APLIKASI PREMIUM*\npremiumtime.co\n\nHalo ${username ? '@'+username : 'Pengguna'} 👋\n${date}\n\n*Informasi Pengguna:*\nID: \`${userId}\`\nUsername: ${username ? '@'+username : '-'}\nTotal Transaksi: Rp ${user.transaksiTotal.toLocaleString()}\nSaldo: Rp ${user.saldo.toLocaleString()}\n\n*Statistik Bot:*\nTotal Terjual: ${stats.totalTerjual.toLocaleString()}\nTotal Pengguna: ${stats.totalUsers.toLocaleString()}\n\n*🔗 Perintah:*\n/start - Menu utama\n/stok - Lihat stok produk\n/saldo - Cek saldo\n\nSelamat berbelanja!`;
+        const userCaption = `🌟 *Solusi Produk Digital Terbaik* 🌟
+━━━━━━━━━━━━━━━━━━━━━
+💎 *JASA APLIKASI PREMIUM*
+🔗 premiumtime.co
+
+👋 Halo ${username ? '@'+username : 'Pengguna'}
+📅 ${date}
+
+📋 *Informasi Pengguna:*
+🆔 ID: \`${userId}\`
+👤 Username: ${username ? '@'+username : '-'}
+💸 Total Transaksi: Rp ${user.transaksiTotal.toLocaleString()}
+💰 Saldo: Rp ${user.saldo.toLocaleString()}
+
+📊 *Statistik Bot:*
+📦 Total Terjual: ${stats.totalTerjual.toLocaleString()}
+👥 Total Pengguna: ${stats.totalUsers.toLocaleString()}
+
+🔧 *Perintah:*
+/start 🏠 Menu utama
+/stok 📦 Lihat stok produk
+/saldo 💰 Cek saldo
+
+━━━━━━━━━━━━━━━━━━━━━
+✨ *Selamat berbelanja!* ✨`;
         await sendPhoto(chatId, bannerUrl, userCaption, 'Markdown');
       }
       return res.status(200).json({ ok: true });
@@ -112,21 +152,22 @@ export default async function handler(req, res) {
         const client = await clientPromise;
         const db = client.db('lekszystore');
         const products = await db.collection('products').find({}).toArray();
-        if (!products.length) return await sendMessage(chatId, 'Belum ada produk.');
-        let msg = '*Stok Produk Tersedia:*\n\n';
+        if (!products.length) return await sendMessage(chatId, '📭 *Belum ada produk.*', 'Markdown');
+        let msg = '📦 *Stok Produk Tersedia:*\n━━━━━━━━━━━━━━━━━━━━━\n';
         products.forEach(p => msg += `• *${p.name}*: ${p.stock} tersisa\n`);
+        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Terima kasih*';
         await sendMessage(chatId, msg, 'Markdown');
-      } catch (err) { await sendMessage(chatId, 'Error mengambil stok.'); }
+      } catch (err) { await sendMessage(chatId, '❌ *Error mengambil stok.*', 'Markdown'); }
       return res.status(200).json({ ok: true });
     }
 
     if (text === '/saldo') {
-      await sendMessage(chatId, `💰 Saldo Anda: Rp ${user.saldo.toLocaleString()}`);
+      await sendMessage(chatId, `💰 *Saldo Anda:* Rp ${user.saldo.toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━\n🔔 *Gunakan /start untuk menu utama*`, 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
     if (!isAdmin) {
-      await sendMessage(chatId, '❌ Perintah ini hanya untuk owner.');
+      await sendMessage(chatId, '❌ *Akses ditolak.* Perintah ini hanya untuk owner.', 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
@@ -135,35 +176,36 @@ export default async function handler(req, res) {
         const client = await clientPromise;
         const db = client.db('lekszystore');
         const products = await db.collection('products').find({}).toArray();
-        if (!products.length) return await sendMessage(chatId, '📦 Belum ada produk. Gunakan /add');
-        let msg = '📋 *Daftar Produk:*\n\n';
+        if (!products.length) return await sendMessage(chatId, '📭 *Belum ada produk.* Gunakan /add', 'Markdown');
+        let msg = '📋 *Daftar Produk:*\n━━━━━━━━━━━━━━━━━━━━━\n';
         products.forEach(p => {
-          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ ${p.category}\n`;
+          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ Kategori: ${p.category}\n`;
           if (p.createdAt) msg += `📅 ${new Date(p.createdAt).toLocaleString('id-ID')}\n`;
           msg += `\n`;
         });
+        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Akhir daftar*';
         await sendMessage(chatId, msg, 'Markdown');
-      } catch (err) { await sendMessage(chatId, `❌ Error DB: ${err.message}`); }
+      } catch (err) { await sendMessage(chatId, `❌ *Error DB:* ${err.message}`, 'Markdown'); }
       return res.status(200).json({ ok: true });
     }
 
     if (text === '/add') {
       await deleteSession(chatId);
       await saveSession(chatId, 'add_name', {});
-      await sendMessage(chatId, '➕ *Tambah Produk*\nKirimkan *nama produk* (contoh: Netflix 1 Hari)\nKetik /cancel untuk membatalkan.', 'Markdown');
+      await sendMessage(chatId, '➕ *Tambah Produk*\n━━━━━━━━━━━━━━━━━━━━━\n📝 Kirimkan *nama produk* (contoh: Netflix 1 Hari)\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
     if (text === '/edit') {
       await deleteSession(chatId);
-      await sendMessage(chatId, '✏️ *Edit Produk*\nKirimkan *ID produk* yang akan diedit.\nCek ID dengan /list', 'Markdown');
+      await sendMessage(chatId, '✏️ *Edit Produk*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *ID produk* yang akan diedit.\n📋 Cek ID dengan /list', 'Markdown');
       await saveSession(chatId, 'edit_wait_id', {});
       return res.status(200).json({ ok: true });
     }
 
     if (text === '/delete') {
       await deleteSession(chatId);
-      await sendMessage(chatId, '🗑️ *Hapus Produk*\nKirimkan *ID produk* yang akan dihapus.\nCek ID dengan /list', 'Markdown');
+      await sendMessage(chatId, '🗑️ *Hapus Produk*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *ID produk* yang akan dihapus.\n📋 Cek ID dengan /list', 'Markdown');
       await saveSession(chatId, 'delete_wait_id', {});
       return res.status(200).json({ ok: true });
     }
@@ -178,31 +220,31 @@ export default async function handler(req, res) {
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
-        await sendMessage(chatId, '💰 Kirimkan *harga* (angka)', 'Markdown');
+        await sendMessage(chatId, '💰 *Harga*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga* (angka)', 'Markdown');
       } else if (step === 'add_price') {
         const price = parseInt(text);
-        if (isNaN(price)) { await sendMessage(chatId, '❌ Harga tidak valid.'); return res.status(200).json({ ok: true }); }
+        if (isNaN(price)) { await sendMessage(chatId, '❌ *Harga tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.price = price;
         await saveSession(chatId, 'add_category', temp);
-        await sendMessage(chatId, '🏷️ Kirimkan *kategori* (netflix, capcut, youtube, alight, canva, spotify, viu)', 'Markdown');
+        await sendMessage(chatId, '🏷️ *Kategori*\n━━━━━━━━━━━━━━━━━━━━━\n📂 Pilih kategori: netflix, capcut, youtube, alight, canva, spotify, viu', 'Markdown');
       } else if (step === 'add_category') {
         temp.category = text.toLowerCase();
         await saveSession(chatId, 'add_stock', temp);
-        await sendMessage(chatId, '📦 Kirimkan *stok* (angka)', 'Markdown');
+        await sendMessage(chatId, '📦 *Stok*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *stok* (angka)', 'Markdown');
       } else if (step === 'add_stock') {
         const stock = parseInt(text);
-        if (isNaN(stock)) { await sendMessage(chatId, '❌ Stok tidak valid.'); return res.status(200).json({ ok: true }); }
+        if (isNaN(stock)) { await sendMessage(chatId, '❌ *Stok tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.stock = stock;
         await saveSession(chatId, 'add_duration', temp);
-        await sendMessage(chatId, '⏱️ Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)', 'Markdown');
+        await sendMessage(chatId, '⏱️ *Durasi*\n━━━━━━━━━━━━━━━━━━━━━\n📅 Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)', 'Markdown');
       } else if (step === 'add_duration') {
         temp.duration = text;
         await saveSession(chatId, 'add_hot', temp);
-        await sendMessage(chatId, '🔥 Apakah produk *hot*? (kirim 1 untuk ya, 0 untuk tidak)', 'Markdown');
+        await sendMessage(chatId, '🔥 *Hot?*\n━━━━━━━━━━━━━━━━━━━━━\n🔥 Apakah produk *hot*? (kirim 1 untuk ya, 0 untuk tidak)', 'Markdown');
       } else if (step === 'add_hot') {
         temp.hot = (text === '1');
         await saveSession(chatId, 'add_image', temp);
-        await sendMessage(chatId, '🖼️ Kirimkan *URL gambar* (contoh: /gambar/netflix.png) atau kirim "default"', 'Markdown');
+        await sendMessage(chatId, '🖼️ *Gambar*\n━━━━━━━━━━━━━━━━━━━━━\n🖼️ Kirimkan *URL gambar* (contoh: /gambar/netflix.png) atau kirim "default"', 'Markdown');
       } else if (step === 'add_image') {
         let image = (text === 'default' || !text) ? '/gambar/placeholder.png' : text;
         temp.image = image;
@@ -215,63 +257,63 @@ export default async function handler(req, res) {
           const newProduct = {
             id: newId, name: temp.name, price: temp.price, category: temp.category,
             stock: temp.stock, duration: temp.duration, hot: temp.hot, image: temp.image,
-            createdAt: new Date()   // WAKTU PENAMBAHAN
+            createdAt: new Date()
           };
           await collection.insertOne(newProduct);
-          await sendMessage(chatId, `✅ Produk berhasil ditambahkan!\nID: ${newId}\nNama: ${temp.name}\nHarga: Rp${temp.price.toLocaleString()}\nStok: ${temp.stock}\n📅 ${new Date().toLocaleString('id-ID')}`, 'Markdown');
-        } catch (err) { await sendMessage(chatId, `❌ Gagal menyimpan: ${err.message}`); }
+          await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n━━━━━━━━━━━━━━━━━━━━━\n🆔 ID: ${newId}\n📛 Nama: ${temp.name}\n💰 Harga: Rp${temp.price.toLocaleString()}\n📦 Stok: ${temp.stock}\n📅 Waktu: ${new Date().toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
+        } catch (err) { await sendMessage(chatId, `❌ *Gagal menyimpan:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
       }
       // EDIT FLOW
       else if (step === 'edit_wait_id') {
         const id = parseInt(text);
-        if (isNaN(id)) { await sendMessage(chatId, '❌ ID tidak valid.'); return res.status(200).json({ ok: true }); }
+        if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         const client = await clientPromise;
         const db = client.db('lekszystore');
         const product = await db.collection('products').findOne({ id });
-        if (!product) { await sendMessage(chatId, 'Produk tidak ditemukan.'); await deleteSession(chatId); return res.status(200).json({ ok: true }); }
+        if (!product) { await sendMessage(chatId, '❌ *Produk tidak ditemukan.*', 'Markdown'); await deleteSession(chatId); return res.status(200).json({ ok: true }); }
         await saveSession(chatId, 'edit_field', { editId: id, product });
-        await sendMessage(chatId, `Produk: *${product.name}*\nField apa yang ingin diubah? (name, price, stock, category, duration, hot, image)`, 'Markdown');
+        await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Nama: ${product.name}\n💰 Harga: Rp${product.price.toLocaleString()}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image}\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field yang bisa diubah: name, price, stock, category, duration, hot, image\n📝 Kirimkan nama field yang ingin diubah.`, 'Markdown');
       } else if (step === 'edit_field') {
         const allowed = ['name','price','stock','category','duration','hot','image'];
-        if (!allowed.includes(text)) { await sendMessage(chatId, 'Field tidak valid.'); return res.status(200).json({ ok: true }); }
+        if (!allowed.includes(text)) { await sendMessage(chatId, '❌ *Field tidak valid.* Pilih: name, price, stock, category, duration, hot, image', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.field = text;
         await saveSession(chatId, 'edit_value', temp);
-        let prompt = (text === 'hot') ? 'Kirim 1 untuk ya, 0 untuk tidak' : (text === 'price'||text==='stock') ? 'Kirimkan angka' : `Kirimkan nilai baru untuk ${text}`;
-        await sendMessage(chatId, prompt);
+        let prompt = (text === 'hot') ? '🔥 Kirim 1 untuk ya, 0 untuk tidak' : (text === 'price'||text==='stock') ? '🔢 Kirimkan angka' : `📝 Kirimkan nilai baru untuk ${text}`;
+        await sendMessage(chatId, `✏️ *Ubah ${text}*\n━━━━━━━━━━━━━━━━━━━━━\n${prompt}`, 'Markdown');
       } else if (step === 'edit_value') {
         const field = temp.field;
         const editId = temp.editId;
         let newValue = text;
-        if (field === 'price' || field === 'stock') { const num = parseInt(newValue); if (isNaN(num)) { await sendMessage(chatId, 'Harus angka.'); return; } newValue = num; }
-        if (field === 'hot') { if (newValue !== '0' && newValue !== '1') { await sendMessage(chatId, 'Kirim 1 atau 0'); return; } newValue = (newValue === '1'); }
+        if (field === 'price' || field === 'stock') { const num = parseInt(newValue); if (isNaN(num)) { await sendMessage(chatId, '❌ *Harus angka.*', 'Markdown'); return; } newValue = num; }
+        if (field === 'hot') { if (newValue !== '0' && newValue !== '1') { await sendMessage(chatId, '❌ *Kirim 1 atau 0*', 'Markdown'); return; } newValue = (newValue === '1'); }
         if (field === 'image' && newValue === 'default') newValue = '/gambar/placeholder.png';
         try {
           const client = await clientPromise;
           const db = client.db('lekszystore');
           await db.collection('products').updateOne({ id: editId }, { $set: { [field]: newValue } });
-          await sendMessage(chatId, `✅ Update berhasil: ${field} = ${newValue}`);
-        } catch (err) { await sendMessage(chatId, `Error: ${err.message}`); }
+          await sendMessage(chatId, `✅ *Update berhasil!*\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field: ${field}\n🆕 Nilai baru: ${newValue}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
+        } catch (err) { await sendMessage(chatId, `❌ *Error:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
       }
       // DELETE FLOW
       else if (step === 'delete_wait_id') {
         const id = parseInt(text);
-        if (isNaN(id)) { await sendMessage(chatId, 'ID tidak valid.'); return res.status(200).json({ ok: true }); }
+        if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.*', 'Markdown'); return res.status(200).json({ ok: true }); }
         try {
           const client = await clientPromise;
           const db = client.db('lekszystore');
           const result = await db.collection('products').deleteOne({ id });
-          if (result.deletedCount) await sendMessage(chatId, `✅ Produk ID ${id} dihapus.`);
-          else await sendMessage(chatId, 'Produk tidak ditemukan.');
-        } catch (err) { await sendMessage(chatId, `Error: ${err.message}`); }
+          if (result.deletedCount) await sendMessage(chatId, `✅ *Produk ID ${id} berhasil dihapus!*`, 'Markdown');
+          else await sendMessage(chatId, '❌ *Produk tidak ditemukan.*', 'Markdown');
+        } catch (err) { await sendMessage(chatId, `❌ *Error:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
       }
       return res.status(200).json({ ok: true });
     }
 
-    await sendMessage(chatId, 'Gunakan /start untuk menu utama.');
+    await sendMessage(chatId, '🤖 *Gunakan /start untuk menu utama.*', 'Markdown');
     return res.status(200).json({ ok: true });
   }
 
