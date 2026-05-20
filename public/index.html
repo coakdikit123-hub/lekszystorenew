@@ -11,7 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Root variables dan style dasar (tidak berubah dari sebelumnya) */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -39,13 +38,11 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; overflow-x: hidden; }
-        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); transform: translateZ(0); }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); }
         .logo-wrapper { display: flex; align-items: center; gap: 12px; }
         .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
-        /* ... (semua style sidebar, filter, product card, modal, dll seperti kode sebelumnya, tidak diubah) ... */
-        /* Saya akan tulis ulang bagian penting saja agar tidak terlalu panjang, tapi tetap lengkap */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
@@ -106,18 +103,17 @@
         .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#58a6ff,#2563eb); color: white; font-size: 0.6rem; padding: 6px 10px; border-radius: 8px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 10; backdrop-filter: blur(5px); }
         .stock-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border-top: 1px solid var(--border-subtle); padding: 10px 12px; border-radius: 0 0 20px 20px; }
         .stock-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
-        .stock-label { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .stock-label { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); }
         .stock-number { font-weight: 800; font-size: 0.9rem; }
         .stock-number.high { color: var(--stock-high); }
         .stock-number.medium { color: var(--stock-medium); }
         .stock-number.low { color: var(--stock-low); }
         .stock-bar-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .stock-bar { height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 4px; }
+        .stock-bar { height: 100%; width: 0%; transition: width 0.3s; border-radius: 4px; }
         .stock-bar.high { background: linear-gradient(90deg, var(--stock-high), #34d399); }
         .stock-bar.medium { background: linear-gradient(90deg, var(--stock-medium), #fbbf24); }
         .stock-bar.low { background: linear-gradient(90deg, var(--stock-low), #f87171); }
         .p-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; transition: transform 0.2s; background: var(--bg-main); }
-        .product-card:hover .p-img { transform: scale(1.05); }
         .p-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .p-price { font-size: 1rem; font-weight: 800; color: var(--primary-blue); display: flex; justify-content: space-between; align-items: center; }
         .btn-buy-mini { width: 35px; height: 35px; background: var(--gradient-logo); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; cursor: pointer; flex-shrink: 0; }
@@ -146,147 +142,183 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
 
-        /* Popup Modal Produk Baru */
+        /* Popup horizontal produk baru */
         .new-product-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(12px);
             z-index: 2001;
             display: flex;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(8px);
             visibility: hidden;
             opacity: 0;
-            transition: visibility 0.3s, opacity 0.3s;
+            transition: all 0.3s ease;
         }
         .new-product-modal.active {
             visibility: visible;
             opacity: 1;
         }
-        .new-product-card {
-            background: var(--bg-surface);
-            max-width: 600px;
+        .new-product-container {
             width: 90%;
-            border-radius: 28px;
-            padding: 20px;
+            max-width: 1100px;
+            background: var(--bg-surface);
+            border-radius: 32px;
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.6);
+            overflow: hidden;
+            animation: modalPop 0.3s cubic-bezier(0.2,0.9,0.4,1.1);
         }
-        .new-product-header {
+        @keyframes modalPop {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-header {
+            padding: 18px 24px;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid var(--border-subtle);
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
         }
-        .new-product-header i {
-            font-size: 2rem;
+        .modal-header i {
+            font-size: 1.8rem;
             color: var(--primary-blue);
         }
-        .new-product-header h3 {
-            font-size: 1.2rem;
-        }
-        .new-product-list {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-        .new-product-list::-webkit-scrollbar { width: 4px; }
-        .new-product-list::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
-        .new-product-list::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
-        .new-product-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 16px;
-            padding: 12px 8px;
-            text-align: center;
-            transition: transform 0.2s;
-            position: relative;
-        }
-        .new-product-item:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
-        .new-product-item .new-badge {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--primary-blue);
-            color: white;
-            font-size: 0.6rem;
-            padding: 2px 6px;
-            border-radius: 20px;
+        .modal-header h2 {
+            font-size: 1.3rem;
             font-weight: 700;
+            background: var(--gradient-logo);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .new-product-item img {
-            width: 70px;
-            height: 70px;
+        .product-scroll {
+            padding: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-blue) var(--bg-surface);
+        }
+        .product-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .product-scroll::-webkit-scrollbar-track {
+            background: var(--bg-surface);
+            border-radius: 10px;
+        }
+        .product-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+        .horizontal-list {
+            display: flex;
+            gap: 20px;
+            white-space: normal;
+        }
+        .new-product-card {
+            flex: 0 0 260px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 24px;
+            padding: 16px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            backdrop-filter: blur(4px);
+        }
+        .new-product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-blue);
+            background: rgba(255,255,255,0.07);
+        }
+        .new-product-img {
+            width: 100%;
+            aspect-ratio: 1/1;
             object-fit: cover;
-            border-radius: 16px;
-            margin-bottom: 8px;
+            border-radius: 20px;
+            margin-bottom: 12px;
             background: var(--bg-main);
         }
-        .new-product-item .name {
-            font-weight: 700;
-            font-size: 0.8rem;
-            margin-bottom: 4px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        .new-product-title {
+            font-weight: 800;
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            white-space: normal;
+            line-height: 1.3;
         }
-        .new-product-item .price {
+        .new-product-price {
             color: var(--primary-blue);
             font-weight: 800;
-            font-size: 0.85rem;
+            font-size: 1rem;
+            margin-bottom: 6px;
         }
-        .new-product-item .time {
+        .new-product-stock {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .stock-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .stock-badge.high { background: var(--stock-high); box-shadow: 0 0 4px var(--stock-high); }
+        .stock-badge.medium { background: var(--stock-medium); }
+        .stock-badge.low { background: var(--stock-low); }
+        .new-product-time {
             font-size: 0.65rem;
             color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .modal-buttons {
             display: flex;
-            gap: 12px;
-            margin-top: 5px;
+            align-items: center;
+            gap: 6px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 8px;
+            margin-top: 8px;
         }
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+        }
+        .btn-modal {
+            padding: 10px 24px;
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
-            border: none;
             transition: transform 0.2s;
+            border: none;
         }
-        .modal-buttons button:active { transform: scale(0.98); }
-        .btn-primary {
-            background: var(--gradient-logo);
-            color: white;
-        }
+        .btn-modal:active { transform: scale(0.97); }
         .btn-secondary {
             background: rgba(255,255,255,0.1);
             color: var(--text-main);
         }
-        .checkbox-label {
+        .btn-primary {
+            background: var(--gradient-logo);
+            color: white;
+        }
+        .checkbox-container {
             display: flex;
             align-items: center;
             gap: 8px;
-            justify-content: center;
-            margin: 15px 0 5px;
-            cursor: pointer;
+            margin-right: auto;
             font-size: 0.8rem;
             color: var(--text-muted);
         }
-        .checkbox-label input {
+        .checkbox-container input {
             width: 16px;
             height: 16px;
-            cursor: pointer;
             accent-color: var(--primary-blue);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -332,20 +364,22 @@
 <footer class="footer"><div class="footer-logo">LekszyStore</div><div class="footer-text">Solusi terbaik untuk mendapatkan akun premium aplikasi favorit Anda dengan harga terjangkau.<br>Garansi 100% aktif, proses cepat, dan support 24/7.</div><div class="copyright">© 2026 LekszyStore. All rights reserved.</div></footer>
 <div class="modal" id="payModal"><div class="modal-content"><div style="text-align:center; margin-bottom:20px;"><h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3><h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1></div><div class="qris-box"><img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img"></div><div class="checkout-details"><div class="detail-row"><span>ID Trx:</span><span id="mTrxID" style="color:var(--primary-blue); font-weight:700">#LS-00000</span></div><div class="detail-row"><span>Metode:</span><span>QRIS / Transfer Bank</span></div><div class="detail-row"><span>Status:</span><span style="color:var(--warning)">Menunggu Pembayaran</span></div><div class="detail-row total"><span>Note:</span><span style="color:#25D366">Kirim bukti bayar ke Admin</span></div></div><button class="pay-btn">Konfirmasi WhatsApp</button><button onclick="closeModal()" style="width:100%; background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer;">Kembali</button></div></div>
 
-<!-- Popup Modal Produk Baru dengan Checkbox -->
+<!-- Popup produk baru horizontal -->
 <div id="newProductModal" class="new-product-modal">
-    <div class="new-product-card">
-        <div class="new-product-header">
+    <div class="new-product-container">
+        <div class="modal-header">
             <i class="fas fa-gift"></i>
-            <h3>✨ Produk Baru Ditambahkan!</h3>
+            <h2>✨ Produk Baru Ditambahkan!</h2>
         </div>
-        <div id="newProductList" class="new-product-list"></div>
-        <label class="checkbox-label">
-            <input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi
-        </label>
-        <div class="modal-buttons">
-            <button id="closeModalBtn" class="btn-secondary">Tutup</button>
-            <button id="viewAllBtn" class="btn-primary">Lihat Semua</button>
+        <div class="product-scroll">
+            <div id="newProductList" class="horizontal-list"></div>
+        </div>
+        <div class="modal-footer">
+            <label class="checkbox-container">
+                <input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi
+            </label>
+            <button id="closeModalBtn" class="btn-modal btn-secondary">Tutup</button>
+            <button id="viewAllBtn" class="btn-modal btn-primary">Lihat Semua</button>
         </div>
     </div>
 </div>
@@ -436,15 +470,12 @@
     document.querySelector('.pay-btn').onclick = confirmWA;
     document.querySelector('.qris-box').onclick = copyQRIS;
 
-    // ========== POPUP PRODUK BARU (HANYA UNTUK ID YANG BELUM PERNAH DILIHAT) ==========
+    // ========== POPUP PRODUK BARU HORIZONTAL ==========
     let seenProductIds = new Set();
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     try {
         const stored = localStorage.getItem('seenProductIds');
-        if (stored) {
-            const arr = JSON.parse(stored);
-            seenProductIds = new Set(arr);
-        }
+        if (stored) seenProductIds = new Set(JSON.parse(stored));
     } catch(e) {}
     async function checkNewProductsPopup() {
         if (dontShowPopup) return;
@@ -465,17 +496,27 @@
         const listContainer = document.getElementById('newProductList');
         listContainer.innerHTML = '';
         products.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'new-product-item';
-            div.innerHTML = `
-                <div class="new-badge">NEW</div>
-                <img src="${p.image || '/gambar/placeholder.png'}" onerror="this.src='/gambar/placeholder.png'">
-                <div class="name">${escapeHtml(p.name)}</div>
-                <div class="price">Rp ${p.price.toLocaleString()}</div>
-                <div class="time">✨ Baru ditambahkan</div>
-                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Stok: ${p.stock}</div>
+            let stockClass = 'high';
+            if (p.stock <= 0) stockClass = 'low';
+            else if (p.stock < 10) stockClass = 'medium';
+            // Gunakan createdAt dari database jika ada, fallback ke "Baru ditambahkan"
+            let timeText = 'Baru ditambahkan';
+            if (p.createdAt) {
+                const date = new Date(p.createdAt);
+                if (!isNaN(date.getTime())) {
+                    timeText = date.toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+                }
+            }
+            const card = document.createElement('div');
+            card.className = 'new-product-card';
+            card.innerHTML = `
+                <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
+                <div class="new-product-title">${escapeHtml(p.name)}</div>
+                <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
+                <div class="new-product-stock"><span class="stock-badge ${stockClass}"></span> Stok: ${p.stock} tersisa</div>
+                <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
             `;
-            listContainer.appendChild(div);
+            listContainer.appendChild(card);
         });
         const checkbox = document.getElementById('dontShowAgainCheckbox');
         checkbox.checked = false;
@@ -494,7 +535,7 @@
         };
     }
 
-    // ========== POLLING NOTIFIKASI PRODUK BARU (TOAST) ==========
+    // Polling untuk notifikasi toast (tetap)
     let prevCount = 0, prevIds = [];
     setInterval(async () => {
         try {
@@ -526,9 +567,7 @@
     }, 15000);
 
     document.addEventListener('DOMContentLoaded', () => {
-        loadProducts().then(() => {
-            setTimeout(checkNewProductsPopup, 1000);
-        });
+        loadProducts().then(() => setTimeout(checkNewProductsPopup, 1000));
     });
 </script>
 </body>
