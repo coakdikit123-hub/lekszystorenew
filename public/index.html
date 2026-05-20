@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Root variables dan style dasar (tidak berubah dari sebelumnya) */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -43,6 +44,8 @@
         .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
         .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
+        /* ... (semua style sidebar, filter, product card, modal, dll seperti kode sebelumnya, tidak diubah) ... */
+        /* Saya akan tulis ulang bagian penting saja agar tidak terlalu panjang, tapi tetap lengkap */
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { width: 280px; position: fixed; left: -300px; top: 0; bottom: 0; background: linear-gradient(165deg,#0f111a,#1a1d30); z-index: 1002; padding: 25px; display: flex; flex-direction: column; transition: transform 0.3s; border-right: 1px solid rgba(88,166,255,0.15); transform: translateX(-100%); }
@@ -101,53 +104,15 @@
         .hot-effect::after { content: ''; position: absolute; top: -50%; left: -60%; width: 25%; height: 200%; background: rgba(255,255,255,0.05); transform: rotate(30deg); animation: shine-loop 4s infinite; pointer-events: none; }
         @keyframes shine-loop { 0% { left: -60%; } 20% { left: 140%; } 100% { left: 140%; } }
         .badge { position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg,#58a6ff,#2563eb); color: white; font-size: 0.6rem; padding: 6px 10px; border-radius: 8px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 10; backdrop-filter: blur(5px); }
-        .stock-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            border-top: 1px solid var(--border-subtle);
-            padding: 10px 12px;
-            border-radius: 0 0 20px 20px;
-        }
-        .stock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 6px;
-        }
-        .stock-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-        }
-        .stock-number {
-            font-weight: 800;
-            font-size: 0.9rem;
-        }
+        .stock-info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border-top: 1px solid var(--border-subtle); padding: 10px 12px; border-radius: 0 0 20px 20px; }
+        .stock-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+        .stock-label { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .stock-number { font-weight: 800; font-size: 0.9rem; }
         .stock-number.high { color: var(--stock-high); }
         .stock-number.medium { color: var(--stock-medium); }
         .stock-number.low { color: var(--stock-low); }
-        .stock-bar-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .stock-bar {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 4px;
-        }
+        .stock-bar-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .stock-bar { height: 100%; width: 0%; transition: width 0.3s ease; border-radius: 4px; }
         .stock-bar.high { background: linear-gradient(90deg, var(--stock-high), #34d399); }
         .stock-bar.medium { background: linear-gradient(90deg, var(--stock-medium), #fbbf24); }
         .stock-bar.low { background: linear-gradient(90deg, var(--stock-low), #f87171); }
@@ -180,7 +145,7 @@
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
-        
+
         /* Popup Modal Produk Baru */
         .new-product-modal {
             position: fixed;
@@ -204,7 +169,7 @@
         }
         .new-product-card {
             background: var(--bg-surface);
-            max-width: 550px;
+            max-width: 600px;
             width: 90%;
             border-radius: 28px;
             padding: 20px;
@@ -243,8 +208,20 @@
             padding: 12px 8px;
             text-align: center;
             transition: transform 0.2s;
+            position: relative;
         }
         .new-product-item:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
+        .new-product-item .new-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--primary-blue);
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 700;
+        }
         .new-product-item img {
             width: 70px;
             height: 70px;
@@ -266,6 +243,11 @@
             color: var(--primary-blue);
             font-weight: 800;
             font-size: 0.85rem;
+        }
+        .new-product-item .time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
         .modal-buttons {
             display: flex;
@@ -454,20 +436,27 @@
     document.querySelector('.pay-btn').onclick = confirmWA;
     document.querySelector('.qris-box').onclick = copyQRIS;
 
-    // ========== POPUP PRODUK BARU (SAAT LOAD HALAMAN) ==========
-    let lastSeenMaxId = localStorage.getItem('lastSeenMaxId') || 0;
+    // ========== POPUP PRODUK BARU (HANYA UNTUK ID YANG BELUM PERNAH DILIHAT) ==========
+    let seenProductIds = new Set();
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
+    try {
+        const stored = localStorage.getItem('seenProductIds');
+        if (stored) {
+            const arr = JSON.parse(stored);
+            seenProductIds = new Set(arr);
+        }
+    } catch(e) {}
     async function checkNewProductsPopup() {
         if (dontShowPopup) return;
         try {
             const res = await fetch('/api/products?_='+Date.now());
             const products = await res.json();
             if (!products.length) return;
-            const maxId = Math.max(...products.map(p=>p.id));
-            const newProducts = products.filter(p => p.id > lastSeenMaxId);
+            const newProducts = products.filter(p => !seenProductIds.has(p.id));
             if (newProducts.length > 0) {
+                newProducts.forEach(p => seenProductIds.add(p.id));
+                localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
                 showNewProductsModal(newProducts);
-                localStorage.setItem('lastSeenMaxId', maxId);
             }
         } catch(e) { console.error('Popup error:', e); }
     }
@@ -479,10 +468,12 @@
             const div = document.createElement('div');
             div.className = 'new-product-item';
             div.innerHTML = `
+                <div class="new-badge">NEW</div>
                 <img src="${p.image || '/gambar/placeholder.png'}" onerror="this.src='/gambar/placeholder.png'">
                 <div class="name">${escapeHtml(p.name)}</div>
                 <div class="price">Rp ${p.price.toLocaleString()}</div>
-                <div style="font-size:0.7rem; color:var(--text-muted)">Stok: ${p.stock}</div>
+                <div class="time">✨ Baru ditambahkan</div>
+                <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Stok: ${p.stock}</div>
             `;
             listContainer.appendChild(div);
         });
@@ -515,6 +506,10 @@
                 const newProducts = products.filter(p => !prevIds.includes(p.id));
                 if(newProducts.length) {
                     newProducts.forEach(p => {
+                        if (!seenProductIds.has(p.id)) {
+                            seenProductIds.add(p.id);
+                            localStorage.setItem('seenProductIds', JSON.stringify([...seenProductIds]));
+                        }
                         const toastDiv = document.createElement('div');
                         toastDiv.style.cssText = 'position:fixed; bottom:80px; right:20px; background:var(--bg-surface); border-left:4px solid var(--primary-blue); border-radius:12px; padding:12px 16px; color:var(--text-main); font-size:0.85rem; z-index:1500; box-shadow:0 8px 20px rgba(0,0,0,0.4); backdrop-filter:blur(10px); animation:slideInRight 0.3s ease; max-width:280px; display:flex; align-items:center; gap:10px;';
                         toastDiv.innerHTML = `<i class="fas fa-gift" style="font-size:1.5rem; color:var(--primary-blue);"></i><div style="flex:1"><strong style="color:var(--primary-blue);">✨ Produk Baru!</strong><br>${escapeHtml(p.name)}<br><small>Rp ${p.price.toLocaleString()} | Stok: ${p.stock}</small></div><button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">✕</button>`;
@@ -523,11 +518,6 @@
                     });
                     allProducts = products;
                     renderProducts(allProducts);
-                    const newMaxId = Math.max(...products.map(p=>p.id));
-                    const storedMax = parseInt(localStorage.getItem('lastSeenMaxId')||0);
-                    if (newMaxId > storedMax) {
-                        localStorage.setItem('lastSeenMaxId', newMaxId);
-                    }
                 }
             }
             prevCount = currCount;
