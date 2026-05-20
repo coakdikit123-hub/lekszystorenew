@@ -180,7 +180,7 @@
         .copyright { font-size: 0.8rem; color: var(--text-muted); padding-top: 15px; border-top: 1px solid var(--border-subtle); margin-top: 15px; }
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
-
+        
         /* Popup Modal Produk Baru */
         .new-product-modal {
             position: fixed;
@@ -204,9 +204,9 @@
         }
         .new-product-card {
             background: var(--bg-surface);
-            max-width: 450px;
+            max-width: 550px;
             width: 90%;
-            border-radius: 24px;
+            border-radius: 28px;
             padding: 20px;
             border: 1px solid var(--border-subtle);
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
@@ -227,42 +227,50 @@
             font-size: 1.2rem;
         }
         .new-product-list {
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
         .new-product-list::-webkit-scrollbar { width: 4px; }
         .new-product-list::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
         .new-product-list::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
         .new-product-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-subtle);
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: transform 0.2s;
         }
+        .new-product-item:hover { transform: translateY(-3px); background: rgba(255,255,255,0.06); }
         .new-product-item img {
-            width: 55px;
-            height: 55px;
+            width: 70px;
+            height: 70px;
             object-fit: cover;
-            border-radius: 12px;
+            border-radius: 16px;
+            margin-bottom: 8px;
             background: var(--bg-main);
-        }
-        .new-product-item .info {
-            flex: 1;
         }
         .new-product-item .name {
             font-weight: 700;
+            font-size: 0.8rem;
             margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         .new-product-item .price {
             color: var(--primary-blue);
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .modal-buttons {
             display: flex;
             gap: 12px;
+            margin-top: 5px;
         }
         .modal-buttons button {
             flex: 1;
@@ -281,6 +289,22 @@
         .btn-secondary {
             background: rgba(255,255,255,0.1);
             color: var(--text-main);
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            margin: 15px 0 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .checkbox-label input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: var(--primary-blue);
         }
     </style>
 </head>
@@ -326,7 +350,7 @@
 <footer class="footer"><div class="footer-logo">LekszyStore</div><div class="footer-text">Solusi terbaik untuk mendapatkan akun premium aplikasi favorit Anda dengan harga terjangkau.<br>Garansi 100% aktif, proses cepat, dan support 24/7.</div><div class="copyright">© 2026 LekszyStore. All rights reserved.</div></footer>
 <div class="modal" id="payModal"><div class="modal-content"><div style="text-align:center; margin-bottom:20px;"><h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3><h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1></div><div class="qris-box"><img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img"></div><div class="checkout-details"><div class="detail-row"><span>ID Trx:</span><span id="mTrxID" style="color:var(--primary-blue); font-weight:700">#LS-00000</span></div><div class="detail-row"><span>Metode:</span><span>QRIS / Transfer Bank</span></div><div class="detail-row"><span>Status:</span><span style="color:var(--warning)">Menunggu Pembayaran</span></div><div class="detail-row total"><span>Note:</span><span style="color:#25D366">Kirim bukti bayar ke Admin</span></div></div><button class="pay-btn">Konfirmasi WhatsApp</button><button onclick="closeModal()" style="width:100%; background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer;">Kembali</button></div></div>
 
-<!-- Popup Modal Produk Baru -->
+<!-- Popup Modal Produk Baru dengan Checkbox -->
 <div id="newProductModal" class="new-product-modal">
     <div class="new-product-card">
         <div class="new-product-header">
@@ -334,6 +358,9 @@
             <h3>✨ Produk Baru Ditambahkan!</h3>
         </div>
         <div id="newProductList" class="new-product-list"></div>
+        <label class="checkbox-label">
+            <input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi
+        </label>
         <div class="modal-buttons">
             <button id="closeModalBtn" class="btn-secondary">Tutup</button>
             <button id="viewAllBtn" class="btn-primary">Lihat Semua</button>
@@ -344,13 +371,10 @@
 <script>
     let allProducts = [];
     let selectedProduct = null;
-
-    // Helper functions
     function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000); }
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => m==='&' ? '&amp;' : m==='<' ? '&lt;' : '&gt;'); }
     function getStockClass(stock) { if(stock<=0) return 'low'; if(stock<10) return 'low'; if(stock<30) return 'medium'; return 'high'; }
     function getStockWidth(stock) { if(stock<=0) return 0; if(stock<5) return 10; if(stock<10) return 20; if(stock<20) return 35; if(stock<50) return 55; if(stock<100) return 75; return 100; }
-
     function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if(!products.length) { grid.innerHTML='<div class="empty-state"><i class="fas fa-box-open"></i><h3>Oops, belum ada produk</h3><p>Sepertinya toko masih kosong. Coba lagi nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>'; return; }
@@ -377,7 +401,6 @@
         grid.appendChild(fragment);
         document.querySelectorAll('.btn-buy-mini').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); const id = parseInt(btn.dataset.id); const product = allProducts.find(p => p.id === id); if(product) openModal(product); }));
     }
-
     async function loadProducts() {
         try {
             const res = await fetch('/api/products?_='+Date.now());
@@ -388,7 +411,6 @@
             document.getElementById('countOrder').innerText = allProducts.length+'+';
         } catch(e){ showToast('Gagal memuat produk. Refresh halaman.'); }
     }
-
     window.filterProduct = function(category, btn) {
         document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
@@ -397,7 +419,6 @@
         if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
         renderProducts(filtered);
     };
-
     window.searchProduct = function() {
         const activeBtn = document.querySelector('.filter-btn.active');
         const category = activeBtn ? activeBtn.dataset.category : 'all';
@@ -406,7 +427,6 @@
         if(search) filtered = filtered.filter(p=>p.name.toLowerCase().includes(search));
         renderProducts(filtered);
     };
-
     function openModal(product) {
         selectedProduct = product;
         document.getElementById('mTitle').innerText = product.name;
@@ -415,7 +435,6 @@
         document.getElementById('mTrxID').innerText = trx;
         document.getElementById('payModal').classList.add('active');
     }
-
     window.closeModal = () => document.getElementById('payModal').classList.remove('active');
     window.copyQRIS = () => showToast('Screenshot QRIS dan bayar via bank/ewallet.');
     window.confirmWA = () => {
@@ -425,11 +444,9 @@
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`,'_blank');
         closeModal();
     };
-
     window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('overlay').classList.toggle('active'); };
     window.scrollToTop = () => window.scrollTo({ top:0, behavior:'smooth' });
     window.addEventListener('scroll', () => { const btn = document.getElementById('backToTop'); if(window.scrollY>300) btn.classList.add('visible'); else btn.classList.remove('visible'); });
-
     document.querySelectorAll('.filter-btn').forEach(btn => { btn.onclick = () => filterProduct(btn.dataset.category, btn); });
     document.getElementById('menuBtn').onclick = toggleSidebar;
     document.querySelector('.close-sidebar').onclick = toggleSidebar;
@@ -439,7 +456,9 @@
 
     // ========== POPUP PRODUK BARU (SAAT LOAD HALAMAN) ==========
     let lastSeenMaxId = localStorage.getItem('lastSeenMaxId') || 0;
+    let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     async function checkNewProductsPopup() {
+        if (dontShowPopup) return;
         try {
             const res = await fetch('/api/products?_='+Date.now());
             const products = await res.json();
@@ -452,35 +471,34 @@
             }
         } catch(e) { console.error('Popup error:', e); }
     }
-
     function showNewProductsModal(products) {
         const modal = document.getElementById('newProductModal');
         const listContainer = document.getElementById('newProductList');
         listContainer.innerHTML = '';
-        products.slice(0, 6).forEach(p => {
+        products.forEach(p => {
             const div = document.createElement('div');
             div.className = 'new-product-item';
             div.innerHTML = `
                 <img src="${p.image || '/gambar/placeholder.png'}" onerror="this.src='/gambar/placeholder.png'">
-                <div class="info">
-                    <div class="name">${escapeHtml(p.name)}</div>
-                    <div class="price">Rp ${p.price.toLocaleString()}</div>
-                    <div style="font-size:0.7rem; color:var(--text-muted)">Stok: ${p.stock}</div>
-                </div>
+                <div class="name">${escapeHtml(p.name)}</div>
+                <div class="price">Rp ${p.price.toLocaleString()}</div>
+                <div style="font-size:0.7rem; color:var(--text-muted)">Stok: ${p.stock}</div>
             `;
             listContainer.appendChild(div);
         });
-        if (products.length > 6) {
-            const moreDiv = document.createElement('div');
-            moreDiv.className = 'new-product-item';
-            moreDiv.style.justifyContent = 'center';
-            moreDiv.innerHTML = `<div style="text-align:center; width:100%;">+ ${products.length-6} produk lainnya</div>`;
-            listContainer.appendChild(moreDiv);
-        }
+        const checkbox = document.getElementById('dontShowAgainCheckbox');
+        checkbox.checked = false;
         modal.classList.add('active');
-        document.getElementById('closeModalBtn').onclick = () => modal.classList.remove('active');
-        document.getElementById('viewAllBtn').onclick = () => {
+        const closeModalFn = () => {
             modal.classList.remove('active');
+            if (checkbox.checked) {
+                localStorage.setItem('dontShowNewProductPopup', 'true');
+                dontShowPopup = true;
+            }
+        };
+        document.getElementById('closeModalBtn').onclick = closeModalFn;
+        document.getElementById('viewAllBtn').onclick = () => {
+            closeModalFn();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
     }
@@ -505,7 +523,6 @@
                     });
                     allProducts = products;
                     renderProducts(allProducts);
-                    // juga update localStorage jika ada produk baru lebih besar dari lastSeenMaxId
                     const newMaxId = Math.max(...products.map(p=>p.id));
                     const storedMax = parseInt(localStorage.getItem('lastSeenMaxId')||0);
                     if (newMaxId > storedMax) {
@@ -520,7 +537,6 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadProducts().then(() => {
-            // Tunggu 1 detik setelah load products baru cek popup
             setTimeout(checkNewProductsPopup, 1000);
         });
     });
