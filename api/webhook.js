@@ -101,6 +101,9 @@ export default async function handler(req, res) {
 /delete 🗑️ Hapus produk
 /list 📋 Lihat semua produk
 /report 📊 Laporan bulanan
+/listtransaksi 📝 Daftar transaksi bulan ini
+/deletetrx 🗑️ Hapus transaksi berdasarkan ID
+/clearreport 🗑️ Hapus laporan bulan ini
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
 ━━━━━━━━━━━━━━━━━━━━━`;
@@ -108,7 +111,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Admin commands
+    // Admin commands (produk)
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -164,7 +167,6 @@ export default async function handler(req, res) {
         const totalTrans = transactions.length;
         const totalRevenue = transactions.reduce((sum, t) => sum + t.totalAmount, 0);
         
-        // Hitung 5 produk terlaris
         const productMap = new Map();
         transactions.forEach(t => {
           if (!productMap.has(t.productName)) {
@@ -197,7 +199,107 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete) – SAMA SEPERTI SEBELUMNYA
+    // ========== DAFTAR TRANSAKSI BULAN INI ==========
+    if (text === '/listtransaksi') {
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        const transactions = await db.collection('transactions')
+          .find({ createdAt: { $gte: startDate, $lt: endDate } })
+          .sort({ createdAt: -1 })
+          .toArray();
+        
+        if (transactions.length === 0) {
+          await sendMessage(chatId, '📭 *Tidak ada transaksi bulan ini.*', 'Markdown');
+          return res.status(200).json({ ok: true });
+        }
+        
+        let msg = `📋 *Daftar Transaksi Bulan ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}*\n━━━━━━━━━━━━━━━━━━━━━\n`;
+        transactions.forEach((t, idx) => {
+          const date = new Date(t.createdAt).toLocaleDateString('id-ID');
+          msg += `${idx+1}. *${t.productName}*\n   ID: \`${t.transactionId}\` | Rp ${t.totalAmount.toLocaleString()}\n   📅 ${date}\n\n`;
+        });
+        msg += `━━━━━━━━━━━━━━━━━━━━━\n💡 Gunakan /deletetrx <ID> untuk menghapus transaksi.`;
+        await sendMessage(chatId, msg, 'Markdown');
+      } catch (err) {
+        console.error(err);
+        await sendMessage(chatId, '❌ Gagal mengambil daftar transaksi.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // ========== HAPUS TRANSAKSI BERDASARKAN ID ==========
+    if (text.startsWith('/deletetrx')) {
+      const parts = text.split(' ');
+      if (parts.length < 2) {
+        await sendMessage(chatId, '⚠️ *Penggunaan:* `/deletetrx <ID_transaksi>`\nContoh: `/deletetrx TX-1234567890-abc123`', 'Markdown');
+        return res.status(200).json({ ok: true });
+      }
+      const transactionId = parts[1];
+      
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const result = await db.collection('transactions').deleteOne({ transactionId });
+        if (result.deletedCount === 0) {
+          await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.* Periksa kembali ID transaksi.', 'Markdown');
+        } else {
+          await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
+        }
+      } catch (err) {
+        console.error(err);
+        await sendMessage(chatId, '❌ Gagal menghapus transaksi.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // ========== HAPUS LAPORAN BULAN INI ==========
+    if (text === '/clearreport') {
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        
+        const count = await db.collection('transactions').countDocuments({
+          createdAt: { $gte: startDate, $lt: endDate }
+        });
+        
+        if (count === 0) {
+          await sendMessage(chatId, '📭 *Tidak ada transaksi bulan ini untuk dihapus.*', 'Markdown');
+          return res.status(200).json({ ok: true });
+        }
+        
+        const confirmKeyboard = {
+          inline_keyboard: [
+            [
+              { text: '✅ Ya, Hapus', callback_data: `confirm_clear_${startDate.getTime()}` },
+              { text: '❌ Batal', callback_data: 'cancel_clear' }
+            ]
+          ]
+        };
+        await sendMessage(chatId, `⚠️ *PERINGATAN!*\nAnda akan menghapus *${count}* transaksi pada bulan ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}.\n\n*TINDAKAN INI TIDAK DAPAT DIURUNGKAN!*\n\nYakin ingin melanjutkan?`, confirmKeyboard, 'Markdown');
+        
+        const tempCol = db.collection('temp');
+        await tempCol.updateOne(
+          { chatId, action: 'clearreport' },
+          { $set: { startDate, endDate, count, createdAt: new Date() } },
+          { upsert: true }
+        );
+        
+      } catch (err) {
+        console.error(err);
+        await sendMessage(chatId, '❌ Gagal memproses penghapusan laporan.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // Session handling (add, edit, delete) – tetap sama seperti sebelumnya
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -296,6 +398,73 @@ export default async function handler(req, res) {
     }
 
     await sendMessage(chatId, '🤖 *Gunakan /start untuk menu utama.*', 'Markdown');
+    return res.status(200).json({ ok: true });
+  }
+
+  // ========== HANDLE CALLBACK QUERY (untuk konfirmasi hapus laporan) ==========
+  if (update.callback_query) {
+    const callback = update.callback_query;
+    const chatId = callback.message.chat.id;
+    const messageId = callback.message.message_id;
+    const data = callback.data;
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    
+    await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ callback_query_id: callback.id })
+    });
+    
+    if (data === 'cancel_clear') {
+      await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          message_id: messageId,
+          text: '❌ Penghapusan laporan dibatalkan.'
+        })
+      });
+      return res.status(200).json({ ok: true });
+    }
+    
+    if (data.startsWith('confirm_clear_')) {
+      const timestamp = parseInt(data.split('_')[2]);
+      const startDate = new Date(timestamp);
+      const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+      
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const result = await db.collection('transactions').deleteMany({
+          createdAt: { $gte: startDate, $lt: endDate }
+        });
+        const deletedCount = result.deletedCount;
+        await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            message_id: messageId,
+            text: `✅ *Berhasil menghapus ${deletedCount} transaksi* untuk bulan ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}.\n\n🗑️ Laporan bulanan telah direset.`
+          })
+        });
+        await db.collection('temp').deleteMany({ chatId, action: 'clearreport' });
+      } catch (err) {
+        console.error(err);
+        await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            message_id: messageId,
+            text: '❌ Gagal menghapus transaksi. Silakan coba lagi.'
+          })
+        });
+      }
+      return res.status(200).json({ ok: true });
+    }
+    
     return res.status(200).json({ ok: true });
   }
 
