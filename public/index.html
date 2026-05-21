@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* ========== S T Y L E  L E N G K A P ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -308,9 +309,10 @@
         if (stored) seenProductIds = new Set(JSON.parse(stored));
     } catch(e) {}
 
-    function showToast(msg) {
+    function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
         t.textContent = msg;
+        t.style.background = isError ? 'var(--danger, #ef4444)' : 'var(--gradient-logo)';
         t.style.display = 'block';
         setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
@@ -354,6 +356,7 @@
         products.forEach((p, idx) => {
             const stockClass = getStockClass(p.stock);
             const stockWidth = getStockWidth(p.stock);
+            const isOutOfStock = p.stock <= 0;
             const card = document.createElement('div');
             card.className = `product-card ${p.hot ? 'hot-effect' : ''}`;
             card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
@@ -361,10 +364,21 @@
                 ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
                 <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
                 <div class="p-title">${escapeHtml(p.name)}</div>
-                <div class="p-price">Rp ${p.price.toLocaleString()} <div class="btn-buy-mini" data-id="${p.id}"><i class="fas fa-cart-shopping"></i></div></div>
+                <div class="p-price">Rp ${p.price.toLocaleString()} 
+                    <div class="btn-buy-mini" data-id="${p.id}" ${isOutOfStock ? 'style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                        <i class="fas fa-cart-shopping"></i>
+                    </div>
+                </div>
                 <div class="stock-info">
-                    <div class="stock-header"><div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div><div class="stock-number ${stockClass}">${p.stock} <span style="font-size:0.7rem; font-weight:normal;">tersisa</span></div></div>
-                    <div class="stock-bar-container"><div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div></div>
+                    <div class="stock-header">
+                        <div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div>
+                        <div class="stock-number ${stockClass}">
+                            ${isOutOfStock ? '<span style="color: var(--stock-low);">Habis</span>' : `${p.stock} <span style="font-size:0.7rem; font-weight:normal;">tersisa</span>`}
+                        </div>
+                    </div>
+                    <div class="stock-bar-container">
+                        <div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div>
+                    </div>
                 </div>
             `;
             fragment.appendChild(card);
@@ -372,8 +386,11 @@
         grid.innerHTML = '';
         grid.appendChild(fragment);
         document.querySelectorAll('.btn-buy-mini').forEach(btn => {
-            btn.removeEventListener('click', buyClickHandler);
-            btn.addEventListener('click', buyClickHandler);
+            const isDisabled = btn.style.opacity === '0.5';
+            if (!isDisabled) {
+                btn.removeEventListener('click', buyClickHandler);
+                btn.addEventListener('click', buyClickHandler);
+            }
         });
     }
 
@@ -381,7 +398,11 @@
         e.stopPropagation();
         const id = parseInt(e.currentTarget.dataset.id);
         const product = allProducts.find(p => p.id === id);
-        if (product) openModal(product);
+        if (product && product.stock > 0) {
+            openModal(product);
+        } else {
+            showToast('Maaf, stok produk ini sudah habis.', true);
+        }
     }
 
     async function loadProducts() {
@@ -394,7 +415,7 @@
             document.getElementById('countOrder').innerText = allProducts.length;
         } catch(e) {
             console.error(e);
-            showToast('Gagal memuat produk. Refresh halaman.');
+            showToast('Gagal memuat produk. Refresh halaman.', true);
             document.getElementById('productGrid').innerHTML = `
                 <div class="empty-state">
                     <i class="fas fa-box-open"></i>
@@ -405,6 +426,87 @@
             `;
         }
     }
+
+    async function reduceStock(productId) {
+        try {
+            const res = await fetch('/api/update-stock', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, quantity: 1 })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || 'Gagal update stok');
+            }
+            return { success: true, newStock: data.newStock };
+        } catch (err) {
+            console.error(err);
+            return { success: false, error: err.message };
+        }
+    }
+
+    function openModal(product) {
+        if (product.stock <= 0) {
+            showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
+            return;
+        }
+        selectedProduct = product;
+        document.getElementById('mTitle').innerText = product.name;
+        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
+        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        document.getElementById('mTrxID').innerText = trx;
+        document.getElementById('payModal').classList.add('active');
+    }
+
+    window.closeModal = function() {
+        document.getElementById('payModal').classList.remove('active');
+        selectedProduct = null;
+    };
+    window.closeModalOutside = function(e) {
+        if (e.target === document.getElementById('payModal')) closeModal();
+    };
+    window.copyQRIS = function() {
+        showToast('Screenshot QRIS dan bayar via bank/ewallet.');
+    };
+    window.confirmWA = async function() {
+        if (!selectedProduct) return;
+        if (selectedProduct.stock <= 0) {
+            showToast('Stok produk ini sudah habis, pesanan dibatalkan.', true);
+            closeModal();
+            loadProducts();
+            return;
+        }
+        const payBtn = document.querySelector('.pay-btn');
+        const originalText = payBtn.innerText;
+        payBtn.innerText = '⏳ Memproses...';
+        payBtn.disabled = true;
+        
+        const result = await reduceStock(selectedProduct.id);
+        
+        if (!result.success) {
+            showToast(result.error || 'Gagal memproses pesanan. Stok mungkin sudah habis.', true);
+            payBtn.innerText = originalText;
+            payBtn.disabled = false;
+            await loadProducts();
+            closeModal();
+            return;
+        }
+        
+        selectedProduct.stock = result.newStock;
+        const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
+        if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
+        renderProducts(allProducts);
+        
+        const trx = document.getElementById('mTrxID').innerText;
+        const msg = `Halo Admin, saya ingin membeli produk berikut:\n*Nama:* ${selectedProduct.name}\n*Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*ID Transaksi:* ${trx}\nMohon diproses. Terima kasih.`;
+        window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
+        
+        showToast('Pesanan berhasil! Stok telah dikurangi.');
+        payBtn.innerText = originalText;
+        payBtn.disabled = false;
+        closeModal();
+        await loadProducts();
+    };
 
     window.filterProduct = function(category, btn) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -424,33 +526,6 @@
         renderProducts(filtered);
     };
 
-    function openModal(product) {
-        selectedProduct = product;
-        document.getElementById('mTitle').innerText = product.name;
-        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
-        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-        document.getElementById('mTrxID').innerText = trx;
-        document.getElementById('payModal').classList.add('active');
-    }
-
-    window.closeModal = function() {
-        document.getElementById('payModal').classList.remove('active');
-        selectedProduct = null;
-    };
-    window.closeModalOutside = function(e) {
-        if (e.target === document.getElementById('payModal')) closeModal();
-    };
-    window.copyQRIS = function() {
-        showToast('Screenshot QRIS dan bayar via bank/ewallet.');
-    };
-    window.confirmWA = function() {
-        if (!selectedProduct) return;
-        const trx = document.getElementById('mTrxID').innerText;
-        const msg = `Halo Admin, saya ingin membeli produk berikut:\n*Nama:* ${selectedProduct.name}\n*Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*ID Transaksi:* ${trx}\nMohon diproses. Terima kasih.`;
-        window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
-        closeModal();
-    };
-
     window.toggleSidebar = function() {
         document.getElementById('sidebar').classList.toggle('active');
         document.getElementById('overlay').classList.toggle('active');
@@ -464,7 +539,6 @@
         else btn.classList.remove('visible');
     });
 
-    // Popup produk baru
     async function checkNewProducts() {
         if (dontShowPopup || isPopupShowing) return;
         try {
@@ -523,7 +597,6 @@
         modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
     }
 
-    // Auto refresh data setiap 30 detik
     setInterval(async () => {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
