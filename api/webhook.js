@@ -64,6 +64,7 @@ export default async function handler(req, res) {
     await db.collection('sessions').deleteOne({ chatId });
   }
 
+  // Handle text messages
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text.trim();
@@ -102,6 +103,7 @@ export default async function handler(req, res) {
 /list 📋 Lihat semua produk
 /report 📊 Laporan bulanan
 /transactions 🧾 Daftar transaksi
+/deletetrx 🗑️ Hapus transaksi (berdasarkan ID)
 /clearreport 🗑️ Hapus laporan bulan ini
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
@@ -152,7 +154,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== LAPORAN BULANAN (RINGKASAN) ==========
+    // ========== LAPORAN BULANAN ==========
     if (text === '/report') {
       try {
         const client = await clientPromise;
@@ -244,6 +246,33 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    // ========== HAPUS SATU TRANSAKSI (BERDASARKAN ID) ==========
+    if (text.startsWith('/deletetrx')) {
+      const parts = text.split(' ');
+      let transactionId = parts[1];
+      if (!transactionId) {
+        // Minta ID transaksi
+        await saveSession(chatId, 'deletetrx_wait_id', {});
+        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *ID Transaksi* yang ingin dihapus.\n📋 Cek ID dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
+        return res.status(200).json({ ok: true });
+      }
+      // Langsung proses
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const result = await db.collection('transactions').deleteOne({ transactionId });
+        if (result.deletedCount === 0) {
+          await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
+        } else {
+          await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
+        }
+      } catch (err) {
+        console.error(err);
+        await sendMessage(chatId, '❌ Gagal menghapus transaksi.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     // ========== HAPUS LAPORAN BULAN INI ==========
     if (text === '/clearreport') {
       const now = new Date();
@@ -287,13 +316,13 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete)
+    // Session handling (add, edit, delete, deletetrx)
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
       let temp = session.tempData || {};
 
-      // ADD FLOW (modal -> keuntungan -> harga jual otomatis)
+      // ADD FLOW (modal + keuntungan)
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_cost', temp);
@@ -314,7 +343,6 @@ export default async function handler(req, res) {
         await sendMessage(chatId, `✅ *Harga Jual dihitung:*\n💰 Modal: Rp ${temp.cost.toLocaleString()}\n➕ Keuntungan: Rp ${profit.toLocaleString()}\n🟰 Harga Jual: Rp ${price.toLocaleString()}\n\nApakah sudah sesuai? (kirim "ya" untuk lanjut, atau "tidak" untuk ulang)`, 'Markdown');
       } else if (step === 'confirm_price') {
         if (text.toLowerCase() === 'tidak') {
-          // kembali ke step add_cost (ulang dari modal)
           await saveSession(chatId, 'add_cost', { name: temp.name });
           await sendMessage(chatId, '🔁 Ulangi *harga modal*', 'Markdown');
           return res.status(200).json({ ok: true });
@@ -370,7 +398,7 @@ export default async function handler(req, res) {
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
       }
-      // EDIT FLOW (menambahkan kemampuan edit cost)
+      // EDIT FLOW
       else if (step === 'edit_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
@@ -412,6 +440,23 @@ export default async function handler(req, res) {
           else await sendMessage(chatId, '❌ *Produk tidak ditemukan.*', 'Markdown');
         } catch (err) { await sendMessage(chatId, `❌ *Error:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
+      } else if (step === 'deletetrx_wait_id') {
+        const transactionId = text;
+        try {
+          const client = await clientPromise;
+          const db = client.db('lekszystore');
+          const result = await db.collection('transactions').deleteOne({ transactionId });
+          if (result.deletedCount === 0) {
+            await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
+          } else {
+            await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
+          }
+        } catch (err) {
+          console.error(err);
+          await sendMessage(chatId, '❌ Gagal menghapus transaksi.', 'Markdown');
+        }
+        await deleteSession(chatId);
+        return res.status(200).json({ ok: true });
       }
       return res.status(200).json({ ok: true });
     }
