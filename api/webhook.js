@@ -64,7 +64,6 @@ export default async function handler(req, res) {
     await db.collection('sessions').deleteOne({ chatId });
   }
 
-  // Handle text messages
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text.trim();
@@ -120,9 +119,9 @@ export default async function handler(req, res) {
         if (!products.length) return await sendMessage(chatId, '📭 *Belum ada produk.* Gunakan /add', 'Markdown');
         let msg = '📋 *Daftar Produk:*\n━━━━━━━━━━━━━━━━━━━━━\n';
         products.forEach(p => {
-          msg += `*${p.id}.* ${p.name}\n💰 Harga jual: Rp ${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n`;
-          if (p.cost) msg += `💸 Harga modal: Rp ${p.cost.toLocaleString()}\n`;
-          msg += `🏷️ Kategori: ${p.category}\n`;
+          msg += `*${p.id}.* ${p.name}\n💰 Harga Jual: Rp ${p.price.toLocaleString()}\n`;
+          if (p.cost) msg += `💸 Harga Modal: Rp ${p.cost.toLocaleString()}\n📈 Keuntungan: Rp ${(p.price - p.cost).toLocaleString()}\n`;
+          msg += `📦 Stok: ${p.stock} | 🏷️ ${p.category}\n`;
           if (p.createdAt) msg += `📅 ${new Date(p.createdAt).toLocaleString('id-ID')}\n`;
           msg += `\n`;
         });
@@ -294,40 +293,55 @@ export default async function handler(req, res) {
       const step = session.step;
       let temp = session.tempData || {};
 
-      // ADD FLOW (dengan cost)
+      // ADD FLOW (modal -> keuntungan -> harga jual otomatis)
       if (step === 'add_name') {
         temp.name = text;
-        await saveSession(chatId, 'add_price', temp);
-        await sendMessage(chatId, '💰 *Harga Jual*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga jual* (angka)', 'Markdown');
-      } else if (step === 'add_price') {
-        const price = parseInt(text);
-        if (isNaN(price)) { await sendMessage(chatId, '❌ *Harga jual tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
-        temp.price = price;
         await saveSession(chatId, 'add_cost', temp);
-        await sendMessage(chatId, '💸 *Harga Modal* (biaya perolehan)\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga modal* (angka)', 'Markdown');
+        await sendMessage(chatId, '💰 *Harga Modal* (harga beli / modal dasar)\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga modal* (angka)', 'Markdown');
       } else if (step === 'add_cost') {
         const cost = parseInt(text);
         if (isNaN(cost)) { await sendMessage(chatId, '❌ *Harga modal tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.cost = cost;
-        await saveSession(chatId, 'add_category', temp);
+        await saveSession(chatId, 'add_profit', temp);
+        await sendMessage(chatId, '📈 *Keuntungan* (markup / laba per produk)\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *keuntungan* (angka)', 'Markdown');
+      } else if (step === 'add_profit') {
+        const profit = parseInt(text);
+        if (isNaN(profit)) { await sendMessage(chatId, '❌ *Keuntungan tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
+        const price = temp.cost + profit;
+        temp.price = price;
+        temp.profit = profit;
+        await saveSession(chatId, 'confirm_price', temp);
+        await sendMessage(chatId, `✅ *Harga Jual dihitung:*\n💰 Modal: Rp ${temp.cost.toLocaleString()}\n➕ Keuntungan: Rp ${profit.toLocaleString()}\n🟰 Harga Jual: Rp ${price.toLocaleString()}\n\nApakah sudah sesuai? (kirim "ya" untuk lanjut, atau "tidak" untuk ulang)`, 'Markdown');
+      } else if (step === 'confirm_price') {
+        if (text.toLowerCase() === 'tidak') {
+          // kembali ke step add_cost (ulang dari modal)
+          await saveSession(chatId, 'add_cost', { name: temp.name });
+          await sendMessage(chatId, '🔁 Ulangi *harga modal*', 'Markdown');
+          return res.status(200).json({ ok: true });
+        } else if (text.toLowerCase() !== 'ya') {
+          await sendMessage(chatId, '❌ Kirim "ya" untuk lanjut atau "tidak" untuk mengulang.', 'Markdown');
+          return res.status(200).json({ ok: true });
+        }
+        await saveSession(chatId, 'add_category', { name: temp.name, cost: temp.cost, price: temp.price, profit: temp.profit });
         await sendMessage(chatId, '🏷️ *Kategori*\n━━━━━━━━━━━━━━━━━━━━━\n📂 Pilih kategori: netflix, capcut, youtube, alight, canva, spotify, viu', 'Markdown');
       } else if (step === 'add_category') {
         temp.category = text.toLowerCase();
-        await saveSession(chatId, 'add_stock', temp);
+        await saveSession(chatId, 'add_stock', { ...temp });
         await sendMessage(chatId, '📦 *Stok*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *stok* (angka)', 'Markdown');
       } else if (step === 'add_stock') {
         const stock = parseInt(text);
         if (isNaN(stock)) { await sendMessage(chatId, '❌ *Stok tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.stock = stock;
-        await saveSession(chatId, 'add_duration', temp);
+        await saveSession(chatId, 'add_duration', { ...temp });
         await sendMessage(chatId, '⏱️ *Durasi*\n━━━━━━━━━━━━━━━━━━━━━\n📅 Kirimkan *durasi* (contoh: 1 Hari, 1 Bulan)', 'Markdown');
       } else if (step === 'add_duration') {
         temp.duration = text;
-        await saveSession(chatId, 'add_hot', temp);
+        await saveSession(chatId, 'add_hot', { ...temp });
         await sendMessage(chatId, '🔥 *Hot?*\n━━━━━━━━━━━━━━━━━━━━━\n🔥 Apakah produk *hot*? (kirim 1 untuk ya, 0 untuk tidak)', 'Markdown');
       } else if (step === 'add_hot') {
-        temp.hot = (text === '1');
-        await saveSession(chatId, 'add_image', temp);
+        const hot = (text === '1');
+        temp.hot = hot;
+        await saveSession(chatId, 'add_image', { ...temp });
         await sendMessage(chatId, '🖼️ *Gambar*\n━━━━━━━━━━━━━━━━━━━━━\n🖼️ Kirimkan *URL gambar* (contoh: /gambar/netflix.png) atau kirim "default"', 'Markdown');
       } else if (step === 'add_image') {
         let image = (text === 'default' || !text) ? '/gambar/placeholder.png' : text;
@@ -339,17 +353,24 @@ export default async function handler(req, res) {
           const existing = await collection.find({}).toArray();
           const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
           const newProduct = {
-            id: newId, name: temp.name, price: temp.price, cost: temp.cost,
-            category: temp.category, stock: temp.stock, duration: temp.duration,
-            hot: temp.hot, image: temp.image, createdAt: new Date()
+            id: newId,
+            name: temp.name,
+            price: temp.price,
+            cost: temp.cost,
+            category: temp.category,
+            stock: temp.stock,
+            duration: temp.duration,
+            hot: temp.hot,
+            image: temp.image,
+            createdAt: new Date()
           };
           await collection.insertOne(newProduct);
-          await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n━━━━━━━━━━━━━━━━━━━━━\n🆔 ID: ${newId}\n📛 Nama: ${temp.name}\n💰 Harga jual: Rp ${temp.price.toLocaleString()}\n💸 Harga modal: Rp ${temp.cost.toLocaleString()}\n📦 Stok: ${temp.stock}\n📅 Waktu: ${new Date().toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
+          await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n━━━━━━━━━━━━━━━━━━━━━\n🆔 ID: ${newId}\n📛 Nama: ${temp.name}\n💰 Modal: Rp ${temp.cost.toLocaleString()}\n➕ Keuntungan: Rp ${temp.profit.toLocaleString()}\n🟰 Harga Jual: Rp ${temp.price.toLocaleString()}\n📦 Stok: ${temp.stock}\n📅 Waktu: ${new Date().toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
         } catch (err) { await sendMessage(chatId, `❌ *Gagal menyimpan:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
       }
-      // EDIT FLOW (tambahkan opsi edit cost)
+      // EDIT FLOW (menambahkan kemampuan edit cost)
       else if (step === 'edit_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
@@ -358,7 +379,7 @@ export default async function handler(req, res) {
         const product = await db.collection('products').findOne({ id });
         if (!product) { await sendMessage(chatId, '❌ *Produk tidak ditemukan.*', 'Markdown'); await deleteSession(chatId); return res.status(200).json({ ok: true }); }
         await saveSession(chatId, 'edit_field', { editId: id, product });
-        await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Nama: ${product.name}\n💰 Harga jual: Rp ${product.price.toLocaleString()}\n💸 Harga modal: ${product.cost ? 'Rp ' + product.cost.toLocaleString() : 'Tidak ada'}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image}\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field yang bisa diubah: name, price, cost, stock, category, duration, hot, image\n📝 Kirimkan nama field yang ingin diubah.`, 'Markdown');
+        await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Nama: ${product.name}\n💰 Harga Jual: Rp ${product.price.toLocaleString()}\n💸 Harga Modal: ${product.cost ? 'Rp ' + product.cost.toLocaleString() : 'Tidak ada'}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image}\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field yang bisa diubah: name, price, cost, stock, category, duration, hot, image\n📝 Kirimkan nama field yang ingin diubah.`, 'Markdown');
       } else if (step === 'edit_field') {
         const allowed = ['name','price','cost','stock','category','duration','hot','image'];
         if (!allowed.includes(text)) { await sendMessage(chatId, '❌ *Field tidak valid.* Pilih: name, price, cost, stock, category, duration, hot, image', 'Markdown'); return res.status(200).json({ ok: true }); }
