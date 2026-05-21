@@ -64,6 +64,7 @@ export default async function handler(req, res) {
     await db.collection('sessions').deleteOne({ chatId });
   }
 
+  // Handle text messages
   if (update.message && update.message.text) {
     const chatId = update.message.chat.id;
     const text = update.message.text.trim();
@@ -101,8 +102,7 @@ export default async function handler(req, res) {
 /delete 🗑️ Hapus produk
 /list 📋 Lihat semua produk
 /report 📊 Laporan bulanan
-/listtransaksi 📝 Daftar transaksi bulan ini
-/deletetrx 🗑️ Hapus transaksi berdasarkan ID
+/transactions 🧾 Daftar transaksi
 /clearreport 🗑️ Hapus laporan bulan ini
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
@@ -111,7 +111,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Admin commands (produk)
+    // Admin commands
     if (text === '/list') {
       try {
         const client = await clientPromise;
@@ -151,7 +151,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== LAPORAN BULANAN ==========
+    // ========== LAPORAN BULANAN (RINGKASAN) ==========
     if (text === '/report') {
       try {
         const client = await clientPromise;
@@ -180,7 +180,7 @@ export default async function handler(req, res) {
           .sort((a, b) => b[1].rev - a[1].rev)
           .slice(0, 5);
         
-        let reportMsg = `📊 *Laporan Bulanan* (${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })})\n━━━━━━━━━━━━━━━━━━━━━\n`;
+        let reportMsg = `📊 *Laporan Bulanan* ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}\n━━━━━━━━━━━━━━━━━━━━━\n`;
         reportMsg += `📦 Total Transaksi: ${totalTrans}\n💰 Total Pendapatan: Rp ${totalRevenue.toLocaleString()}\n\n🏆 *Produk Terlaris:*\n`;
         if (topProducts.length === 0) {
           reportMsg += `Belum ada transaksi bulan ini.\n`;
@@ -189,8 +189,7 @@ export default async function handler(req, res) {
             reportMsg += `${i + 1}. ${name}\n   Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()}\n`;
           });
         }
-        reportMsg += `━━━━━━━━━━━━━━━━━━━━━\n✨ Gunakan /report untuk melihat laporan bulan ini.`;
-        
+        reportMsg += `━━━━━━━━━━━━━━━━━━━━━\n✨ Periode: ${startDate.toLocaleDateString('id-ID')} - ${endDate.toLocaleDateString('id-ID')}`;
         await sendMessage(chatId, reportMsg, 'Markdown');
       } catch (err) {
         console.error(err);
@@ -199,59 +198,40 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== DAFTAR TRANSAKSI BULAN INI ==========
-    if (text === '/listtransaksi') {
+    // ========== DAFTAR TRANSAKSI TERBARU (DENGAN JAM & TANGGAL) ==========
+    if (text === '/transactions') {
       try {
         const client = await clientPromise;
         const db = client.db('lekszystore');
-        const now = new Date();
-        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        // Ambil 20 transaksi terbaru, urut descending
         const transactions = await db.collection('transactions')
-          .find({ createdAt: { $gte: startDate, $lt: endDate } })
+          .find({})
           .sort({ createdAt: -1 })
+          .limit(20)
           .toArray();
         
         if (transactions.length === 0) {
-          await sendMessage(chatId, '📭 *Tidak ada transaksi bulan ini.*', 'Markdown');
+          await sendMessage(chatId, '📭 *Belum ada transaksi.*', 'Markdown');
           return res.status(200).json({ ok: true });
         }
         
-        let msg = `📋 *Daftar Transaksi Bulan ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}*\n━━━━━━━━━━━━━━━━━━━━━\n`;
+        let msg = '🧾 *Daftar Transaksi Terbaru*\n━━━━━━━━━━━━━━━━━━━━━\n';
         transactions.forEach((t, idx) => {
-          const date = new Date(t.createdAt).toLocaleDateString('id-ID');
-          msg += `${idx+1}. *${t.productName}*\n   ID: \`${t.transactionId}\` | Rp ${t.totalAmount.toLocaleString()}\n   📅 ${date}\n\n`;
+          const date = new Date(t.createdAt);
+          const waktu = date.toLocaleString('id-ID', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit'
+          });
+          msg += `${idx + 1}. *${t.productName}*\n`;
+          msg += `   🆔 ID: ${t.transactionId}\n`;
+          msg += `   💰 Rp ${t.totalAmount.toLocaleString()} | 📦 ${t.quantity}x\n`;
+          msg += `   🕒 ${waktu}\n\n`;
         });
-        msg += `━━━━━━━━━━━━━━━━━━━━━\n💡 Gunakan /deletetrx <ID> untuk menghapus transaksi.`;
+        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Akhir daftar*';
         await sendMessage(chatId, msg, 'Markdown');
       } catch (err) {
         console.error(err);
         await sendMessage(chatId, '❌ Gagal mengambil daftar transaksi.', 'Markdown');
-      }
-      return res.status(200).json({ ok: true });
-    }
-
-    // ========== HAPUS TRANSAKSI BERDASARKAN ID ==========
-    if (text.startsWith('/deletetrx')) {
-      const parts = text.split(' ');
-      if (parts.length < 2) {
-        await sendMessage(chatId, '⚠️ *Penggunaan:* `/deletetrx <ID_transaksi>`\nContoh: `/deletetrx TX-1234567890-abc123`', 'Markdown');
-        return res.status(200).json({ ok: true });
-      }
-      const transactionId = parts[1];
-      
-      try {
-        const client = await clientPromise;
-        const db = client.db('lekszystore');
-        const result = await db.collection('transactions').deleteOne({ transactionId });
-        if (result.deletedCount === 0) {
-          await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.* Periksa kembali ID transaksi.', 'Markdown');
-        } else {
-          await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
-        }
-      } catch (err) {
-        console.error(err);
-        await sendMessage(chatId, '❌ Gagal menghapus transaksi.', 'Markdown');
       }
       return res.status(200).json({ ok: true });
     }
@@ -299,7 +279,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete) – tetap sama seperti sebelumnya
+    // Session handling (add, edit, delete) – kode ini sama seperti sebelumnya (dipertahankan)
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
