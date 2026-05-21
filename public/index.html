@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P ========== */
+        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -445,6 +445,24 @@
         }
     }
 
+    async function recordTransaction(product, transactionId) {
+        try {
+            await fetch('/api/record-transaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    productId: product.id,
+                    productName: product.name,
+                    price: product.price,
+                    quantity: 1,
+                    totalAmount: product.price,
+                    transactionId: transactionId,
+                    buyerInfo: {}
+                })
+            });
+        } catch(e) { console.error('Gagal mencatat transaksi', e); }
+    }
+
     function openModal(product) {
         if (product.stock <= 0) {
             showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
@@ -498,6 +516,10 @@
         renderProducts(allProducts);
         
         const trx = document.getElementById('mTrxID').innerText;
+        
+        // Catat transaksi ke database
+        await recordTransaction(selectedProduct, trx);
+        
         const msg = `Halo Admin, saya ingin membeli produk berikut:\n*Nama:* ${selectedProduct.name}\n*Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*ID Transaksi:* ${trx}\nMohon diproses. Terima kasih.`;
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
         
