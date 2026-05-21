@@ -120,7 +120,9 @@ export default async function handler(req, res) {
         if (!products.length) return await sendMessage(chatId, '📭 *Belum ada produk.* Gunakan /add', 'Markdown');
         let msg = '📋 *Daftar Produk:*\n━━━━━━━━━━━━━━━━━━━━━\n';
         products.forEach(p => {
-          msg += `*${p.id}.* ${p.name}\n💰 Rp${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n🏷️ Kategori: ${p.category}\n`;
+          msg += `*${p.id}.* ${p.name}\n💰 Harga jual: Rp ${p.price.toLocaleString()} | 📦 Stok: ${p.stock}\n`;
+          if (p.cost) msg += `💸 Harga modal: Rp ${p.cost.toLocaleString()}\n`;
+          msg += `🏷️ Kategori: ${p.category}\n`;
           if (p.createdAt) msg += `📅 ${new Date(p.createdAt).toLocaleString('id-ID')}\n`;
           msg += `\n`;
         });
@@ -166,27 +168,32 @@ export default async function handler(req, res) {
         
         const totalTrans = transactions.length;
         const totalRevenue = transactions.reduce((sum, t) => sum + t.totalAmount, 0);
+        const totalProfit = transactions.reduce((sum, t) => sum + (t.profit || 0), 0);
         
         const productMap = new Map();
         transactions.forEach(t => {
           if (!productMap.has(t.productName)) {
-            productMap.set(t.productName, { qty: 0, rev: 0 });
+            productMap.set(t.productName, { qty: 0, rev: 0, profit: 0 });
           }
           const p = productMap.get(t.productName);
           p.qty += t.quantity;
           p.rev += t.totalAmount;
+          p.profit += (t.profit || 0);
         });
         const topProducts = Array.from(productMap.entries())
           .sort((a, b) => b[1].rev - a[1].rev)
           .slice(0, 5);
         
         let reportMsg = `📊 *Laporan Bulanan* ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}\n━━━━━━━━━━━━━━━━━━━━━\n`;
-        reportMsg += `📦 Total Transaksi: ${totalTrans}\n💰 Total Pendapatan: Rp ${totalRevenue.toLocaleString()}\n\n🏆 *Produk Terlaris:*\n`;
+        reportMsg += `📦 Total Transaksi: ${totalTrans}\n`;
+        reportMsg += `💰 Total Pendapatan: Rp ${totalRevenue.toLocaleString()}\n`;
+        reportMsg += `📈 Total Keuntungan: Rp ${totalProfit.toLocaleString()}\n\n`;
+        reportMsg += `🏆 *Produk Terlaris:*\n`;
         if (topProducts.length === 0) {
           reportMsg += `Belum ada transaksi bulan ini.\n`;
         } else {
           topProducts.forEach(([name, data], i) => {
-            reportMsg += `${i + 1}. ${name}\n     Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()}\n`;
+            reportMsg += `${i + 1}. ${name}\n     Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()} | Profit: Rp ${data.profit.toLocaleString()}\n`;
           });
         }
         reportMsg += `━━━━━━━━━━━━━━━━━━━━━\n✨ Periode: ${startDate.toLocaleDateString('id-ID')} - ${endDate.toLocaleDateString('id-ID')}`;
@@ -198,12 +205,11 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== DAFTAR TRANSAKSI TERBARU (DENGAN JAM & TANGGAL) ==========
+    // ========== DAFTAR TRANSAKSI TERBARU ==========
     if (text === '/transactions') {
       try {
         const client = await clientPromise;
         const db = client.db('lekszystore');
-        // Ambil 20 transaksi terbaru, urut descending
         const transactions = await db.collection('transactions')
           .find({})
           .sort({ createdAt: -1 })
@@ -224,8 +230,11 @@ export default async function handler(req, res) {
           });
           msg += `${idx + 1}. *${t.productName}*\n`;
           msg += `   🆔 ID: ${t.transactionId}\n`;
-          msg += `   💰 Rp ${t.totalAmount.toLocaleString()} | 📦 ${t.quantity}x\n`;
-          msg += `   🕒 ${waktu}\n\n`;
+          msg += `   💰 Harga Jual: Rp ${t.price.toLocaleString()}`;
+          if (t.cost) msg += ` | 💸 Modal: Rp ${t.cost.toLocaleString()}`;
+          msg += `\n   📦 ${t.quantity}x | Total: Rp ${t.totalAmount.toLocaleString()}`;
+          if (t.profit) msg += ` | Profit: Rp ${t.profit.toLocaleString()}`;
+          msg += `\n   🕒 ${waktu}\n\n`;
         });
         msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Akhir daftar*';
         await sendMessage(chatId, msg, 'Markdown');
@@ -279,20 +288,27 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete) – kode ini sama seperti sebelumnya (dipertahankan)
+    // Session handling (add, edit, delete)
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
       let temp = session.tempData || {};
 
+      // ADD FLOW (dengan cost)
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
-        await sendMessage(chatId, '💰 *Harga*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga* (angka)', 'Markdown');
+        await sendMessage(chatId, '💰 *Harga Jual*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga jual* (angka)', 'Markdown');
       } else if (step === 'add_price') {
         const price = parseInt(text);
-        if (isNaN(price)) { await sendMessage(chatId, '❌ *Harga tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
+        if (isNaN(price)) { await sendMessage(chatId, '❌ *Harga jual tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.price = price;
+        await saveSession(chatId, 'add_cost', temp);
+        await sendMessage(chatId, '💸 *Harga Modal* (biaya perolehan)\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga modal* (angka)', 'Markdown');
+      } else if (step === 'add_cost') {
+        const cost = parseInt(text);
+        if (isNaN(cost)) { await sendMessage(chatId, '❌ *Harga modal tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
+        temp.cost = cost;
         await saveSession(chatId, 'add_category', temp);
         await sendMessage(chatId, '🏷️ *Kategori*\n━━━━━━━━━━━━━━━━━━━━━\n📂 Pilih kategori: netflix, capcut, youtube, alight, canva, spotify, viu', 'Markdown');
       } else if (step === 'add_category') {
@@ -323,16 +339,18 @@ export default async function handler(req, res) {
           const existing = await collection.find({}).toArray();
           const newId = existing.length > 0 ? Math.max(...existing.map(p => p.id)) + 1 : 1;
           const newProduct = {
-            id: newId, name: temp.name, price: temp.price, category: temp.category,
-            stock: temp.stock, duration: temp.duration, hot: temp.hot, image: temp.image,
-            createdAt: new Date()
+            id: newId, name: temp.name, price: temp.price, cost: temp.cost,
+            category: temp.category, stock: temp.stock, duration: temp.duration,
+            hot: temp.hot, image: temp.image, createdAt: new Date()
           };
           await collection.insertOne(newProduct);
-          await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n━━━━━━━━━━━━━━━━━━━━━\n🆔 ID: ${newId}\n📛 Nama: ${temp.name}\n💰 Harga: Rp${temp.price.toLocaleString()}\n📦 Stok: ${temp.stock}\n📅 Waktu: ${new Date().toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
+          await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n━━━━━━━━━━━━━━━━━━━━━\n🆔 ID: ${newId}\n📛 Nama: ${temp.name}\n💰 Harga jual: Rp ${temp.price.toLocaleString()}\n💸 Harga modal: Rp ${temp.cost.toLocaleString()}\n📦 Stok: ${temp.stock}\n📅 Waktu: ${new Date().toLocaleString('id-ID')}\n━━━━━━━━━━━━━━━━━━━━━\n✨ Terima kasih!`, 'Markdown');
         } catch (err) { await sendMessage(chatId, `❌ *Gagal menyimpan:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
-      } else if (step === 'edit_wait_id') {
+      }
+      // EDIT FLOW (tambahkan opsi edit cost)
+      else if (step === 'edit_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) { await sendMessage(chatId, '❌ *ID tidak valid.* Kirimkan angka.', 'Markdown'); return res.status(200).json({ ok: true }); }
         const client = await clientPromise;
@@ -340,19 +358,19 @@ export default async function handler(req, res) {
         const product = await db.collection('products').findOne({ id });
         if (!product) { await sendMessage(chatId, '❌ *Produk tidak ditemukan.*', 'Markdown'); await deleteSession(chatId); return res.status(200).json({ ok: true }); }
         await saveSession(chatId, 'edit_field', { editId: id, product });
-        await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Nama: ${product.name}\n💰 Harga: Rp${product.price.toLocaleString()}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image}\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field yang bisa diubah: name, price, stock, category, duration, hot, image\n📝 Kirimkan nama field yang ingin diubah.`, 'Markdown');
+        await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Nama: ${product.name}\n💰 Harga jual: Rp ${product.price.toLocaleString()}\n💸 Harga modal: ${product.cost ? 'Rp ' + product.cost.toLocaleString() : 'Tidak ada'}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image}\n━━━━━━━━━━━━━━━━━━━━━\n🔧 Field yang bisa diubah: name, price, cost, stock, category, duration, hot, image\n📝 Kirimkan nama field yang ingin diubah.`, 'Markdown');
       } else if (step === 'edit_field') {
-        const allowed = ['name','price','stock','category','duration','hot','image'];
-        if (!allowed.includes(text)) { await sendMessage(chatId, '❌ *Field tidak valid.* Pilih: name, price, stock, category, duration, hot, image', 'Markdown'); return res.status(200).json({ ok: true }); }
+        const allowed = ['name','price','cost','stock','category','duration','hot','image'];
+        if (!allowed.includes(text)) { await sendMessage(chatId, '❌ *Field tidak valid.* Pilih: name, price, cost, stock, category, duration, hot, image', 'Markdown'); return res.status(200).json({ ok: true }); }
         temp.field = text;
         await saveSession(chatId, 'edit_value', temp);
-        let prompt = (text === 'hot') ? '🔥 Kirim 1 untuk ya, 0 untuk tidak' : (text === 'price'||text==='stock') ? '🔢 Kirimkan angka' : `📝 Kirimkan nilai baru untuk ${text}`;
+        let prompt = (text === 'hot') ? '🔥 Kirim 1 untuk ya, 0 untuk tidak' : (text === 'price'||text==='stock'||text==='cost') ? '🔢 Kirimkan angka' : `📝 Kirimkan nilai baru untuk ${text}`;
         await sendMessage(chatId, `✏️ *Ubah ${text}*\n━━━━━━━━━━━━━━━━━━━━━\n${prompt}`, 'Markdown');
       } else if (step === 'edit_value') {
         const field = temp.field;
         const editId = temp.editId;
         let newValue = text;
-        if (field === 'price' || field === 'stock') { const num = parseInt(newValue); if (isNaN(num)) { await sendMessage(chatId, '❌ *Harus angka.*', 'Markdown'); return; } newValue = num; }
+        if (field === 'price' || field === 'stock' || field === 'cost') { const num = parseInt(newValue); if (isNaN(num)) { await sendMessage(chatId, '❌ *Harus angka.*', 'Markdown'); return; } newValue = num; }
         if (field === 'hot') { if (newValue !== '0' && newValue !== '1') { await sendMessage(chatId, '❌ *Kirim 1 atau 0*', 'Markdown'); return; } newValue = (newValue === '1'); }
         if (field === 'image' && newValue === 'default') newValue = '/gambar/placeholder.png';
         try {
@@ -381,7 +399,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  // ========== HANDLE CALLBACK QUERY (untuk konfirmasi hapus laporan) ==========
+  // ========== HANDLE CALLBACK QUERY ==========
   if (update.callback_query) {
     const callback = update.callback_query;
     const chatId = callback.message.chat.id;
