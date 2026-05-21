@@ -103,7 +103,7 @@ export default async function handler(req, res) {
 /list 📋 Lihat semua produk
 /report 📊 Laporan bulanan
 /transactions 🧾 Daftar transaksi
-/deletetrx 🗑️ Hapus transaksi (berdasarkan ID)
+/deletetrx 🗑️ Hapus transaksi (nomor urut atau ID)
 /clearreport 🗑️ Hapus laporan bulan ini
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
@@ -246,25 +246,49 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== HAPUS SATU TRANSAKSI (BERDASARKAN ID) ==========
+    // ========== HAPUS TRANSAKSI (berdasarkan nomor urut atau ID) ==========
     if (text.startsWith('/deletetrx')) {
       const parts = text.split(' ');
-      let transactionId = parts[1];
-      if (!transactionId) {
-        // Minta ID transaksi
+      let param = parts[1];
+      if (!param) {
         await saveSession(chatId, 'deletetrx_wait_id', {});
-        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *ID Transaksi* yang ingin dihapus.\n📋 Cek ID dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
+        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *nomor urut* dari daftar /transactions, atau *ID Transaksi*.\n📋 Cek daftar dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
         return res.status(200).json({ ok: true });
       }
-      // Langsung proses
+
       try {
         const client = await clientPromise;
         const db = client.db('lekszystore');
-        const result = await db.collection('transactions').deleteOne({ transactionId });
-        if (result.deletedCount === 0) {
-          await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
+        let transactionIdToDelete = null;
+        let deleted = false;
+
+        // Coba parsing sebagai angka (nomor urut)
+        const index = parseInt(param);
+        if (!isNaN(index) && index > 0) {
+          // Ambil 20 transaksi terbaru
+          const transactions = await db.collection('transactions')
+            .find({})
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .toArray();
+          if (index <= transactions.length) {
+            transactionIdToDelete = transactions[index - 1].transactionId;
+          } else {
+            await sendMessage(chatId, '❌ *Nomor urut tidak valid.* Gunakan nomor antara 1 hingga ' + transactions.length, 'Markdown');
+            return res.status(200).json({ ok: true });
+          }
         } else {
-          await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
+          // Parameter bukan angka, anggap sebagai ID transaksi
+          transactionIdToDelete = param;
+        }
+
+        if (transactionIdToDelete) {
+          const result = await db.collection('transactions').deleteOne({ transactionId: transactionIdToDelete });
+          if (result.deletedCount === 0) {
+            await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
+          } else {
+            await sendMessage(chatId, `✅ *Transaksi dengan ${isNaN(parseInt(param)) ? 'ID' : 'nomor urut'} ${param} berhasil dihapus.*`, 'Markdown');
+          }
         }
       } catch (err) {
         console.error(err);
@@ -316,7 +340,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete, deletetrx)
+    // Session handling (add, edit, delete, deletetrx_wait_id)
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -441,15 +465,33 @@ export default async function handler(req, res) {
         } catch (err) { await sendMessage(chatId, `❌ *Error:* ${err.message}`, 'Markdown'); }
         finally { await deleteSession(chatId); }
       } else if (step === 'deletetrx_wait_id') {
-        const transactionId = text;
+        const param = text;
         try {
           const client = await clientPromise;
           const db = client.db('lekszystore');
-          const result = await db.collection('transactions').deleteOne({ transactionId });
+          let transactionIdToDelete = null;
+          const index = parseInt(param);
+          if (!isNaN(index) && index > 0) {
+            const transactions = await db.collection('transactions')
+              .find({})
+              .sort({ createdAt: -1 })
+              .limit(20)
+              .toArray();
+            if (index <= transactions.length) {
+              transactionIdToDelete = transactions[index - 1].transactionId;
+            } else {
+              await sendMessage(chatId, '❌ *Nomor urut tidak valid.*', 'Markdown');
+              await deleteSession(chatId);
+              return res.status(200).json({ ok: true });
+            }
+          } else {
+            transactionIdToDelete = param;
+          }
+          const result = await db.collection('transactions').deleteOne({ transactionId: transactionIdToDelete });
           if (result.deletedCount === 0) {
             await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
           } else {
-            await sendMessage(chatId, `✅ *Transaksi dengan ID ${transactionId} berhasil dihapus.*`, 'Markdown');
+            await sendMessage(chatId, `✅ *Transaksi berhasil dihapus.*`, 'Markdown');
           }
         } catch (err) {
           console.error(err);
@@ -465,7 +507,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true });
   }
 
-  // ========== HANDLE CALLBACK QUERY ==========
+  // Handle callback query (untuk konfirmasi clearreport)
   if (update.callback_query) {
     const callback = update.callback_query;
     const chatId = callback.message.chat.id;
