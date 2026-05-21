@@ -72,7 +72,6 @@ export default async function handler(req, res) {
       });
       const message = `🛍️ *Pesanan Baru!*
 ━━━━━━━━━━━━━━━━━━━━━
-👤 *Pembeli:* (dari website)
 📦 *Produk:* ${product.name}
 💰 *Harga:* Rp ${price.toLocaleString()}
 📅 *Waktu:* ${waktu}
