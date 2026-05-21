@@ -206,7 +206,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== DAFTAR TRANSAKSI TERBARU ==========
+    // ========== DAFTAR TRANSAKSI TERBARU (dengan ID dapat di-copy) ==========
     if (text === '/transactions') {
       try {
         const client = await clientPromise;
@@ -230,14 +230,14 @@ export default async function handler(req, res) {
             hour: '2-digit', minute: '2-digit', second: '2-digit'
           });
           msg += `${idx + 1}. *${t.productName}*\n`;
-          msg += `   🆔 ID: ${t.transactionId}\n`;
+          msg += `   🆔 ID: \`${t.transactionId}\`\n`; // dibungkus backticks agar mudah di-copy
           msg += `   💰 Harga Jual: Rp ${t.price.toLocaleString()}`;
           if (t.cost) msg += ` | 💸 Modal: Rp ${t.cost.toLocaleString()}`;
           msg += `\n   📦 ${t.quantity}x | Total: Rp ${t.totalAmount.toLocaleString()}`;
           if (t.profit) msg += ` | Profit: Rp ${t.profit.toLocaleString()}`;
           msg += `\n   🕒 ${waktu}\n\n`;
         });
-        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Akhir daftar*';
+        msg += '━━━━━━━━━━━━━━━━━━━━━\n✅ *Akhir daftar*\n💡 *Tips:* Tap ID transaksi untuk copy, lalu gunakan /deletetrx <ID> untuk hapus.';
         await sendMessage(chatId, msg, 'Markdown');
       } catch (err) {
         console.error(err);
@@ -252,7 +252,7 @@ export default async function handler(req, res) {
       let param = parts[1];
       if (!param) {
         await saveSession(chatId, 'deletetrx_wait_id', {});
-        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *nomor urut* dari daftar /transactions, atau *ID Transaksi*.\n📋 Cek daftar dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
+        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *nomor urut* dari daftar /transactions, atau *ID Transaksi* (bisa copy dari daftar).\n📋 Cek daftar dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
         return res.status(200).json({ ok: true });
       }
 
@@ -265,7 +265,6 @@ export default async function handler(req, res) {
         // Coba parsing sebagai angka (nomor urut)
         const index = parseInt(param);
         if (!isNaN(index) && index > 0) {
-          // Ambil 20 transaksi terbaru
           const transactions = await db.collection('transactions')
             .find({})
             .sort({ createdAt: -1 })
@@ -278,7 +277,6 @@ export default async function handler(req, res) {
             return res.status(200).json({ ok: true });
           }
         } else {
-          // Parameter bukan angka, anggap sebagai ID transaksi
           transactionIdToDelete = param;
         }
 
@@ -287,7 +285,7 @@ export default async function handler(req, res) {
           if (result.deletedCount === 0) {
             await sendMessage(chatId, '❌ *Transaksi tidak ditemukan.*', 'Markdown');
           } else {
-            await sendMessage(chatId, `✅ *Transaksi dengan ${isNaN(parseInt(param)) ? 'ID' : 'nomor urut'} ${param} berhasil dihapus.*`, 'Markdown');
+            await sendMessage(chatId, `✅ *Transaksi dengan ${isNaN(parseInt(param)) ? 'ID' : 'nomor urut'} \`${param}\` berhasil dihapus.*`, 'Markdown');
           }
         }
       } catch (err) {
@@ -340,7 +338,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete, deletetrx_wait_id)
+    // Session handling (add, edit, delete, deletetrx_wait_id) - sama seperti sebelumnya
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
