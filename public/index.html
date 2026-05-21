@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P ========== */
+        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -288,7 +288,7 @@
     </div>
 </div>
 
-<!-- Popup produk baru -->
+<!-- Popup produk baru (modal horizontal) -->
 <div id="newProductModal" class="new-product-modal">
     <div class="new-product-container">
         <div class="modal-header"><i class="fas fa-gift"></i><h2>✨ Produk Baru Ditambahkan!</h2></div>
@@ -342,14 +342,7 @@
     function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if (!products.length) {
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-store-slash"></i>
-                    <h3>Oops, toko masih kosong</h3>
-                    <p>Belum ada produk yang tersedia. Silakan cek kembali nanti atau hubungi admin.</p>
-                    <button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                </div>
-            `;
+            grid.innerHTML = `<div class="empty-state"><i class="fas fa-store-slash"></i><h3>Oops, toko masih kosong</h3><p>Belum ada produk yang tersedia. Silakan cek kembali nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
             return;
         }
         const fragment = document.createDocumentFragment();
@@ -416,18 +409,10 @@
         } catch(e) {
             console.error(e);
             showToast('Gagal memuat produk. Refresh halaman.', true);
-            document.getElementById('productGrid').innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-box-open"></i>
-                    <h3>Gagal memuat produk</h3>
-                    <p>Terjadi kesalahan saat mengambil data. Silakan refresh halaman.</p>
-                    <button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button>
-                </div>
-            `;
+            document.getElementById('productGrid').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>Gagal memuat produk</h3><p>Terjadi kesalahan saat mengambil data. Silakan refresh halaman.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
         }
     }
 
-    // ========== SATU ENDPOINT CHECKOUT (gabungkan stok + transaksi) ==========
     async function checkout(productId, transactionId) {
         try {
             const res = await fetch('/api/checkout', {
@@ -467,8 +452,7 @@
     window.copyQRIS = function() {
         showToast('Screenshot QRIS dan bayar via bank/ewallet.');
     };
-    
-    // ========== KONFIRMASI WHATSAPP + CHECKOUT (Satu Panggilan) ==========
+
     window.confirmWA = async function() {
         if (!selectedProduct) return;
         if (selectedProduct.stock <= 0) {
@@ -481,12 +465,8 @@
         const originalText = payBtn.innerText;
         payBtn.innerText = '⏳ Memproses...';
         payBtn.disabled = true;
-        
         const trx = document.getElementById('mTrxID').innerText;
-        
-        // Panggil endpoint checkout (satu kali untuk kurangi stok + catat transaksi)
         const result = await checkout(selectedProduct.id, trx);
-        
         if (!result.success) {
             showToast(result.error || 'Gagal memproses pesanan.', true);
             payBtn.innerText = originalText;
@@ -495,30 +475,17 @@
             closeModal();
             return;
         }
-        
-        // Update stok di memori
         selectedProduct.stock = result.newStock;
         const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
         if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
         renderProducts(allProducts);
-        
-        // Format pesan WhatsApp
-        const msg = `Halo Admin *LekszyStore*
-Saya ingin konfirmasi pembelian:
-
-*📦 Produk*: ${selectedProduct.name}
-*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}
-*🆔 ID Transaksi*: ${trx}
-
-Berikut bukti pembayaran yang telah saya lakukan:`;
-        
+        const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
-        
         showToast('Pesanan berhasil! Stok telah dikurangi.');
         payBtn.innerText = originalText;
         payBtn.disabled = false;
         closeModal();
-        await loadProducts(); // refresh data
+        await loadProducts();
     };
 
     window.filterProduct = function(category, btn) {
@@ -552,6 +519,7 @@ Berikut bukti pembayaran yang telah saya lakukan:`;
         else btn.classList.remove('visible');
     });
 
+    // ========== CEK PRODUK BARU (POPUP MODAL) ==========
     async function checkNewProducts() {
         if (dontShowPopup || isPopupShowing) return;
         try {
@@ -610,6 +578,7 @@ Berikut bukti pembayaran yang telah saya lakukan:`;
         modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
     }
 
+    // ========== POLLING UNTUK UPDATE DATA DAN CEK PRODUK BARU (TANPA TOAST) ==========
     setInterval(async () => {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
