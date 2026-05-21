@@ -23,7 +23,6 @@ async function sendMessage(chatId, text, parseMode = null) {
   });
 }
 
-// Fungsi untuk mendapatkan atau membuat user (untuk admin)
 async function getOrCreateAdminUser(userId, username) {
   const client = await clientPromise;
   const db = client.db('lekszystore');
@@ -72,7 +71,6 @@ export default async function handler(req, res) {
     const username = update.message.from.username;
     const isAdmin = (chatId === ADMIN_ID);
 
-    // Jika bukan admin, abaikan atau balas bahwa bot hanya untuk owner
     if (!isAdmin) {
       await sendMessage(chatId, '🤖 *Bot ini hanya untuk owner.*', 'Markdown');
       return res.status(200).json({ ok: true });
@@ -102,6 +100,7 @@ export default async function handler(req, res) {
 /edit ✏️ Edit produk
 /delete 🗑️ Hapus produk
 /list 📋 Lihat semua produk
+/report 📊 Laporan bulanan
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
 ━━━━━━━━━━━━━━━━━━━━━`;
@@ -149,13 +148,61 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete)
+    // ========== LAPORAN BULANAN ==========
+    if (text === '/report') {
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+        
+        const transactions = await db.collection('transactions').find({
+          createdAt: { $gte: startDate, $lt: endDate }
+        }).toArray();
+        
+        const totalTrans = transactions.length;
+        const totalRevenue = transactions.reduce((sum, t) => sum + t.totalAmount, 0);
+        
+        // Hitung 5 produk terlaris
+        const productMap = new Map();
+        transactions.forEach(t => {
+          if (!productMap.has(t.productName)) {
+            productMap.set(t.productName, { qty: 0, rev: 0 });
+          }
+          const p = productMap.get(t.productName);
+          p.qty += t.quantity;
+          p.rev += t.totalAmount;
+        });
+        const topProducts = Array.from(productMap.entries())
+          .sort((a, b) => b[1].rev - a[1].rev)
+          .slice(0, 5);
+        
+        let reportMsg = `📊 *Laporan Bulanan* (${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })})\n━━━━━━━━━━━━━━━━━━━━━\n`;
+        reportMsg += `📦 Total Transaksi: ${totalTrans}\n💰 Total Pendapatan: Rp ${totalRevenue.toLocaleString()}\n\n🏆 *Produk Terlaris:*\n`;
+        if (topProducts.length === 0) {
+          reportMsg += `Belum ada transaksi bulan ini.\n`;
+        } else {
+          topProducts.forEach(([name, data], i) => {
+            reportMsg += `${i + 1}. ${name}\n   Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()}\n`;
+          });
+        }
+        reportMsg += `━━━━━━━━━━━━━━━━━━━━━\n✨ Gunakan /report untuk melihat laporan bulan ini.`;
+        
+        await sendMessage(chatId, reportMsg, 'Markdown');
+      } catch (err) {
+        console.error(err);
+        await sendMessage(chatId, '❌ Gagal mengambil laporan bulanan.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // Session handling (add, edit, delete) – SAMA SEPERTI SEBELUMNYA
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
       let temp = session.tempData || {};
 
-      // ADD FLOW
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
