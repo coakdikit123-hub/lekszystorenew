@@ -186,7 +186,7 @@ export default async function handler(req, res) {
           reportMsg += `Belum ada transaksi bulan ini.\n`;
         } else {
           topProducts.forEach(([name, data], i) => {
-            reportMsg += `${i + 1}. ${name}\n    Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()}\n`;
+            reportMsg += `${i + 1}. ${name}\n     Terjual: ${data.qty} | Pendapatan: Rp ${data.rev.toLocaleString()}\n`;
           });
         }
         reportMsg += `━━━━━━━━━━━━━━━━━━━━━\n✨ Periode: ${startDate.toLocaleDateString('id-ID')} - ${endDate.toLocaleDateString('id-ID')}`;
