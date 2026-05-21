@@ -61,6 +61,43 @@ export default async function handler(req, res) {
       { upsert: true }
     );
 
+    // ========== KIRIM NOTIFIKASI KE TELEGRAM (OWNER) ==========
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const ownerId = parseInt(process.env.ADMIN_ID) || 0;
+    if (botToken && ownerId) {
+      const now = new Date();
+      const waktu = now.toLocaleString('id-ID', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+      const message = `🛍️ *Pesanan Baru!*
+━━━━━━━━━━━━━━━━━━━━━
+👤 *Pembeli:* (dari website)
+📦 *Produk:* ${product.name}
+💰 *Harga:* Rp ${price.toLocaleString()}
+📅 *Waktu:* ${waktu}
+🆔 *ID Transaksi:* \`${finalTransactionId}\`
+📊 *Jumlah:* ${quantity}
+💵 *Total:* Rp ${totalAmount.toLocaleString()}
+📈 *Keuntungan:* Rp ${profit.toLocaleString()}
+━━━━━━━━━━━━━━━━━━━━━
+✅ *Silakan diproses.*`;
+      try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: ownerId,
+            text: message,
+            parse_mode: 'Markdown'
+          })
+        });
+      } catch (notifErr) {
+        console.error('Gagal kirim notifikasi ke owner:', notifErr);
+        // Tidak mengganggu proses checkout utama
+      }
+    }
+
     res.status(200).json({
       success: true,
       transactionId: finalTransactionId,
