@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya) ========== */
+        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya, tidak diubah) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -486,6 +486,8 @@
     window.copyQRIS = function() {
         showToast('Screenshot QRIS dan bayar via bank/ewallet.');
     };
+    
+    // ========== FUNGSI KONFIRMASI WHATSAPP DENGAN FORMAT BARU ==========
     window.confirmWA = async function() {
         if (!selectedProduct) return;
         if (selectedProduct.stock <= 0) {
@@ -520,7 +522,16 @@
         // Catat transaksi ke database
         await recordTransaction(selectedProduct, trx);
         
-        const msg = `Halo Admin, saya ingin membeli produk berikut:\n*Nama:* ${selectedProduct.name}\n*Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*ID Transaksi:* ${trx}\nMohon diproses. Terima kasih.`;
+        // Format pesan baru sesuai permintaan
+        const msg = `Halo Admin *LekszyStore*
+Saya ingin konfirmasi pembelian:
+
+*📦 Produk*: ${selectedProduct.name}
+*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}
+*🆔 ID Transaksi*: ${trx}
+
+Berikut bukti pembayaran yang telah saya lakukan:`;
+        
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
         
         showToast('Pesanan berhasil! Stok telah dikurangi.');
