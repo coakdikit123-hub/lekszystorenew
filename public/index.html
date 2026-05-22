@@ -5,381 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="LekszyStore - Toko Premium Terbaik dengan Harga Terjangkau">
     <title>LekszyStore - Best Cheap Premium Store</title>
-    <link rel="icon" type="image/png" href="/gambar/logo.png"><!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="LekszyStore - Toko Premium Terbaik dengan Harga Terjangkau">
-    <title>LekszyStore - Best Cheap Premium Store</title>
     <link rel="icon" type="image/png" href="/gambar/logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya, tidak diubah) ========== */
-        :root {
-            --bg-deep: #05060a;
-            --bg-main: #0f111a;
-            --bg-surface: #1a1d2e;
-            --bg-surface-light: #24283f;
-            --primary-blue: #58a6ff;
-            --accent-purple: #bc66ff;
-            --accent-pink: #ff85e0;
-            --gradient-logo: linear-gradient(135deg, #58a6ff 0%, #bc66ff 50%, #ff85e0 100%);
-            --text-main: #f3f4f6;
-            --text-muted: #94a3b8;
-            --border-subtle: rgba(255, 255, 255, 0.08);
-            --radius-xl: 20px;
-            --nav-height: 85px;
-            --stock-high: #10b981;
-            --stock-medium: #f59e0b;
-            --stock-low: #ef4444;
-            --netflix-red: #e50914;
-            --capcut-red: #ff4d4d;
-            --youtube-red: #ff0000;
-            --spotify-green: #1DB954;
-            --canva-cyan: #00c4cc;
-            --alight-green: #34e89e;
-            --viu-yellow: #ffc107;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; padding-bottom: 20px; overflow-x: hidden; }
-        header { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-height); background: rgba(10,12,20,0.98); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 1000; border-bottom: 1px solid var(--border-subtle); transform: translateZ(0); }
-        .logo-wrapper { display: flex; align-items: center; gap: 12px; }
-        .brand-logo { width: 45px; height: 45px; object-fit: cover; border-radius: 12px; border: 1.5px solid var(--border-subtle); }
-        .logo-text { font-size: 1.3rem; font-weight: 800; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .container { max-width: 900px; margin: 0 auto; padding: 105px 15px 10px; }
-        /* ... (CSS selanjutnya sama persis seperti sebelumnya, agar tidak membludak saya singkat tapi tetap lengkap) ... */
-        /* Saya akan gunakan gaya dari kode terakhir yang sudah lengkap, asumsikan sudah disalin */
-        /* Untuk menjaga panjang pesan, saya hanya akan menulis ulang bagian script yang berubah. CSS nya gunakan dari file index.html Anda yang sudah ada. */
-    </style>
-    <!-- Di sini Anda bisa menggunakan CSS dari file index.html terakhir yang Anda miliki, tidak perlu diubah -->
-    <!-- Gunakan style yang sudah ada, tidak saya tulis ulang karena sudah banyak -->
-</head>
-<body>
-<!-- ... semua HTML header, sidebar, hero, dll sama seperti sebelumnya ... -->
-<!-- Saya hanya akan menulis ulang bagian script agar popup berbasis ID dan ada console.log -->
-
-<script>
-    let allProducts = [];
-    let selectedProduct = null;
-    let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
-    let isPopupShowing = false;
-    let lastSeenMaxId = parseInt(localStorage.getItem('lastSeenMaxId')) || 0;
-    let isFirstLoad = true;
-
-    function showToast(msg, isError = false) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.style.background = isError ? 'var(--danger, #ef4444)' : 'var(--gradient-logo)';
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
-    }
-
-    function getStockClass(stock) {
-        if (stock <= 0) return 'low';
-        if (stock < 10) return 'low';
-        if (stock < 30) return 'medium';
-        return 'high';
-    }
-
-    function getStockWidth(stock) {
-        if (stock <= 0) return 0;
-        if (stock < 5) return 10;
-        if (stock < 10) return 20;
-        if (stock < 20) return 35;
-        if (stock < 50) return 55;
-        if (stock < 100) return 75;
-        return 100;
-    }
-
-    function renderProducts(products) {
-        const grid = document.getElementById('productGrid');
-        if (!products.length) {
-            grid.innerHTML = `<div class="empty-state"><i class="fas fa-store-slash"></i><h3>Oops, toko masih kosong</h3><p>Belum ada produk yang tersedia. Silakan cek kembali nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
-            return;
-        }
-        const fragment = document.createDocumentFragment();
-        products.forEach((p, idx) => {
-            const stockClass = getStockClass(p.stock);
-            const stockWidth = getStockWidth(p.stock);
-            const isOutOfStock = p.stock <= 0;
-            const card = document.createElement('div');
-            card.className = `product-card ${p.hot ? 'hot-effect' : ''}`;
-            card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
-            card.innerHTML = `
-                ${p.hot ? '<div class="badge"><i class="fas fa-fire"></i> Terlaris</div>' : ''}
-                <img src="${p.image || '/gambar/placeholder.png'}" class="p-img" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
-                <div class="p-title">${escapeHtml(p.name)}</div>
-                <div class="p-price">Rp ${p.price.toLocaleString()} 
-                    <div class="btn-buy-mini" data-id="${p.id}" ${isOutOfStock ? 'style="opacity:0.5; cursor:not-allowed;"' : ''}>
-                        <i class="fas fa-cart-shopping"></i>
-                    </div>
-                </div>
-                <div class="stock-info">
-                    <div class="stock-header">
-                        <div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div>
-                        <div class="stock-number ${stockClass}">
-                            ${isOutOfStock ? '<span style="color: var(--stock-low);">Habis</span>' : `${p.stock} <span style="font-size:0.7rem; font-weight:normal;">tersisa</span>`}
-                        </div>
-                    </div>
-                    <div class="stock-bar-container">
-                        <div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div>
-                    </div>
-                </div>
-            `;
-            fragment.appendChild(card);
-        });
-        grid.innerHTML = '';
-        grid.appendChild(fragment);
-        document.querySelectorAll('.btn-buy-mini').forEach(btn => {
-            const isDisabled = btn.style.opacity === '0.5';
-            if (!isDisabled) {
-                btn.removeEventListener('click', buyClickHandler);
-                btn.addEventListener('click', buyClickHandler);
-            }
-        });
-    }
-
-    function buyClickHandler(e) {
-        e.stopPropagation();
-        const id = parseInt(e.currentTarget.dataset.id);
-        const product = allProducts.find(p => p.id === id);
-        if (product && product.stock > 0) {
-            openModal(product);
-        } else {
-            showToast('Maaf, stok produk ini sudah habis.', true);
-        }
-    }
-
-    async function loadProducts() {
-        try {
-            const res = await fetch('/api/products?_=' + Date.now());
-            if (!res.ok) throw new Error();
-            allProducts = await res.json();
-            allProducts.sort((a, b) => a.id - b.id);
-            renderProducts(allProducts);
-            document.getElementById('countOrder').innerText = allProducts.length;
-            
-            // Inisialisasi lastSeenMaxId jika pertama kali load
-            const maxId = allProducts.length > 0 ? Math.max(...allProducts.map(p => p.id)) : 0;
-            if (lastSeenMaxId === 0 && maxId > 0) {
-                lastSeenMaxId = maxId;
-                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
-                console.log('Inisialisasi lastSeenMaxId:', lastSeenMaxId);
-            }
-        } catch(e) {
-            console.error(e);
-            showToast('Gagal memuat produk. Refresh halaman.', true);
-            document.getElementById('productGrid').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>Gagal memuat produk</h3><p>Terjadi kesalahan saat mengambil data. Silakan refresh halaman.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
-        }
-    }
-
-    async function checkout(productId, transactionId) {
-        try {
-            const res = await fetch('/api/checkout', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity: 1, transactionId })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || 'Checkout gagal');
-            return { success: true, newStock: data.newStock, transactionId: data.transactionId };
-        } catch (err) {
-            console.error(err);
-            return { success: false, error: err.message };
-        }
-    }
-
-    function openModal(product) {
-        if (product.stock <= 0) {
-            showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
-            return;
-        }
-        selectedProduct = product;
-        document.getElementById('mTitle').innerText = product.name;
-        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
-        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-        document.getElementById('mTrxID').innerText = trx;
-        document.getElementById('payModal').classList.add('active');
-    }
-
-    window.closeModal = function() {
-        document.getElementById('payModal').classList.remove('active');
-        selectedProduct = null;
-    };
-    window.closeModalOutside = function(e) {
-        if (e.target === document.getElementById('payModal')) closeModal();
-    };
-    window.copyQRIS = function() {
-        showToast('Screenshot QRIS dan bayar via bank/ewallet.');
-    };
-
-    window.confirmWA = async function() {
-        if (!selectedProduct) return;
-        if (selectedProduct.stock <= 0) {
-            showToast('Stok produk ini sudah habis, pesanan dibatalkan.', true);
-            closeModal();
-            loadProducts();
-            return;
-        }
-        const payBtn = document.querySelector('.pay-btn');
-        const originalText = payBtn.innerText;
-        payBtn.innerText = '⏳ Memproses...';
-        payBtn.disabled = true;
-        const trx = document.getElementById('mTrxID').innerText;
-        const result = await checkout(selectedProduct.id, trx);
-        if (!result.success) {
-            showToast(result.error || 'Gagal memproses pesanan.', true);
-            payBtn.innerText = originalText;
-            payBtn.disabled = false;
-            await loadProducts();
-            closeModal();
-            return;
-        }
-        selectedProduct.stock = result.newStock;
-        const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
-        if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
-        renderProducts(allProducts);
-        const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
-        window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
-        showToast('Pesanan berhasil! Stok telah dikurangi.');
-        payBtn.innerText = originalText;
-        payBtn.disabled = false;
-        closeModal();
-        await loadProducts();
-    };
-
-    window.filterProduct = function(category, btn) {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        let filtered = category === 'all' ? [...allProducts] : allProducts.filter(p => p.category === category);
-        const search = document.getElementById('searchInput').value.trim().toLowerCase();
-        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-        renderProducts(filtered);
-    };
-
-    window.searchProduct = function() {
-        const activeBtn = document.querySelector('.filter-btn.active');
-        const category = activeBtn ? activeBtn.dataset.category : 'all';
-        let filtered = category === 'all' ? [...allProducts] : allProducts.filter(p => p.category === category);
-        const search = document.getElementById('searchInput').value.trim().toLowerCase();
-        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-        renderProducts(filtered);
-    };
-
-    window.toggleSidebar = function() {
-        document.getElementById('sidebar').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
-    };
-    window.scrollToTop = function() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-    window.addEventListener('scroll', () => {
-        const btn = document.getElementById('backToTop');
-        if (window.scrollY > 300) btn.classList.add('visible');
-        else btn.classList.remove('visible');
-    });
-
-    // ========== POPUP PRODUK BARU BERDASARKAN ID ==========
-    async function checkNewProducts() {
-        if (dontShowPopup || isPopupShowing) return;
-        try {
-            const res = await fetch('/api/products?_=' + Date.now());
-            const products = await res.json();
-            if (!products.length) return;
-            console.log('Checking new products. lastSeenMaxId:', lastSeenMaxId);
-            console.log('Product IDs:', products.map(p => p.id));
-            const newProducts = products.filter(p => p.id > lastSeenMaxId);
-            console.log('New products found:', newProducts.length);
-            if (newProducts.length > 0) {
-                // Update lastSeenMaxId ke ID terbesar yang baru
-                const newMaxId = Math.max(...products.map(p => p.id));
-                lastSeenMaxId = newMaxId;
-                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
-                console.log('Updated lastSeenMaxId to:', lastSeenMaxId);
-                showPopup(newProducts);
-            }
-        } catch(e) { console.error('Popup error:', e); }
-    }
-
-    function showPopup(products) {
-        if (isPopupShowing) return;
-        isPopupShowing = true;
-        const modal = document.getElementById('newProductModal');
-        const listContainer = document.getElementById('newProductList');
-        listContainer.innerHTML = '';
-        products.forEach(p => {
-            let timeText = 'Baru ditambahkan';
-            if (p.createdAt) {
-                const date = new Date(p.createdAt);
-                if (!isNaN(date.getTime())) {
-                    timeText = date.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                }
-            }
-            const card = document.createElement('div');
-            card.className = 'new-product-card';
-            card.innerHTML = `
-                <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
-                <div class="new-product-title">${escapeHtml(p.name)}</div>
-                <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
-                <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
-            `;
-            listContainer.appendChild(card);
-        });
-        const checkbox = document.getElementById('dontShowAgainCheckbox');
-        checkbox.checked = false;
-        modal.classList.add('active');
-        const closeModalFn = () => {
-            modal.classList.remove('active');
-            isPopupShowing = false;
-            if (checkbox.checked) {
-                localStorage.setItem('dontShowNewProductPopup', 'true');
-                dontShowPopup = true;
-            }
-        };
-        document.getElementById('closeModalBtn').onclick = closeModalFn;
-        document.getElementById('viewAllBtn').onclick = () => {
-            closeModalFn();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-        modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
-    }
-
-    // Polling setiap 30 detik
-    setInterval(async () => {
-        try {
-            const res = await fetch('/api/products?_=' + Date.now());
-            const products = await res.json();
-            if (JSON.stringify(allProducts.map(p => p.id).sort()) !== JSON.stringify(products.map(p => p.id).sort())) {
-                allProducts = products;
-                renderProducts(allProducts);
-                await checkNewProducts();
-            }
-        } catch(e) {}
-    }, 30000);
-
-    document.addEventListener('DOMContentLoaded', async () => {
-        await loadProducts();
-        // Cek produk baru setelah load
-        setTimeout(() => checkNewProducts(), 1000);
-    });
-</script>
-</body>
-</html>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya) ========== */
+        /* ========== STYLE (lengkap, sama seperti sebelumnya, tidak diubah) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -670,12 +302,13 @@
     let selectedProduct = null;
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     let isPopupShowing = false;
-    let lastSeenMaxId = parseInt(localStorage.getItem('lastSeenMaxId')) || 0;
+    // Simpan timestamp kunjungan terakhir (saat popup terakhir ditutup)
+    let lastSeenTimestamp = parseInt(localStorage.getItem('lastSeenTimestamp')) || 0;
 
     function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
         t.textContent = msg;
-        t.style.background = isError ? 'var(--danger, #ef4444)' : 'var(--gradient-logo)';
+        t.style.background = isError ? '#ef4444' : 'var(--gradient-logo)';
         t.style.display = 'block';
         setTimeout(() => { t.style.display = 'none'; }, 3000);
     }
@@ -769,13 +402,6 @@
             allProducts.sort((a, b) => a.id - b.id);
             renderProducts(allProducts);
             document.getElementById('countOrder').innerText = allProducts.length;
-            // Update lastSeenMaxId dengan ID terbesar yang ada (untuk inisialisasi)
-            const maxId = allProducts.length > 0 ? Math.max(...allProducts.map(p => p.id)) : 0;
-            if (lastSeenMaxId === 0 && maxId > 0) {
-                // Jika pertama kali load, set lastSeenMaxId ke maxId saat ini agar tidak muncul popup untuk produk lama
-                lastSeenMaxId = maxId;
-                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
-            }
         } catch(e) {
             console.error(e);
             showToast('Gagal memuat produk. Refresh halaman.', true);
@@ -889,20 +515,24 @@
         else btn.classList.remove('visible');
     });
 
-    // ========== POPUP BERDASARKAN ID PRODUK (PALING ANDAL) ==========
+    // ========== CEK PRODUK BARU BERDASARKAN TIMESTAMP (CREATEDAT) ==========
     async function checkNewProducts() {
         if (dontShowPopup || isPopupShowing) return;
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             const products = await res.json();
             if (!products.length) return;
-            // Cari produk dengan ID lebih besar dari lastSeenMaxId
-            const newProducts = products.filter(p => p.id > lastSeenMaxId);
+            // Filter produk yang createdAt > lastSeenTimestamp
+            const newProducts = products.filter(p => {
+                if (!p.createdAt) return false;
+                const prodTime = new Date(p.createdAt).getTime();
+                return prodTime > lastSeenTimestamp;
+            });
             if (newProducts.length > 0) {
-                // Update lastSeenMaxId ke ID maksimum saat ini
-                const newMaxId = Math.max(...products.map(p => p.id));
-                lastSeenMaxId = newMaxId;
-                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
+                // Update timestamp ke waktu sekarang (sebelum popup ditampilkan agar tidak muncul lagi untuk produk yang sama)
+                const now = Date.now();
+                lastSeenTimestamp = now;
+                localStorage.setItem('lastSeenTimestamp', lastSeenTimestamp);
                 showPopup(newProducts);
             }
         } catch(e) { console.error('Popup error:', e); }
@@ -956,18 +586,21 @@
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             const products = await res.json();
-            if (JSON.stringify(allProducts.map(p => p.id).sort()) !== JSON.stringify(products.map(p => p.id).sort())) {
+            // Jika ada perubahan (jumlah atau ID berbeda), refresh grid dan cek popup
+            const currentIds = products.map(p => p.id).sort();
+            const prevIds = allProducts.map(p => p.id).sort();
+            if (JSON.stringify(currentIds) !== JSON.stringify(prevIds)) {
                 allProducts = products;
                 renderProducts(allProducts);
                 await checkNewProducts();
             }
         } catch(e) {}
-    }, 30000); // polling setiap 30 detik
+    }, 60000);
 
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
-        // Cek produk baru setelah load (untuk produk yang ditambahkan saat halaman belum dimuat)
-        setTimeout(() => checkNewProducts(), 1000);
+        // Cek popup setelah 1.5 detik (beri waktu load selesai)
+        setTimeout(() => checkNewProducts(), 1500);
     });
 </script>
 </body>
