@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya, tidak diubah) ========== */
+        /* ========== S T Y L E  L E N G K A P (sama seperti sebelumnya) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -302,6 +302,7 @@
     let selectedProduct = null;
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     let isPopupShowing = false;
+    let lastSeenTimestamp = parseInt(localStorage.getItem('lastSeenTimestamp')) || 0;
 
     function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
@@ -513,21 +514,26 @@
         else btn.classList.remove('visible');
     });
 
-    // ========== POPUP PRODUK TERBARU SETIAP LOAD (DENGAN CHECKBOX) ==========
-    async function showLatestProductsPopup() {
+    // ========== POPUP HANYA UNTUK PRODUK BARU (berdasarkan timestamp) ==========
+    async function checkNewProducts() {
         if (dontShowPopup || isPopupShowing) return;
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             const products = await res.json();
             if (!products.length) return;
-            // Urutkan berdasarkan createdAt terbaru, ambil maksimal 6 produk
-            const sorted = [...products].sort((a, b) => {
-                const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-                return bTime - aTime;
+            // Filter produk yang createdAt > lastSeenTimestamp
+            const newProducts = products.filter(p => {
+                if (!p.createdAt) return false;
+                const prodTime = new Date(p.createdAt).getTime();
+                return prodTime > lastSeenTimestamp;
             });
-            const latest = sorted.slice(0, 6);
-            showPopup(latest);
+            if (newProducts.length > 0) {
+                // Update timestamp setelah popup muncul
+                const now = Date.now();
+                lastSeenTimestamp = now;
+                localStorage.setItem('lastSeenTimestamp', lastSeenTimestamp);
+                showPopup(newProducts);
+            }
         } catch(e) { console.error('Popup error:', e); }
     }
 
@@ -574,7 +580,7 @@
         modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
     }
 
-    // ========== POLLING UNTUK UPDATE DATA (TANPA POPUP) ==========
+    // ========== POLLING UNTUK UPDATE DATA DAN CEK PRODUK BARU ==========
     setInterval(async () => {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
@@ -582,14 +588,14 @@
             if (JSON.stringify(allProducts.map(p => p.id).sort()) !== JSON.stringify(products.map(p => p.id).sort())) {
                 allProducts = products;
                 renderProducts(allProducts);
+                await checkNewProducts();
             }
         } catch(e) {}
-    }, 30000);
+    }, 60000); // polling 1 menit
 
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
-        // Tampilkan popup setiap kali load (kecuali checkbox pernah dicentang)
-        setTimeout(() => showLatestProductsPopup(), 1000);
+        setTimeout(() => checkNewProducts(), 1500);
     });
 </script>
 </body>
