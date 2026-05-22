@@ -105,6 +105,8 @@ export default async function handler(req, res) {
 /transactions 🧾 Daftar transaksi
 /deletetrx 🗑️ Hapus transaksi (nomor urut atau ID)
 /clearreport 🗑️ Hapus laporan bulan ini
+/announce 📢 Buat pengumuman
+/clearannounce 🗑️ Hapus pengumuman
 
 💡 *Petunjuk:* Ketik perintah di atas untuk mengelola toko.
 ━━━━━━━━━━━━━━━━━━━━━`;
@@ -206,7 +208,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== DAFTAR TRANSAKSI TERBARU (dengan ID dapat di-copy) ==========
+    // ========== DAFTAR TRANSAKSI TERBARU ==========
     if (text === '/transactions') {
       try {
         const client = await clientPromise;
@@ -230,7 +232,7 @@ export default async function handler(req, res) {
             hour: '2-digit', minute: '2-digit', second: '2-digit'
           });
           msg += `${idx + 1}. *${t.productName}*\n`;
-          msg += `   🆔 ID: \`${t.transactionId}\`\n`; // dibungkus backticks agar mudah di-copy
+          msg += `   🆔 ID: \`${t.transactionId}\`\n`;
           msg += `   💰 Harga Jual: Rp ${t.price.toLocaleString()}`;
           if (t.cost) msg += ` | 💸 Modal: Rp ${t.cost.toLocaleString()}`;
           msg += `\n   📦 ${t.quantity}x | Total: Rp ${t.totalAmount.toLocaleString()}`;
@@ -246,23 +248,19 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ========== HAPUS TRANSAKSI (berdasarkan nomor urut atau ID) ==========
+    // ========== HAPUS TRANSAKSI ==========
     if (text.startsWith('/deletetrx')) {
       const parts = text.split(' ');
       let param = parts[1];
       if (!param) {
         await saveSession(chatId, 'deletetrx_wait_id', {});
-        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *nomor urut* dari daftar /transactions, atau *ID Transaksi* (bisa copy dari daftar).\n📋 Cek daftar dengan /transactions\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
+        await sendMessage(chatId, '🗑️ *Hapus Transaksi*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *nomor urut* dari /transactions, atau *ID Transaksi*.', 'Markdown');
         return res.status(200).json({ ok: true });
       }
-
       try {
         const client = await clientPromise;
         const db = client.db('lekszystore');
         let transactionIdToDelete = null;
-        let deleted = false;
-
-        // Coba parsing sebagai angka (nomor urut)
         const index = parseInt(param);
         if (!isNaN(index) && index > 0) {
           const transactions = await db.collection('transactions')
@@ -273,13 +271,12 @@ export default async function handler(req, res) {
           if (index <= transactions.length) {
             transactionIdToDelete = transactions[index - 1].transactionId;
           } else {
-            await sendMessage(chatId, '❌ *Nomor urut tidak valid.* Gunakan nomor antara 1 hingga ' + transactions.length, 'Markdown');
+            await sendMessage(chatId, '❌ *Nomor urut tidak valid.*', 'Markdown');
             return res.status(200).json({ ok: true });
           }
         } else {
           transactionIdToDelete = param;
         }
-
         if (transactionIdToDelete) {
           const result = await db.collection('transactions').deleteOne({ transactionId: transactionIdToDelete });
           if (result.deletedCount === 0) {
@@ -300,20 +297,16 @@ export default async function handler(req, res) {
       const now = new Date();
       const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
       const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      
       try {
         const client = await clientPromise;
         const db = client.db('lekszystore');
-        
         const count = await db.collection('transactions').countDocuments({
           createdAt: { $gte: startDate, $lt: endDate }
         });
-        
         if (count === 0) {
           await sendMessage(chatId, '📭 *Tidak ada transaksi bulan ini untuk dihapus.*', 'Markdown');
           return res.status(200).json({ ok: true });
         }
-        
         const confirmKeyboard = {
           inline_keyboard: [
             [
@@ -323,14 +316,12 @@ export default async function handler(req, res) {
           ]
         };
         await sendMessage(chatId, `⚠️ *PERINGATAN!*\nAnda akan menghapus *${count}* transaksi pada bulan ${startDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}.\n\n*TINDAKAN INI TIDAK DAPAT DIURUNGKAN!*\n\nYakin ingin melanjutkan?`, confirmKeyboard, 'Markdown');
-        
         const tempCol = db.collection('temp');
         await tempCol.updateOne(
           { chatId, action: 'clearreport' },
           { $set: { startDate, endDate, count, createdAt: new Date() } },
           { upsert: true }
         );
-        
       } catch (err) {
         console.error(err);
         await sendMessage(chatId, '❌ Gagal memproses penghapusan laporan.', 'Markdown');
@@ -338,7 +329,27 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Session handling (add, edit, delete, deletetrx_wait_id) - sama seperti sebelumnya
+    // ========== PENGUMUMAN (ANNOUNCEMENT) ==========
+    if (text === '/announce') {
+      await deleteSession(chatId);
+      await saveSession(chatId, 'announce_wait_title', {});
+      await sendMessage(chatId, '📢 *Buat Pengumuman Baru*\n━━━━━━━━━━━━━━━━━━━━━\n📝 Kirimkan *judul* pengumuman.\n✖️ Ketik /cancel untuk membatalkan.', 'Markdown');
+      return res.status(200).json({ ok: true });
+    }
+
+    if (text === '/clearannounce') {
+      try {
+        const client = await clientPromise;
+        const db = client.db('lekszystore');
+        await db.collection('announcements').deleteMany({});
+        await sendMessage(chatId, '✅ *Semua pengumuman telah dihapus.*', 'Markdown');
+      } catch (err) {
+        await sendMessage(chatId, '❌ Gagal menghapus pengumuman.', 'Markdown');
+      }
+      return res.status(200).json({ ok: true });
+    }
+
+    // Session handling (add, edit, delete, deletetrx_wait_id, announce)
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
@@ -496,6 +507,40 @@ export default async function handler(req, res) {
           await sendMessage(chatId, '❌ Gagal menghapus transaksi.', 'Markdown');
         }
         await deleteSession(chatId);
+        return res.status(200).json({ ok: true });
+      }
+      // ANNOUNCEMENT FLOW
+      else if (step === 'announce_wait_title') {
+        temp.title = text;
+        await saveSession(chatId, 'announce_wait_message', temp);
+        await sendMessage(chatId, '📝 Kirimkan *isi pesan* pengumuman (bisa menggunakan Markdown).', 'Markdown');
+      } else if (step === 'announce_wait_message') {
+        temp.message = text;
+        await saveSession(chatId, 'announce_wait_image', temp);
+        await sendMessage(chatId, '🖼️ Kirimkan *URL gambar* (opsional, kirim "skip" untuk lewati).\nContoh: https://example.com/gambar.jpg', 'Markdown');
+      } else if (step === 'announce_wait_image') {
+        let image = null;
+        if (text.toLowerCase() !== 'skip' && text.trim() !== '') {
+          image = text;
+        }
+        temp.image = image;
+        try {
+          const client = await clientPromise;
+          const db = client.db('lekszystore');
+          const announcement = {
+            title: temp.title,
+            message: temp.message,
+            image: temp.image,
+            createdAt: new Date(),
+            active: true
+          };
+          await db.collection('announcements').deleteMany({});
+          await db.collection('announcements').insertOne(announcement);
+          await sendMessage(chatId, `✅ *Pengumuman berhasil dibuat!*\n━━━━━━━━━━━━━━━━━━━━━\n📌 Judul: ${temp.title}\n📝 Pesan: ${temp.message}\n${temp.image ? '🖼️ Gambar: ' + temp.image : ''}\n━━━━━━━━━━━━━━━━━━━━━\n🔔 Pengumuman akan ditampilkan di website.`, 'Markdown');
+        } catch (err) {
+          await sendMessage(chatId, '❌ Gagal menyimpan pengumuman.', 'Markdown');
+        }
+        finally { await deleteSession(chatId); }
         return res.status(200).json({ ok: true });
       }
       return res.status(200).json({ ok: true });
