@@ -103,7 +103,7 @@ export default async function handler(req, res) {
 /list 📋 Lihat semua produk
 /report 📊 Laporan bulanan
 /transactions 🧾 Daftar transaksi
-/deletetrx 🗑️ Hapus transaksi (nomor urut atau ID)
+/deletetrx 🗑️ Hapus transaksi
 /clearreport 🗑️ Hapus laporan bulan ini
 /announce 📢 Buat pengumuman
 /clearannounce 🗑️ Hapus pengumuman
