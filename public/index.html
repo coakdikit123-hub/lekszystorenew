@@ -302,7 +302,7 @@
     let selectedProduct = null;
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     let isPopupShowing = false;
-    let lastSeenTimestamp = parseInt(localStorage.getItem('lastSeenTimestamp')) || 0;
+    let lastSeenMaxId = parseInt(localStorage.getItem('lastSeenMaxId')) || 0;
 
     function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
@@ -401,6 +401,13 @@
             allProducts.sort((a, b) => a.id - b.id);
             renderProducts(allProducts);
             document.getElementById('countOrder').innerText = allProducts.length;
+            // Update lastSeenMaxId dengan ID terbesar yang ada (untuk inisialisasi)
+            const maxId = allProducts.length > 0 ? Math.max(...allProducts.map(p => p.id)) : 0;
+            if (lastSeenMaxId === 0 && maxId > 0) {
+                // Jika pertama kali load, set lastSeenMaxId ke maxId saat ini agar tidak muncul popup untuk produk lama
+                lastSeenMaxId = maxId;
+                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
+            }
         } catch(e) {
             console.error(e);
             showToast('Gagal memuat produk. Refresh halaman.', true);
@@ -514,24 +521,20 @@
         else btn.classList.remove('visible');
     });
 
-    // ========== POPUP HANYA UNTUK PRODUK BARU (berdasarkan timestamp) ==========
+    // ========== POPUP BERDASARKAN ID PRODUK (PALING ANDAL) ==========
     async function checkNewProducts() {
         if (dontShowPopup || isPopupShowing) return;
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             const products = await res.json();
             if (!products.length) return;
-            // Filter produk yang createdAt > lastSeenTimestamp
-            const newProducts = products.filter(p => {
-                if (!p.createdAt) return false;
-                const prodTime = new Date(p.createdAt).getTime();
-                return prodTime > lastSeenTimestamp;
-            });
+            // Cari produk dengan ID lebih besar dari lastSeenMaxId
+            const newProducts = products.filter(p => p.id > lastSeenMaxId);
             if (newProducts.length > 0) {
-                // Update timestamp setelah popup muncul
-                const now = Date.now();
-                lastSeenTimestamp = now;
-                localStorage.setItem('lastSeenTimestamp', lastSeenTimestamp);
+                // Update lastSeenMaxId ke ID maksimum saat ini
+                const newMaxId = Math.max(...products.map(p => p.id));
+                lastSeenMaxId = newMaxId;
+                localStorage.setItem('lastSeenMaxId', lastSeenMaxId);
                 showPopup(newProducts);
             }
         } catch(e) { console.error('Popup error:', e); }
@@ -591,11 +594,12 @@
                 await checkNewProducts();
             }
         } catch(e) {}
-    }, 60000); // polling 1 menit
+    }, 30000); // polling setiap 30 detik
 
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
-        setTimeout(() => checkNewProducts(), 1500);
+        // Cek produk baru setelah load (untuk produk yang ditambahkan saat halaman belum dimuat)
+        setTimeout(() => checkNewProducts(), 1000);
     });
 </script>
 </body>
