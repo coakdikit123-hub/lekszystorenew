@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ========== STYLE LENGKAP (sama seperti sebelumnya) ========== */
+        /* ========== STYLE LENGKAP (sama seperti sebelumnya, hanya popup yang diubah) ========== */
         :root {
             --bg-deep: #05060a;
             --bg-main: #0f111a;
@@ -171,79 +171,231 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @media (max-width:768px) { .filter-btn { padding: 10px 20px; font-size: 0.8rem; } .product-card { padding: 12px 12px 50px; } .p-title { font-size: 0.8rem; } #toast { white-space: normal; text-align: center; } }
 
-        /* Popup pengumuman + produk baru */
-        .new-product-modal {
+        /* ========== POPUP MODERN ========== */
+        .popup-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
             z-index: 2001;
             display: flex;
             align-items: center;
             justify-content: center;
             visibility: hidden;
             opacity: 0;
-            transition: all 0.3s ease;
+            transition: visibility 0.3s ease, opacity 0.3s ease;
         }
-        .new-product-modal.active { visibility: visible; opacity: 1; }
-        .new-product-container {
+        .popup-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .popup-container {
             width: 90%;
-            max-width: 1100px;
-            background: var(--bg-surface);
+            max-width: 1000px;
+            max-height: 85vh;
+            background: linear-gradient(145deg, var(--bg-surface), #11131f);
             border-radius: 32px;
-            border: 1px solid var(--border-subtle);
+            border: 1px solid rgba(88, 166, 255, 0.3);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(88, 166, 255, 0.1) inset;
             overflow: hidden;
-            animation: modalPop 0.3s cubic-bezier(0.2,0.9,0.4,1.1);
+            display: flex;
+            flex-direction: column;
+            animation: floatIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        @keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-header { padding: 18px 24px; background: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 12px; }
-        .modal-header i { font-size: 1.8rem; color: var(--primary-blue); }
-        .modal-header h2 { font-size: 1.3rem; font-weight: 700; background: var(--gradient-logo); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .product-scroll { padding: 20px; overflow-x: auto; white-space: nowrap; scrollbar-width: thin; scrollbar-color: var(--primary-blue) var(--bg-surface); }
-        .product-scroll::-webkit-scrollbar { height: 6px; }
-        .product-scroll::-webkit-scrollbar-track { background: var(--bg-surface); border-radius: 10px; }
-        .product-scroll::-webkit-scrollbar-thumb { background: var(--primary-blue); border-radius: 10px; }
-        .horizontal-list { display: flex; gap: 20px; white-space: normal; }
-        .new-product-card { flex: 0 0 240px; background: rgba(255,255,255,0.04); border-radius: 24px; padding: 16px; transition: all 0.2s; border: 1px solid transparent; backdrop-filter: blur(4px); }
-        .new-product-card:hover { transform: translateY(-5px); border-color: var(--primary-blue); background: rgba(255,255,255,0.07); }
-        .new-product-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 20px; margin-bottom: 12px; background: var(--bg-main); }
-        .new-product-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; white-space: normal; line-height: 1.3; }
-        .new-product-price { color: var(--primary-blue); font-weight: 800; font-size: 1rem; }
-        .new-product-time { font-size: 0.7rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; border-top: 1px solid var(--border-subtle); padding-top: 8px; margin-top: 8px; }
-        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2); }
-        .btn-modal { padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer; border: none; transition: transform 0.2s; }
-        .btn-modal:active { transform: scale(0.97); }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: var(--text-main); }
-        .btn-primary { background: var(--gradient-logo); color: white; }
-        .checkbox-container { display: flex; align-items: center; gap: 8px; margin-right: auto; font-size: 0.8rem; color: var(--text-muted); }
-        .checkbox-container input { width: 16px; height: 16px; accent-color: var(--primary-blue); cursor: pointer; }
-        @media (max-width:768px) { .new-product-card { flex: 0 0 200px; } .new-product-img { width: 80px; height: 80px; margin: 0 auto 8px; } .new-product-title { font-size: 0.8rem; } .modal-header h2 { font-size: 1rem; } }
-
-        /* Announcement banner style */
-        .announcement-banner {
-            background: linear-gradient(135deg, var(--primary-blue), var(--accent-purple));
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
+        @keyframes floatIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
-        .announcement-banner img {
-            max-width: 100%;
-            border-radius: 12px;
-            margin-top: 8px;
+        .popup-header {
+            padding: 20px 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(88, 166, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .popup-header i {
+            font-size: 2rem;
+            background: var(--gradient-logo);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .popup-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--gradient-logo);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .popup-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scrollbar-width: thin;
+        }
+        .popup-content::-webkit-scrollbar {
+            width: 5px;
+        }
+        .popup-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        .popup-content::-webkit-scrollbar-thumb {
+            background: var(--primary-blue);
+            border-radius: 10px;
+        }
+        .announcement-card {
+            background: linear-gradient(135deg, rgba(88,166,255,0.1), rgba(188,102,255,0.05));
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(88,166,255,0.2);
+            backdrop-filter: blur(4px);
         }
         .announcement-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .announcement-title i {
+            color: var(--primary-blue);
         }
         .announcement-message {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .announcement-img {
+            max-width: 100%;
+            border-radius: 16px;
+            margin-top: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .products-section {
+            margin-top: 8px;
+        }
+        .products-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-blue);
+        }
+        .products-grid {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+        }
+        .products-grid::-webkit-scrollbar {
+            height: 5px;
+        }
+        .product-item {
+            flex: 0 0 200px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 12px;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .product-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-blue);
+            background: rgba(255,255,255,0.06);
+        }
+        .product-item img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+        .product-item .name {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            white-space: normal;
+            line-height: 1.3;
+        }
+        .product-item .price {
+            color: var(--primary-blue);
+            font-weight: 800;
             font-size: 0.9rem;
-            opacity: 0.95;
+        }
+        .product-item .time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .popup-footer {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: rgba(0,0,0,0.2);
+        }
+        .popup-btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .popup-btn-secondary {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-main);
+        }
+        .popup-btn-primary {
+            background: var(--gradient-logo);
+            color: white;
+        }
+        .popup-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+        .popup-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .popup-checkbox input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+        @media (max-width: 768px) {
+            .popup-container { width: 95%; max-height: 90vh; }
+            .product-item { flex: 0 0 160px; }
+            .popup-header h2 { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -296,7 +448,7 @@
 
 <footer class="footer"><div class="footer-logo">LekszyStore</div><div class="footer-text">Solusi terbaik untuk mendapatkan akun premium aplikasi favorit Anda dengan harga terjangkau.<br>Garansi 100% aktif, proses cepat, dan support 24/7.</div><div class="copyright">© 2026 LekszyStore. All rights reserved.</div></footer>
 
-<!-- MODAL PEMBAYARAN -->
+<!-- MODAL PEMBAYARAN (sama seperti sebelumnya) -->
 <div class="modal" id="payModal" onclick="closeModalOutside(event)">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div style="text-align:center; margin-bottom:20px;"><h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3><h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1></div>
@@ -312,15 +464,28 @@
     </div>
 </div>
 
-<!-- Popup pengumuman + produk baru -->
-<div id="newProductModal" class="new-product-modal">
-    <div class="new-product-container">
-        <div class="modal-header"><i class="fas fa-gift"></i><h2>✨ Informasi Terbaru</h2></div>
-        <div class="product-scroll">
-            <div id="announcementContainer" style="margin-bottom: 20px;"></div>
-            <div id="newProductList" class="horizontal-list"></div>
+<!-- POPUP MODERN -->
+<div id="updatePopup" class="popup-modal">
+    <div class="popup-container">
+        <div class="popup-header">
+            <i class="fas fa-bell"></i>
+            <h2>Informasi Terbaru</h2>
         </div>
-        <div class="modal-footer"><label class="checkbox-container"><input type="checkbox" id="dontShowAgainCheckbox"> Jangan tampilkan lagi</label><button id="closeModalBtn" class="btn-modal btn-secondary">Tutup</button><button id="viewAllBtn" class="btn-modal btn-primary">Lihat Semua</button></div>
+        <div class="popup-content">
+            <div id="popupAnnouncement" class="announcement-card" style="display: none;"></div>
+            <div id="popupProducts" class="products-section" style="display: none;">
+                <h3><i class="fas fa-gift"></i> Produk Baru</h3>
+                <div id="popupProductsGrid" class="products-grid"></div>
+            </div>
+            <div id="popupEmpty" style="text-align:center; padding:40px;">Tidak ada informasi baru</div>
+        </div>
+        <div class="popup-footer">
+            <label class="popup-checkbox">
+                <input type="checkbox" id="popupDontShowAgain"> Jangan tampilkan lagi
+            </label>
+            <button id="popupCloseBtn" class="popup-btn popup-btn-secondary">Tutup</button>
+            <button id="popupViewAllBtn" class="popup-btn popup-btn-primary">Lihat Semua</button>
+        </div>
     </div>
 </div>
 
@@ -542,7 +707,7 @@
         else btn.classList.remove('visible');
     });
 
-    // ========== POPUP GABUNGAN PENGUMUMAN + PRODUK BARU ==========
+    // ========== POPUP MODERN ==========
     async function checkForUpdates() {
         if (dontShowPopup || isPopupShowing) return;
         try {
@@ -553,81 +718,95 @@
             const announcement = await announcementRes.json();
             const products = await productsRes.json();
             let hasNew = false;
-            let announcementData = null;
-            let newProducts = [];
 
             // Cek pengumuman baru
+            let announcementData = null;
             if (announcement && announcement._id && announcement._id !== lastSeenAnnouncementId) {
                 hasNew = true;
                 announcementData = announcement;
                 lastSeenAnnouncementId = announcement._id;
                 localStorage.setItem('lastSeenAnnouncementId', lastSeenAnnouncementId);
             }
-            // Cek produk baru berdasarkan createdAt
-            const latestProducts = products.filter(p => {
+            // Cek produk baru
+            const newProducts = products.filter(p => {
                 if (!p.createdAt) return false;
                 const prodTime = new Date(p.createdAt).getTime();
                 return prodTime > lastSeenTimestamp;
             });
-            if (latestProducts.length > 0) {
+            if (newProducts.length > 0) {
                 hasNew = true;
-                newProducts = latestProducts;
                 const now = Date.now();
                 lastSeenTimestamp = now;
                 localStorage.setItem('lastSeenTimestamp', lastSeenTimestamp);
             }
             if (hasNew) {
-                showCombinedPopup(announcementData, newProducts);
+                showModernPopup(announcementData, newProducts);
             }
         } catch(e) { console.error('Popup error:', e); }
     }
 
-    function showCombinedPopup(announcement, products) {
+    function showModernPopup(announcement, products) {
         if (isPopupShowing) return;
         isPopupShowing = true;
-        const modal = document.getElementById('newProductModal');
-        const announcementContainer = document.getElementById('announcementContainer');
-        const listContainer = document.getElementById('newProductList');
+        const modal = document.getElementById('updatePopup');
+        const announcementDiv = document.getElementById('popupAnnouncement');
+        const productsDiv = document.getElementById('popupProducts');
+        const productsGrid = document.getElementById('popupProductsGrid');
+        const emptyDiv = document.getElementById('popupEmpty');
         
-        // Tampilkan pengumuman jika ada
-        announcementContainer.innerHTML = '';
+        let hasAnnouncement = false;
+        let hasProducts = false;
+        
+        // Reset
+        announcementDiv.style.display = 'none';
+        productsDiv.style.display = 'none';
+        emptyDiv.style.display = 'none';
+        
         if (announcement) {
-            let html = `<div class="announcement-banner">`;
-            if (announcement.title) html += `<div class="announcement-title">${escapeHtml(announcement.title)}</div>`;
-            if (announcement.message) html += `<div class="announcement-message">${escapeHtml(announcement.message)}</div>`;
-            if (announcement.image) html += `<img src="${announcement.image}" onerror="this.style.display='none'" alt="Pengumuman">`;
-            html += `</div>`;
-            announcementContainer.innerHTML = html;
+            hasAnnouncement = true;
+            let imgHtml = '';
+            if (announcement.image) {
+                imgHtml = `<img src="${announcement.image}" class="announcement-img" onerror="this.style.display='none'" alt="pengumuman">`;
+            }
+            announcementDiv.innerHTML = `
+                <div class="announcement-title"><i class="fas fa-megaphone"></i> ${escapeHtml(announcement.title || 'Pengumuman')}</div>
+                <div class="announcement-message">${escapeHtml(announcement.message || '')}</div>
+                ${imgHtml}
+            `;
+            announcementDiv.style.display = 'block';
         }
         
-        // Tampilkan produk baru
-        listContainer.innerHTML = '';
         if (products && products.length > 0) {
+            hasProducts = true;
+            productsGrid.innerHTML = '';
             products.forEach(p => {
                 let timeText = 'Baru ditambahkan';
                 if (p.createdAt) {
                     const date = new Date(p.createdAt);
                     if (!isNaN(date.getTime())) {
-                        timeText = date.toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                        timeText = date.toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
                     }
                 }
-                const card = document.createElement('div');
-                card.className = 'new-product-card';
-                card.innerHTML = `
-                    <img src="${p.image || '/gambar/placeholder.png'}" class="new-product-img" onerror="this.src='/gambar/placeholder.png'">
-                    <div class="new-product-title">${escapeHtml(p.name)}</div>
-                    <div class="new-product-price">Rp ${p.price.toLocaleString()}</div>
-                    <div class="new-product-time"><i class="far fa-calendar-alt"></i> ${timeText}</div>
+                const item = document.createElement('div');
+                item.className = 'product-item';
+                item.innerHTML = `
+                    <img src="${p.image || '/gambar/placeholder.png'}" onerror="this.src='/gambar/placeholder.png'">
+                    <div class="name">${escapeHtml(p.name)}</div>
+                    <div class="price">Rp ${p.price.toLocaleString()}</div>
+                    <div class="time"><i class="far fa-clock"></i> ${timeText}</div>
                 `;
-                listContainer.appendChild(card);
+                productsGrid.appendChild(item);
             });
-        } else {
-            listContainer.innerHTML = '<div style="text-align:center; padding:20px;">Tidak ada produk baru.</div>';
+            productsDiv.style.display = 'block';
         }
         
-        const checkbox = document.getElementById('dontShowAgainCheckbox');
-        checkbox.checked = false;
+        if (!hasAnnouncement && !hasProducts) {
+            emptyDiv.style.display = 'block';
+        }
+        
         modal.classList.add('active');
+        const checkbox = document.getElementById('popupDontShowAgain');
+        checkbox.checked = false;
         const closeModalFn = () => {
             modal.classList.remove('active');
             isPopupShowing = false;
@@ -636,15 +815,15 @@
                 dontShowPopup = true;
             }
         };
-        document.getElementById('closeModalBtn').onclick = closeModalFn;
-        document.getElementById('viewAllBtn').onclick = () => {
+        document.getElementById('popupCloseBtn').onclick = closeModalFn;
+        document.getElementById('popupViewAllBtn').onclick = () => {
             closeModalFn();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
         modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
     }
 
-    // Polling untuk update data dan popup (setiap 30 detik)
+    // Polling untuk update data dan popup
     setInterval(async () => {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
