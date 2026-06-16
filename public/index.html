@@ -866,61 +866,49 @@
         <div id="productGrid" class="product-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
     </section>
 
-    <!-- ===== INFO DUAL COLUMN ===== -->
-    <section class="px-4 max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-2 gap-4 pb-6">
-        <div class="glass-card p-5 rounded-2xl relative overflow-hidden flex flex-col h-full border-white/5" id="panduan">
-            <div class="absolute -right-16 -top-16 w-40 h-40 bg-primary/10 rounded-full blur-[60px]"></div>
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-9 h-9 rounded-xl primary-gradient flex items-center justify-center text-white shadow-lg">
-                    <span class="material-symbols-outlined text-lg">auto_stories</span>
+    <!-- ===== PANDUAN ORDER (TENGAH, FULL WIDTH) ===== -->
+    <section class="px-4 max-w-container-max mx-auto pb-6">
+        <div class="max-w-3xl mx-auto">
+            <div class="glass-card p-6 md:p-8 rounded-2xl relative overflow-hidden border-white/5" id="panduan">
+                <div class="absolute -right-20 -top-20 w-60 h-60 bg-primary/10 rounded-full blur-[80px]"></div>
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-xl primary-gradient flex items-center justify-center text-white shadow-lg">
+                        <span class="material-symbols-outlined text-xl">auto_stories</span>
+                    </div>
+                    <h2 class="font-display-hero text-xl md:text-2xl text-white text-center">Panduan Order</h2>
                 </div>
-                <h2 class="font-display-hero text-lg text-white">Panduan Order</h2>
-            </div>
-            <div class="space-y-4 flex-grow">
-                <div class="flex gap-3 group">
-                    <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-xs group-hover:primary-gradient group-hover:text-white transition-all duration-300">1</div>
-                    <div><h4 class="font-title-md text-sm text-white">Pilih produk</h4><p class="text-on-surface-variant text-[11px] leading-relaxed">Pilih akun premium favorit dari kategori.</p></div>
+                <div class="space-y-5 max-w-2xl mx-auto">
+                    <div class="flex gap-4 items-start group">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">1</div>
+                        <div>
+                            <h4 class="font-title-md text-base text-white">Pilih produk</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Pilih akun premium favorit dari kategori yang tersedia.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start group">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">2</div>
+                        <div>
+                            <h4 class="font-title-md text-base text-white">Klik keranjang</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Tambahkan produk ke pesanan Anda dan lanjutkan ke pembayaran.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start group">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">3</div>
+                        <div>
+                            <h4 class="font-title-md text-base text-white">Scan QRIS</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Lakukan pembayaran secara instan menggunakan QRIS dari e-wallet manapun.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start group">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">4</div>
+                        <div>
+                            <h4 class="font-title-md text-base text-white">Konfirmasi WA</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Kirim bukti transfer ke WhatsApp admin kami untuk proses instan.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex gap-3 group">
-                    <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-xs group-hover:primary-gradient group-hover:text-white transition-all duration-300">2</div>
-                    <div><h4 class="font-title-md text-sm text-white">Klik keranjang</h4><p class="text-on-surface-variant text-[11px] leading-relaxed">Tambahkan ke pesanan, lanjut ke pembayaran.</p></div>
-                </div>
-                <div class="flex gap-3 group">
-                    <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-xs group-hover:primary-gradient group-hover:text-white transition-all duration-300">3</div>
-                    <div><h4 class="font-title-md text-sm text-white">Scan QRIS</h4><p class="text-on-surface-variant text-[11px] leading-relaxed">Bayar instan via QRIS dari e-wallet manapun.</p></div>
-                </div>
-                <div class="flex gap-3 group">
-                    <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-xs group-hover:primary-gradient group-hover:text-white transition-all duration-300">4</div>
-                    <div><h4 class="font-title-md text-sm text-white">Konfirmasi WA</h4><p class="text-on-surface-variant text-[11px] leading-relaxed">Kirim bukti transfer ke admin untuk proses instan.</p></div>
-                </div>
-            </div>
-            <div class="mt-4 p-2.5 bg-primary/5 border border-primary/10 rounded-xl backdrop-blur-sm">
-                <p class="font-title-md text-[11px] text-primary text-center">Pesanan akan diproses oleh Admin kami!</p>
-            </div>
-        </div>
-
-        <div class="glass-card p-5 rounded-2xl flex flex-col h-full border-white/5">
-            <div class="flex items-center gap-3 mb-4">
-                <div class="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary border border-secondary/20">
-                    <span class="material-symbols-outlined text-lg">campaign</span>
-                </div>
-                <h2 class="font-display-hero text-lg text-white">Informasi Terbaru</h2>
-            </div>
-            <div class="flex-grow flex flex-col items-center justify-center text-center p-6 bg-white/5 rounded-xl border border-white/5 mb-4">
-                <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center mb-3">
-                    <span class="material-symbols-outlined text-outline text-3xl">history</span>
-                </div>
-                <h4 class="font-title-md text-base text-white mb-0.5">Produk Baru</h4>
-                <p class="text-on-surface-variant text-[11px] max-w-xs">Tidak ada info baru saat ini. Cek kembali nanti!</p>
-            </div>
-            <div class="flex flex-wrap items-center justify-between gap-3">
-                <label class="flex items-center gap-2 cursor-pointer group">
-                    <input class="rounded border-white/20 bg-transparent text-primary focus:ring-primary w-4 h-4 transition-all" type="checkbox"/>
-                    <span class="text-[11px] text-on-surface-variant group-hover:text-white transition-colors">Jangan tampilkan lagi</span>
-                </label>
-                <div class="flex gap-2">
-                    <button class="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-bold text-white hover:bg-white/10 transition-colors">Tutup</button>
-                    <button class="px-4 py-1.5 rounded-full primary-gradient text-white text-[11px] font-bold shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">Lihat Semua</button>
+                <div class="mt-6 p-3 md:p-4 bg-primary/5 border border-primary/10 rounded-xl backdrop-blur-sm max-w-2xl mx-auto text-center">
+                    <p class="font-title-md text-sm text-primary">Pesanan akan diproses oleh Admin kami!</p>
                 </div>
             </div>
         </div>
@@ -976,7 +964,7 @@
     </div>
 </footer>
 
-<!-- ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== -->
+<!-- ===== MODAL PEMBAYARAN (CYBERVAULT) ===== -->
 <div class="modal-overlay" id="payModal">
     <div class="modal-content-wrapper relative">
         <div class="bg-glow-1"></div>
@@ -1038,10 +1026,9 @@
     </div>
 </div>
 
-<!-- ===== POPUP UPDATE (DESAIN BARU) ===== -->
+<!-- ===== POPUP UPDATE ===== -->
 <div id="updatePopup" class="popup-modal">
     <div class="popup-container">
-        <!-- HEADER -->
         <div class="popup-header">
             <div class="icon-wrap">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1050,13 +1037,8 @@
             </div>
             <h2>Informasi Terbaru</h2>
         </div>
-
-        <!-- BODY -->
         <div class="popup-body">
-            <!-- ANNOUNCEMENT -->
             <div id="popupAnnouncement" class="announcement-card-popup" style="display: none;"></div>
-
-            <!-- PRODUCTS -->
             <div id="popupProducts" class="products-section" style="display: none;">
                 <div class="popup-section-title">
                     <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -1067,12 +1049,8 @@
                 </div>
                 <div id="popupProductsGrid" class="products-grid flex flex-col gap-4"></div>
             </div>
-
-            <!-- EMPTY -->
             <div id="popupEmpty" class="popup-empty">Tidak ada informasi baru</div>
         </div>
-
-        <!-- FOOTER -->
         <div class="popup-footer">
             <div class="checkbox-wrap">
                 <input type="checkbox" id="popupDontShowAgain">
@@ -1395,7 +1373,6 @@
         productsDiv.style.display = 'none';
         emptyDiv.style.display = 'none';
 
-        // ANNOUNCEMENT
         if (announcement) {
             hasAnnouncement = true;
             let imgHtml = '';
@@ -1410,7 +1387,6 @@
             announcementDiv.style.display = 'block';
         }
 
-        // PRODUCTS
         if (products && products.length > 0) {
             hasProducts = true;
             productsGrid.innerHTML = '';
