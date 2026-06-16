@@ -870,25 +870,22 @@
         });
         grid.innerHTML = '';
         grid.appendChild(fragment);
-        document.querySelectorAll('.btn-buy-mini').forEach(btn => {
-            const isDisabled = btn.style.opacity === '0.5';
-            if (!isDisabled) {
-                btn.removeEventListener('click', buyClickHandler);
-                btn.addEventListener('click', buyClickHandler);
-            }
-        });
+        // Event listener sudah ditangani dengan delegation (lihat di bawah)
     }
 
-    function buyClickHandler(e) {
-        e.stopPropagation();
-        const id = parseInt(e.currentTarget.dataset.id);
+    // ===== DELEGASI EVENT UNTUK TOMBEL BELI =====
+    document.getElementById('productGrid').addEventListener('click', function(e) {
+        const target = e.target.closest('.btn-buy-mini');
+        if (!target) return;
+        const id = parseInt(target.dataset.id);
+        if (isNaN(id)) return;
         const product = allProducts.find(p => p.id === id);
         if (product && product.stock > 0) {
             openModal(product);
         } else {
             showToast('Maaf, stok produk ini sudah habis.', true);
         }
-    }
+    });
 
     async function loadProducts() {
         try {
