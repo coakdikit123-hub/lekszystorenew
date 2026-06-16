@@ -147,11 +147,13 @@
             scrollbar-width: none;
         }
 
+        /* ===== TOMBOL BELI ===== */
         .btn-buy-mini {
             position: relative;
             z-index: 20 !important;
         }
 
+        /* ===== STOCK INFO ===== */
         .stock-info-card {
             border-top: 1px solid rgba(255,255,255,0.06);
             padding: 4px 10px 6px;
@@ -195,6 +197,7 @@
         .stock-info-card .stock-bar.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
         .stock-info-card .stock-bar.low { background: linear-gradient(90deg, #ef4444, #f87171); }
 
+        /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001;
             opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px);
@@ -266,46 +269,90 @@
         .social-icon.tk { color: #fff; }
         .social-icon.wa { color: #25D366; }
 
-        .modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
-            display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s;
-            backdrop-filter: blur(10px);
+        /* ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .modal.active { display: flex; opacity: 1; }
-        .modal-content {
-            background: #0f111a; width: 100%; max-width: 500px; margin: 0 auto;
-            border-radius: 30px 30px 0 0; padding: 30px 25px;
-            transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1);
-            border: 1px solid rgba(255,255,255,0.08); max-height: 90vh; overflow-y: auto;
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
         }
-        @media(min-width:768px) {
-            .modal { align-items: center; }
-            .modal-content { border-radius: 30px; transform: scale(0.9); }
+        .modal-content-wrapper {
+            width: 100%;
+            max-width: 480px;
+            max-height: 95vh;
+            overflow-y: auto;
+            padding: 20px;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-        .modal.active .modal-content { transform: translateY(0) scale(1); }
-        .qris-box {
-            background: white; border-radius: 15px; padding: 12px;
-            width: 180px; margin: 0 auto 20px; cursor: pointer;
+        .modal-overlay.active .modal-content-wrapper {
+            transform: scale(1) translateY(0);
         }
-        .qris-img { width: 100%; border-radius: 5px; display: block; }
-        .checkout-details {
-            background: rgba(255,255,255,0.03); border-radius: 15px; padding: 15px;
-            margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08);
+        .modal-content-wrapper::-webkit-scrollbar {
+            width: 4px;
         }
-        .detail-row {
-            display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;
+        .modal-content-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
-        .detail-row.total {
-            border-top: 1px dashed rgba(255,255,255,0.08);
-            padding-top: 10px; margin-top: 10px; font-weight: 800;
+        .modal-content-wrapper::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 10px;
         }
-        .pay-btn {
-            width: 100%; background: linear-gradient(135deg,#7c3aed,#ec4899);
-            color: white; padding: 18px; border: none; border-radius: 15px;
-            font-weight: 800; cursor: pointer; font-size: 1rem; transition: transform 0.2s;
-        }
-        .pay-btn:active { transform: scale(0.98); }
 
+        .surface-glass-modal {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-gradient-modal {
+            background: linear-gradient(135deg, #7c3aed 0%, #aa0266 100%);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+        }
+        .btn-gradient-modal:active {
+            transform: scale(0.95);
+        }
+
+        .bg-glow-1 {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+        .bg-glow-2 {
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            width: 350px;
+            height: 350px;
+            background: rgba(170, 2, 102, 0.12);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+        }
+
+        /* ===== TOAST ===== */
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(135deg,#7c3aed,#ec4899); color: white;
@@ -317,6 +364,7 @@
             #toast { white-space: normal; max-width: 90%; text-align: center; }
         }
 
+        /* ===== POPUP UPDATE ===== */
         .popup-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             backdrop-filter: blur(20px); z-index: 2001;
@@ -727,24 +775,72 @@
     </div>
 </footer>
 
-<!-- ===== MODAL PEMBAYARAN ===== -->
-<div class="modal" id="payModal" onclick="closeModalOutside(event)">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <div style="text-align:center; margin-bottom:20px;">
-            <h3 id="mTitle" style="color:var(--text-muted); font-size:0.9rem;">Nama Produk</h3>
-            <h1 id="mPrice" style="color:var(--text-main); font-size:1.8rem; font-weight:800;">Rp 0</h1>
+<!-- ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== -->
+<div class="modal-overlay" id="payModal">
+    <div class="modal-content-wrapper relative">
+        <!-- Background Glow -->
+        <div class="bg-glow-1"></div>
+        <div class="bg-glow-2"></div>
+
+        <!-- Payment Card -->
+        <div class="surface-glass-modal rounded-2xl p-6 md:p-8 flex flex-col items-center shadow-2xl relative z-10">
+            
+            <!-- Product Header -->
+            <div class="text-center flex flex-col gap-1 mb-5 w-full">
+                <p class="text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-bold">Payment Confirmation</p>
+                <h3 id="mTitle" class="text-lg font-bold text-on-surface">Nama Produk</h3>
+                <div class="mt-1">
+                    <span id="mPrice" class="text-primary font-bold text-3xl tracking-tight">Rp 0</span>
+                </div>
+            </div>
+
+            <!-- QR Container -->
+            <div class="w-full max-w-[200px] mx-auto bg-white rounded-xl p-3 mb-4 shadow-lg relative group transition-transform duration-300 hover:scale-105">
+                <div class="absolute inset-0 bg-primary/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <img src="/gambar/qris.jpeg" alt="QRIS" class="w-full h-auto object-contain rounded-lg" loading="lazy">
+            </div>
+            <p class="text-center text-sm text-on-surface-variant mb-5 font-medium">Scan QRIS untuk membayar</p>
+
+            <!-- Transaction Details -->
+            <div class="w-full bg-surface-container-low/80 rounded-xl p-4 flex flex-col gap-2.5 border border-white/5 backdrop-blur-sm">
+                <div class="flex justify-between items-center pb-2 border-b border-white/5">
+                    <span class="text-on-surface-variant text-sm">ID Trx:</span>
+                    <span id="mTrxID" class="text-on-surface font-bold text-sm font-mono">#LS-00000</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">Metode:</span>
+                    <span class="text-on-surface font-medium text-sm">QRIS / Transfer Bank</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-on-surface-variant text-sm">Status:</span>
+                    <span class="text-amber-400 font-bold text-sm flex items-center gap-1.5">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                        </span>
+                        Menunggu Pembayaran
+                    </span>
+                </div>
+                <div class="mt-2 pt-3 border-t border-dashed border-white/10">
+                    <div class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-success-green text-sm mt-0.5">info</span>
+                        <p class="text-success-green font-bold text-sm">Note: Kirim bukti bayar ke Admin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col gap-3 w-full mt-5">
+                <button class="btn-gradient-modal text-white w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2" onclick="confirmWA()">
+                    <span class="material-symbols-outlined text-xl">chat</span>
+                    Konfirmasi WhatsApp
+                </button>
+                <button onclick="closeModal()" class="w-full py-2.5 text-on-surface-variant hover:text-primary transition-colors duration-200 font-medium flex items-center justify-center gap-1 group">
+                    <span class="material-symbols-outlined transition-transform group-hover:-translate-x-1">arrow_back</span>
+                    Kembali
+                </button>
+            </div>
         </div>
-        <div class="qris-box" onclick="copyQRIS()">
-            <img src="/gambar/qris.jpeg" alt="QRIS" class="qris-img" loading="lazy">
-        </div>
-        <div class="checkout-details">
-            <div class="detail-row"><span>ID Trx:</span><span id="mTrxID" style="color:var(--primary-blue); font-weight:700">#LS-00000</span></div>
-            <div class="detail-row"><span>Metode:</span><span>QRIS / Transfer Bank</span></div>
-            <div class="detail-row"><span>Status:</span><span style="color:#f59e0b;">Menunggu Pembayaran</span></div>
-            <div class="detail-row total"><span>Note:</span><span style="color:#25D366;">Kirim bukti bayar ke Admin</span></div>
-        </div>
-        <button class="pay-btn" onclick="confirmWA()">Konfirmasi WhatsApp</button>
-        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:var(--text-muted); margin-top:20px; cursor:pointer;">Kembali</button>
     </div>
 </div>
 
@@ -781,6 +877,7 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script>
+    // ========== FUNGSI UTAMA ==========
     let allProducts = [];
     let selectedProduct = null;
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
@@ -818,6 +915,7 @@
         return 100;
     }
 
+    // ===== RENDER PRODUK =====
     function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if (!products.length) {
@@ -854,8 +952,6 @@
                     </div>
                 </div>
 
-                <!-- FITUR TELAH DIHAPUS -->
-
                 <div class="stock-info-card">
                     <div class="stock-header">
                         <div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div>
@@ -884,6 +980,7 @@
         grid.appendChild(fragment);
     }
 
+    // ===== DELEGASI EVENT UNTUK TOMBOL BELI =====
     document.getElementById('productGrid').addEventListener('click', function(e) {
         const target = e.target.closest('.btn-buy-mini');
         if (!target) return;
@@ -901,6 +998,7 @@
         }
     });
 
+    // ===== API FUNGSI =====
     async function loadProducts() {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
@@ -949,9 +1047,17 @@
         document.getElementById('payModal').classList.remove('active');
         selectedProduct = null;
     };
-    window.closeModalOutside = function(e) {
-        if (e.target === document.getElementById('payModal')) closeModal();
-    };
+
+    // Click outside modal
+    document.getElementById('payModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
     window.copyQRIS = function() {
         showToast('Screenshot QRIS dan bayar via bank/ewallet.');
     };
@@ -964,7 +1070,7 @@
             loadProducts();
             return;
         }
-        const payBtn = document.querySelector('.pay-btn');
+        const payBtn = document.querySelector('.btn-gradient-modal');
         const originalText = payBtn.innerText;
         payBtn.innerText = '⏳ Memproses...';
         payBtn.disabled = true;
@@ -1022,6 +1128,7 @@
         else btn.classList.remove('visible');
     });
 
+    // ===== POPUP UPDATE =====
     async function checkForUpdates() {
         if (dontShowPopup || isPopupShowing) return;
         try {
@@ -1122,6 +1229,7 @@
         modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
     }
 
+    // Polling update
     setInterval(async () => {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
@@ -1136,6 +1244,7 @@
         } catch(e) {}
     }, 30000);
 
+    // ===== INIT =====
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
         setTimeout(() => checkForUpdates(), 1500);
