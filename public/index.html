@@ -221,6 +221,13 @@
         .stock-bar.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
         .stock-bar.low { background: linear-gradient(90deg, #ef4444, #f87171); }
 
+        /* ===== PERBAIKAN: tombol keranjang tidak tertutup stok ===== */
+        .btn-buy-mini {
+            position: relative;
+            z-index: 10;
+        }
+        /* End perbaikan */
+
         /* Sidebar (dari kode lama) */
         .sidebar-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001;
@@ -849,7 +856,7 @@
                     <h3 class="font-title-md text-xs text-white leading-tight">${escapeHtml(p.name)}</h3>
                     <div class="flex items-center justify-between mt-0.5">
                         <div class="font-display-hero text-sm font-bold text-primary">Rp ${p.price.toLocaleString()}</div>
-                        <!-- TOMBOL BELI YANG JELAS -->
+                        <!-- TOMBOL BELI DENGAN Z-INDEX TINGGI -->
                         <button class="btn-buy-mini w-9 h-9 rounded-full primary-gradient text-white shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center" data-id="${p.id}" ${isOutOfStock ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
                             <i class="fas fa-shopping-cart text-sm"></i>
                         </button>
