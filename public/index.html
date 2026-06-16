@@ -146,89 +146,58 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* mobile first fixes */
-        @media (max-width: 640px) {
-            .nav-desktop {
-                display: none;
-            }
-            .hero-text {
-                font-size: 1.25rem !important;
-            }
-            .hero-sub {
-                font-size: 0.75rem !important;
-            }
-            .stat-number {
-                font-size: 1.25rem !important;
-            }
-            .stat-label {
-                font-size: 0.6rem !important;
-            }
-            .product-title {
-                font-size: 0.75rem !important;
-            }
-            .product-price {
-                font-size: 0.9rem !important;
-            }
-        }
-        @media (min-width: 641px) {
-            .nav-mobile {
-                display: none !important;
-            }
+
+        /* ===== TOMBOL BELI - PASTIKAN DI ATAS ===== */
+        .btn-buy-mini {
+            position: relative;
+            z-index: 20 !important;
         }
 
-        /* Custom styles for stock bar, etc */
-        .stock-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(6px);
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding: 6px 10px;
-            border-radius: 0 0 12px 12px;
+        /* ===== STOCK INFO - TETAP RAPI ===== */
+        .stock-info-card {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 4px 10px 6px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
         }
-        .stock-header {
+        .stock-info-card .stock-header {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 4px;
+            align-items: center;
         }
-        .stock-label {
+        .stock-info-card .stock-label {
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 0.6rem;
+            font-size: 0.55rem;
             font-weight: 600;
             color: #94a3b8;
         }
-        .stock-number {
-            font-weight: 800;
-            font-size: 0.8rem;
+        .stock-info-card .stock-number {
+            font-weight: 700;
+            font-size: 0.7rem;
         }
-        .stock-number.high { color: #10b981; }
-        .stock-number.medium { color: #f59e0b; }
-        .stock-number.low { color: #ef4444; }
-        .stock-bar-container {
+        .stock-info-card .stock-number.high { color: #10b981; }
+        .stock-info-card .stock-number.medium { color: #f59e0b; }
+        .stock-info-card .stock-number.low { color: #ef4444; }
+        .stock-info-card .stock-bar-container {
             width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.1);
+            height: 2px;
+            background: rgba(255,255,255,0.08);
             border-radius: 4px;
             overflow: hidden;
+            margin-top: 3px;
         }
-        .stock-bar { height: 100%; width: 0%; border-radius: 4px; }
-        .stock-bar.high { background: linear-gradient(90deg, #10b981, #34d399); }
-        .stock-bar.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-        .stock-bar.low { background: linear-gradient(90deg, #ef4444, #f87171); }
-
-        /* ===== PERBAIKAN: tombol keranjang tidak tertutup stok ===== */
-        .btn-buy-mini {
-            position: relative;
-            z-index: 10;
+        .stock-info-card .stock-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
         }
-        /* End perbaikan */
+        .stock-info-card .stock-bar.high { background: linear-gradient(90deg, #10b981, #34d399); }
+        .stock-info-card .stock-bar.medium { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        .stock-info-card .stock-bar.low { background: linear-gradient(90deg, #ef4444, #f87171); }
 
-        /* Sidebar (dari kode lama) */
+        /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1001;
             opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(5px);
@@ -300,7 +269,7 @@
         .social-icon.tk { color: #fff; }
         .social-icon.wa { color: #25D366; }
 
-        /* Modal pembayaran (dari kode lama) */
+        /* ===== MODAL ===== */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
             display: none; align-items: flex-end; opacity: 0; transition: opacity 0.2s;
@@ -341,15 +310,19 @@
         }
         .pay-btn:active { transform: scale(0.98); }
 
-        /* Toast */
+        /* ===== TOAST ===== */
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(135deg,#7c3aed,#ec4899); color: white;
             padding: 12px 24px; border-radius: 50px; font-weight: 800;
             z-index: 3000; display: none; pointer-events: none; white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+            #toast { white-space: normal; max-width: 90%; text-align: center; }
         }
 
-        /* Popup update (dari kode lama) */
+        /* ===== POPUP UPDATE ===== */
         .popup-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             backdrop-filter: blur(20px); z-index: 2001;
@@ -446,7 +419,6 @@
             .popup-header h2 { font-size: 1.1rem; }
         }
 
-        /* Empty state */
         .empty-state {
             grid-column: 1/-1; text-align: center; padding: 40px 20px;
             background: #1a1d2e; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
@@ -473,6 +445,29 @@
             transform: translateY(20px); transition: opacity 0.2s, transform 0.2s;
         }
         .back-to-top.visible { opacity: 1; transform: translateY(0); }
+
+        /* Efek animasi produk */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hot-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 25%;
+            height: 200%;
+            background: rgba(255,255,255,0.05);
+            transform: rotate(30deg);
+            animation: shine-loop 4s infinite;
+            pointer-events: none;
+        }
+        @keyframes shine-loop {
+            0% { left: -60%; }
+            20% { left: 140%; }
+            100% { left: 140%; }
+        }
     </style>
 </head>
 <body class="font-body-base text-body-base selection:bg-primary/30 selection:text-primary">
@@ -500,7 +495,7 @@
     </div>
 </nav>
 
-<!-- ===== SIDEBAR (dari kode lama) ===== -->
+<!-- ===== SIDEBAR ===== -->
 <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
 <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -608,13 +603,13 @@
     <div class="px-4 max-w-container-max mx-auto">
         <div class="filter-container flex gap-2 overflow-x-auto scrollbar-hide pb-2">
             <button class="filter-btn active flex-shrink-0 px-4 py-2 rounded-full text-xs font-bold bg-primary/20 text-primary border border-primary/30" data-category="all" onclick="filterProduct('all', this)"><i class="fas fa-layer-group"></i> Semua</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="netflix" onclick="filterProduct('netflix', this)"><i class="fas fa-tv text-netflix-red"></i> Netflix</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="capcut" onclick="filterProduct('capcut', this)"><i class="fas fa-video text-capcut-red"></i> Capcut</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="youtube" onclick="filterProduct('youtube', this)"><i class="fab fa-youtube text-youtube-red"></i> Youtube</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="alight" onclick="filterProduct('alight', this)"><i class="fas fa-film text-alight-green"></i> Alight</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="canva" onclick="filterProduct('canva', this)"><i class="fas fa-palette text-canva-cyan"></i> Canva</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="spotify" onclick="filterProduct('spotify', this)"><i class="fab fa-spotify text-spotify-green"></i> Spotify</button>
-            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="viu" onclick="filterProduct('viu', this)"><i class="fas fa-circle-play text-viu-yellow"></i> Viu</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="netflix" onclick="filterProduct('netflix', this)"><i class="fas fa-tv"></i> Netflix</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="capcut" onclick="filterProduct('capcut', this)"><i class="fas fa-video"></i> Capcut</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="youtube" onclick="filterProduct('youtube', this)"><i class="fab fa-youtube"></i> Youtube</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="alight" onclick="filterProduct('alight', this)"><i class="fas fa-film"></i> Alight</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="canva" onclick="filterProduct('canva', this)"><i class="fas fa-palette"></i> Canva</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="spotify" onclick="filterProduct('spotify', this)"><i class="fab fa-spotify"></i> Spotify</button>
+            <button class="filter-btn flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium text-muted-foreground border border-white/5 hover:bg-white/5" data-category="viu" onclick="filterProduct('viu', this)"><i class="fas fa-circle-play"></i> Viu</button>
         </div>
     </div>
 
@@ -626,7 +621,7 @@
                 <p class="text-on-surface-variant text-[10px]">Pilih langganan premium terbaik</p>
             </div>
         </div>
-        <div id="productGrid" class="product-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5"></div>
+        <div id="productGrid" class="product-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
     </section>
 
     <!-- ===== INFO DUAL COLUMN ===== -->
@@ -795,7 +790,7 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script>
-    // ========== SEMUA FUNGSI DARI KODE LAMA (dipertahankan) ==========
+    // ========== FUNGSI UTAMA ==========
     let allProducts = [];
     let selectedProduct = null;
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
@@ -833,6 +828,7 @@
         return 100;
     }
 
+    // ===== RENDER PRODUK DENGAN DESAIN BARU =====
     function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if (!products.length) {
@@ -844,34 +840,73 @@
             const stockClass = getStockClass(p.stock);
             const stockWidth = getStockWidth(p.stock);
             const isOutOfStock = p.stock <= 0;
+
             const card = document.createElement('div');
             card.className = `glass-card glass-card-hover rounded-xl overflow-hidden flex flex-col group transition-all duration-300 hover:-translate-y-1 ${p.hot ? 'hot-effect' : ''}`;
-            card.style.animation = `fadeIn 0.2s ease ${idx * 0.03}s both`;
+            card.style.animation = `fadeIn 0.25s ease ${idx * 0.04}s both`;
+
             card.innerHTML = `
+                <!-- GAMBAR + OVERLAY DESAIN -->
                 <div class="relative aspect-square overflow-hidden">
                     <img src="${p.image || '/gambar/placeholder.png'}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${escapeHtml(p.name)}" loading="lazy" onerror="this.src='/gambar/placeholder.png'">
-                    ${p.hot ? '<div class="absolute top-1.5 left-1.5"><span class="primary-gradient text-white text-[7px] font-extrabold tracking-widest px-2 py-0.5 rounded-full shadow-lg">TERLARIS</span></div>' : ''}
-                </div>
-                <div class="p-2.5 flex flex-col gap-1">
-                    <h3 class="font-title-md text-xs text-white leading-tight">${escapeHtml(p.name)}</h3>
-                    <div class="flex items-center justify-between mt-0.5">
-                        <div class="font-display-hero text-sm font-bold text-primary">Rp ${p.price.toLocaleString()}</div>
-                        <!-- TOMBOL BELI DENGAN Z-INDEX TINGGI -->
-                        <button class="btn-buy-mini w-9 h-9 rounded-full primary-gradient text-white shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center" data-id="${p.id}" ${isOutOfStock ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
-                            <i class="fas fa-shopping-cart text-sm"></i>
-                        </button>
+                    
+                    <!-- Overlay gelap agar teks terbaca -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
+                    
+                    <!-- KONTEN DI ATAS GAMBAR -->
+                    <div class="absolute inset-0 p-3 flex flex-col justify-between">
+                        <!-- Baris atas: HOT + APPS PREMIUM -->
+                        <div class="flex justify-between items-start">
+                            ${p.hot ? '<span class="bg-red-600 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded shadow-lg">HOT</span>' : '<span></span>'}
+                            <span class="bg-white/15 backdrop-blur text-white text-[8px] font-bold px-2.5 py-0.5 rounded-full border border-white/10">APPS PREMIUM</span>
+                        </div>
+                        
+                        <!-- Tengah: Judul besar + tag Premium -->
+                        <div class="text-center mt-2">
+                            <h3 class="text-white font-extrabold text-base sm:text-lg leading-tight drop-shadow-lg tracking-wide">${escapeHtml(p.name.split(' ')[0] || 'PREMIUM')}</h3>
+                            <span class="inline-block bg-white/10 backdrop-blur text-white text-[9px] font-bold px-3 py-0.5 rounded-full mt-1 border border-white/10">Premium</span>
+                        </div>
+                        
+                        <!-- Bawah: Trust badges -->
+                        <div class="flex justify-center gap-2 text-[7px] sm:text-[8px] font-bold">
+                            <span class="bg-black/50 backdrop-blur text-white px-2 py-0.5 rounded border border-white/5">LEKSZY STORE</span>
+                            <span class="bg-green-600/80 text-white px-2 py-0.5 rounded border border-green-400/30">TRUSTED 100%</span>
+                        </div>
                     </div>
                 </div>
-                <div class="stock-info">
+
+                <!-- FITUR (4 poin) -->
+                <div class="p-3 pb-1 flex-grow">
+                    <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[9px] sm:text-[10px] text-white/80">
+                        <span class="flex items-center gap-1"><i class="fas fa-check-circle text-green-400 text-[8px]"></i> Support iOS, Android, PC</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-check-circle text-green-400 text-[8px]"></i> Legal & Bebas Update</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-check-circle text-green-400 text-[8px]"></i> 100% Bergaransi</span>
+                        <span class="flex items-center gap-1"><i class="fas fa-check-circle text-green-400 text-[8px]"></i> Proses Cepat</span>
+                    </div>
+                </div>
+
+                <!-- STOK (bar tipis) -->
+                <div class="stock-info-card">
                     <div class="stock-header">
                         <div class="stock-label"><i class="fas fa-boxes"></i> <span>Stok</span></div>
                         <div class="stock-number ${stockClass}">
-                            ${isOutOfStock ? '<span style="color: var(--stock-low);">Habis</span>' : `${p.stock} <span style="font-size:0.6rem; font-weight:normal;">tersisa</span>`}
+                            ${isOutOfStock ? '<span style="color: #ef4444;">Habis</span>' : `${p.stock} <span style="font-size:0.55rem; font-weight:normal;">tersisa</span>`}
                         </div>
                     </div>
                     <div class="stock-bar-container">
                         <div class="stock-bar ${stockClass}" style="width: ${stockWidth}%;"></div>
                     </div>
+                </div>
+
+                <!-- BAWAH: Nama varian + Harga + Tombol Beli -->
+                <div class="p-3 flex items-center justify-between bg-black/20 border-t border-white/5">
+                    <div class="flex-1 min-w-0">
+                        <div class="text-[9px] text-white/50 truncate">${escapeHtml(p.name)}</div>
+                        <div class="text-white font-bold text-sm sm:text-base">Rp ${p.price.toLocaleString()}</div>
+                    </div>
+                    <button class="btn-buy-mini w-9 h-9 rounded-full primary-gradient text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center flex-shrink-0 ml-2" data-id="${p.id}" ${isOutOfStock ? 'disabled style="opacity:0.4; cursor:not-allowed;"' : ''}>
+                        <i class="fas fa-shopping-cart text-sm"></i>
+                    </button>
                 </div>
             `;
             fragment.appendChild(card);
@@ -898,6 +933,7 @@
         }
     });
 
+    // ===== API FUNGSI =====
     async function loadProducts() {
         try {
             const res = await fetch('/api/products?_=' + Date.now());
@@ -1019,7 +1055,7 @@
         else btn.classList.remove('visible');
     });
 
-    // ========== POPUP UPDATE ==========
+    // ===== POPUP UPDATE =====
     async function checkForUpdates() {
         if (dontShowPopup || isPopupShowing) return;
         try {
@@ -1135,32 +1171,7 @@
         } catch(e) {}
     }, 30000);
 
-    // ========== SCRIPT TAMBAHAN DARI KODE BARU (tab filter & scroll) ==========
-    // Tab filter interaksi (untuk tombol kategori di dalam glass-card)
-    document.querySelectorAll('.glass-card button').forEach(button => {
-        button.addEventListener('click', () => {
-            document.querySelectorAll('.glass-card button').forEach(btn => {
-                btn.classList.remove('primary-gradient', 'text-white', 'shadow-md');
-                btn.classList.add('text-on-surface-variant', 'hover:bg-white/5');
-                btn.classList.remove('font-bold');
-                btn.classList.add('font-semibold');
-            });
-            button.classList.add('primary-gradient', 'text-white', 'shadow-md', 'font-bold');
-            button.classList.remove('text-on-surface-variant', 'hover:bg-white/5', 'font-semibold');
-        });
-    });
-
-    // Header scroll effect
-    window.addEventListener('scroll', () => {
-        const nav = document.querySelector('nav');
-        if (window.scrollY > 10) {
-            nav.classList.add('bg-surface-glass/95');
-        } else {
-            nav.classList.remove('bg-surface-glass/95');
-        }
-    });
-
-    // ========== INIT ==========
+    // ===== INIT =====
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
         setTimeout(() => checkForUpdates(), 1500);
