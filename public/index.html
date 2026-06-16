@@ -976,7 +976,7 @@
     </div>
 </footer>
 
-<!-- ===== MODAL PEMBAYARAN (CYBERVAULT) ===== -->
+<!-- ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== -->
 <div class="modal-overlay" id="payModal">
     <div class="modal-content-wrapper relative">
         <div class="bg-glow-1"></div>
@@ -1100,7 +1100,7 @@
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     let isPopupShowing = false;
     let lastSeenAnnouncementId = localStorage.getItem('lastSeenAnnouncementId') || '';
-    let lastSeenProductIds = JSON.parse(localStorage.getItem('lastSeenProductIds') || '[]');
+    let lastSeenTimestamp = parseInt(localStorage.getItem('lastSeenTimestamp')) || 0;
 
     function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
@@ -1224,10 +1224,6 @@
             allProducts.sort((a, b) => a.id - b.id);
             renderProducts(allProducts);
             document.getElementById('countOrder').innerText = allProducts.length;
-            // Simpan ID produk untuk deteksi produk baru
-            const currentIds = allProducts.map(p => p.id);
-            localStorage.setItem('lastSeenProductIds', JSON.stringify(currentIds));
-            lastSeenProductIds = currentIds;
         } catch(e) {
             console.error(e);
             showToast('Gagal memuat produk. Refresh halaman.', true);
@@ -1357,38 +1353,32 @@
             ]);
             const announcement = await announcementRes.json();
             const products = await productsRes.json();
-
             let hasNew = false;
             let announcementData = null;
-            let newProducts = [];
-
-            // Cek pengumuman baru
             if (announcement && announcement._id && announcement._id !== lastSeenAnnouncementId) {
                 hasNew = true;
                 announcementData = announcement;
                 lastSeenAnnouncementId = announcement._id;
                 localStorage.setItem('lastSeenAnnouncementId', lastSeenAnnouncementId);
             }
-
-            // Cek produk baru dengan membandingkan ID
-            const currentIds = products.map(p => p.id);
-            const storedIds = JSON.parse(localStorage.getItem('lastSeenProductIds') || '[]');
-            const newProductIds = currentIds.filter(id => !storedIds.includes(id));
-            
-            if (newProductIds.length > 0) {
+            const newProducts = products.filter(p => {
+                if (!p.createdAt) return false;
+                const prodTime = new Date(p.createdAt).getTime();
+                return prodTime > lastSeenTimestamp;
+            });
+            if (newProducts.length > 0) {
                 hasNew = true;
-                newProducts = products.filter(p => newProductIds.includes(p.id));
+                const now = Date.now();
+                lastSeenTimestamp = now;
+                localStorage.setItem('lastSeenTimestamp', lastSeenTimestamp);
             }
-
             if (hasNew) {
-                showModernPopup(announcementData, newProducts, currentIds);
+                showModernPopup(announcementData, newProducts);
             }
-        } catch(e) {
-            console.error('Popup error:', e);
-        }
+        } catch(e) { console.error('Popup error:', e); }
     }
 
-    function showModernPopup(announcement, products, newCurrentIds) {
+    function showModernPopup(announcement, products) {
         if (isPopupShowing) return;
         isPopupShowing = true;
 
@@ -1480,11 +1470,6 @@
                 localStorage.setItem('dontShowNewProductPopup', 'true');
                 dontShowPopup = true;
             }
-            // Simpan ID produk terbaru setelah popup ditutup
-            if (newCurrentIds) {
-                localStorage.setItem('lastSeenProductIds', JSON.stringify(newCurrentIds));
-                lastSeenProductIds = newCurrentIds;
-            }
         };
 
         document.getElementById('popupCloseBtn').onclick = closeModalFn;
@@ -1502,10 +1487,9 @@
         try {
             const res = await fetch('/api/products?_=' + Date.now());
             const products = await res.json();
-            const currentIds = products.map(p => p.id);
-            const storedIds = JSON.parse(localStorage.getItem('lastSeenProductIds') || '[]');
-            // Jika ada perubahan ID, reload produk dan cek update
-            if (JSON.stringify(currentIds) !== JSON.stringify(storedIds)) {
+            const currentIds = products.map(p => p.id).sort();
+            const prevIds = allProducts.map(p => p.id).sort();
+            if (JSON.stringify(currentIds) !== JSON.stringify(prevIds)) {
                 allProducts = products;
                 renderProducts(allProducts);
                 await checkForUpdates();
@@ -1516,8 +1500,7 @@
     // ===== INIT =====
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
-        // Tunggu sebentar lalu cek update
-        setTimeout(() => checkForUpdates(), 2000);
+        setTimeout(() => checkForUpdates(), 1500);
     });
 </script>
 </body>
