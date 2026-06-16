@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport"/>
+    <meta name="description" content="Hubungi Kami - LekszyStore, Tim support siap membantu 24/7">
+    <title>Hubungi Kami | LekszyStore</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-background": "#dae2fd",
+                        "secondary-fixed": "#ffd9e4",
+                        "tertiary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#dce5ff",
+                        "outline": "#958da1",
+                        "on-error": "#690005",
+                        "surface-variant": "#2d3449",
+                        "surface-container": "#171f33",
+                        "on-primary": "#3f008e",
+                        "surface-container-lowest": "#060e20",
+                        "error-container": "#93000a",
+                        "accent-cyan": "#22D3EE",
+                        "on-surface-variant": "#ccc3d8",
+                        "surface-container-high": "#222a3d",
+                        "surface-bright": "#31394d",
+                        "primary-container": "#7c3aed",
+                        "bg-deep": "#020617",
+                        "surface-glass": "rgba(15, 23, 42, 0.7)",
+                        "primary": "#d2bbff",
+                        "on-primary-fixed": "#25005a",
+                        "on-tertiary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "on-surface": "#dae2fd",
+                        "surface-tint": "#d2bbff",
+                        "surface-dim": "#0b1326",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#eaddff",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "secondary": "#ffb0cd",
+                        "inverse-primary": "#732ee4",
+                        "background": "#0b1326",
+                        "tertiary-container": "#0062d2",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "inverse-on-surface": "#283044",
+                        "secondary-container": "#aa0266",
+                        "on-tertiary": "#002e6a",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "tertiary": "#adc6ff",
+                        "on-secondary": "#640039",
+                        "primary-fixed-dim": "#d2bbff",
+                        "outline-variant": "#4a4455",
+                        "on-primary-container": "#ede0ff",
+                        "success-green": "#10B981",
+                        "on-secondary-fixed": "#3e0022",
+                        "on-secondary-container": "#ffbad3",
+                        "surface": "#0b1326",
+                        "surface-container-low": "#131b2e"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "section-gap": "4rem",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem"
+                    },
+                    fontFamily: {
+                        "title-md": ["Plus Jakarta Sans"],
+                        "body-base": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-hero": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "title-md": ["18px", { lineHeight: "1.5", fontWeight: "600" }],
+                        "body-base": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "label-caps": ["12px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "body-sm": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "display-hero": ["48px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #dae2fd;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-base text-body-base selection:bg-primary/30 selection:text-primary">
+
+<!-- ===== NAVBAR (KEMBALI KE BERANDA) ===== -->
+<nav class="fixed top-0 w-full z-[60] bg-surface-glass/80 backdrop-blur-2xl border-b border-white/5 transition-all duration-300 h-16">
+    <div class="flex justify-between items-center h-16 px-4 max-w-container-max mx-auto">
+        <a href="index.html" class="flex items-center gap-2">
+            <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="eager">
+            <span class="font-display-hero text-base font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">LekszyStore</span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="index.html">Beranda</a>
+            <a class="font-title-md text-xs text-primary font-bold relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-primary after:rounded-full" href="#">Hubungi Kami</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="index.html#panduan">Panduan</a>
+        </div>
+        <div class="flex items-center gap-2">
+            <a class="primary-gradient text-white px-4 py-1.5 rounded-full font-title-md text-[11px] font-bold flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20" href="https://wa.me/6285810630431">
+                <span class="material-symbols-outlined text-sm">chat</span>
+                <span class="hidden sm:inline">Hubungi</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<main class="pt-24 pb-12 px-4 relative overflow-hidden">
+    <!-- Background Glow -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-1/4 -right-1/4 w-96 h-96 bg-primary/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-1/4 -left-1/4 w-96 h-96 bg-secondary/10 blur-[120px] rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full"></div>
+    </div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="font-display-hero text-3xl md:text-5xl text-on-surface mb-3">Hubungi Kami</h1>
+            <p class="text-on-surface-variant max-w-2xl mx-auto">
+                Kami hadir 24/7 untuk membantu segala kebutuhan transaksi digital Anda. Kepuasan pelanggan adalah prioritas utama LekszyStore.
+            </p>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+
+            <!-- Left Column: Contact Info -->
+            <div class="lg:col-span-2 space-y-5">
+
+                <!-- WhatsApp Card -->
+                <div class="glass-card p-6 rounded-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-40 h-40 bg-success-green/10 blur-3xl rounded-full"></div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-full bg-success-green/20 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-success-green text-2xl">chat</span>
+                        </div>
+                        <span class="bg-success-green/20 text-success-green px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">ONLINE</span>
+                    </div>
+                    <h3 class="font-headline-lg text-lg text-on-surface mb-1">WhatsApp Support</h3>
+                    <p class="text-on-surface-variant text-sm mb-4">Respon tercepat via chat WhatsApp untuk bantuan instan.</p>
+                    <div class="text-xl font-bold text-on-surface mb-5">0858-1063-0431</div>
+                    <a class="btn-success inline-flex items-center justify-center w-full py-3 rounded-lg text-white font-bold gap-2 active:scale-95 text-sm" href="https://wa.me/6285810630431">
+                        <span class="material-symbols-outlined text-lg">call</span>
+                        Hubungi Sekarang
+                    </a>
+                </div>
+
+                <!-- Email & Hours -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                    <div class="glass-card p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-primary text-lg">mail</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Email Support</p>
+                            <p class="text-on-surface text-sm font-semibold truncate">support@lekszystore.my.id</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-4 rounded-xl flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-accent-cyan/10 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-accent-cyan text-lg">schedule</span>
+                        </div>
+                        <div>
+                            <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">Jam Operasional</p>
+                            <p class="text-on-surface text-sm font-semibold">Senin - Minggu, 24 Jam</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="glass-card p-5 rounded-xl">
+                    <p class="text-on-surface-variant text-[10px] font-bold uppercase tracking-wider mb-3">Media Sosial</p>
+                    <div class="flex gap-3">
+                        <a href="https://www.instagram.com/lekszystore" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:text-primary hover:border-primary/40 transition-all duration-300">
+                            <span class="material-symbols-outlined text-lg">photo_camera</span>
+                        </a>
+                        <a href="https://www.tiktok.com/@lekszystore" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:text-primary hover:border-primary/40 transition-all duration-300">
+                            <span class="material-symbols-outlined text-lg">video_library</span>
+                        </a>
+                        <a href="https://wa.me/6285810630431" target="_blank" class="w-10 h-10 rounded-full glass-card flex items-center justify-center hover:text-primary hover:border-primary/40 transition-all duration-300">
+                            <span class="material-symbols-outlined text-lg">chat</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Kembali ke Beranda -->
+                <div class="text-center">
+                    <a href="index.html" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm">
+                        <span class="material-symbols-outlined text-base">arrow_back</span>
+                        Kembali ke Beranda
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Column: Contact Form -->
+            <div class="lg:col-span-3">
+                <div class="glass-card p-6 md:p-8 rounded-xl">
+                    <h3 class="font-headline-lg text-xl text-on-surface mb-6">Kirim Pesan</h3>
+                    <form id="contactForm" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Nama Lengkap</label>
+                                <input class="w-full bg-surface-container-low border border-white/10 rounded-lg py-3.5 px-4 text-on-surface text-sm placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all" placeholder="Masukkan nama Anda" type="text" required/>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Alamat Email</label>
+                                <input class="w-full bg-surface-container-low border border-white/10 rounded-lg py-3.5 px-4 text-on-surface text-sm placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all" placeholder="nama@email.com" type="email" required/>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Subjek</label>
+                            <input class="w-full bg-surface-container-low border border-white/10 rounded-lg py-3.5 px-4 text-on-surface text-sm placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all" placeholder="Apa yang ingin Anda tanyakan?" type="text" required/>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-on-surface-variant text-xs font-bold uppercase tracking-wider">Pesan</label>
+                            <textarea class="w-full bg-surface-container-low border border-white/10 rounded-lg py-3.5 px-4 text-on-surface text-sm placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all resize-none" placeholder="Tuliskan pesan Anda secara detail..." rows="5" required></textarea>
+                        </div>
+                        <button class="primary-gradient w-full py-3.5 rounded-lg text-white font-bold text-sm hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20" type="submit">
+                            Kirim Sekarang
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="mt-12 glass-card rounded-2xl overflow-hidden relative h-[300px]">
+            <div class="absolute inset-0 bg-slate-900 overflow-hidden flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/50"></div>
+                <div class="relative z-10 text-center px-4">
+                    <div class="w-14 h-14 bg-primary rounded-full flex items-center justify-center mx-auto mb-3 animate-bounce shadow-[0_0_30px_rgba(124,58,237,0.5)]">
+                        <span class="material-symbols-outlined text-white text-2xl">location_on</span>
+                    </div>
+                    <h4 class="font-headline-lg text-lg text-on-surface mb-1">LekszyStore Headquarters</h4>
+                    <p class="text-on-surface-variant text-sm">Digital Hub, Jakarta, Indonesia</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-[#020617] border-t border-white/5 pt-10 pb-6">
+    <div class="max-w-container-max mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 mb-8">
+        <div class="md:col-span-5 space-y-4">
+            <div class="flex items-center gap-2">
+                <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="lazy">
+                <span class="font-display-hero text-xl font-bold text-white">LekszyStore</span>
+            </div>
+            <p class="text-on-surface-variant text-xs leading-relaxed max-w-md">
+                Solusi terbaik untuk akun premium aplikasi favorit dengan harga terjangkau. Garansi 100%, proses cepat, support 24/7.
+            </p>
+            <div class="flex gap-2">
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.instagram.com/lekszystore"><span class="material-symbols-outlined text-lg">photo_camera</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.tiktok.com/@lekszystore"><span class="material-symbols-outlined text-lg">video_library</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://wa.me/6285810630431"><span class="material-symbols-outlined text-lg">chat</span></a>
+            </div>
+        </div>
+        <div class="md:col-span-3 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Menu Cepat</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="index.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Beranda</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="terms.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Syarat &amp; Ketentuan</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="privacy.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Kebijakan Privasi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="contact.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Hubungi Kami</a></li>
+            </ul>
+        </div>
+        <div class="md:col-span-4 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Bantuan</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="terms.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Syarat &amp; Ketentuan</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="privacy.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Kebijakan Privasi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="contact.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Hubungi Kami</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="https://whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Tips &amp; Trik</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="max-w-container-max mx-auto px-4 pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
+        <p class="text-on-surface-variant text-[10px]">© 2024 LekszyStore. Premium Digital Goods Marketplace.</p>
+        <span class="flex items-center gap-2 text-[10px] text-success-green font-medium">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-green opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-success-green"></span>
+            </span>
+            System: Operational
+        </span>
+    </div>
+</footer>
+
+<!-- ===== TOAST ===== -->
+<div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden px-6 py-3 rounded-full bg-success-green text-white font-bold text-sm shadow-lg shadow-success-green/30 transition-all duration-300"></div>
+
+<script>
+    // ===== CONTACT FORM =====
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const toast = document.getElementById('toast');
+        toast.textContent = '✅ Terima kasih! Pesan Anda telah terkirim. Tim support kami akan segera menghubungi Anda.';
+        toast.style.display = 'block';
+        
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 4000);
+        
+        this.reset();
+    });
+
+    // ===== MICRO-INTERACTIONS =====
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // ===== SCROLL HEADER =====
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 10) {
+            nav.classList.add('bg-surface-glass/95');
+        } else {
+            nav.classList.remove('bg-surface-glass/95');
+        }
+    });
+</script>
+
+</body>
+</html>
