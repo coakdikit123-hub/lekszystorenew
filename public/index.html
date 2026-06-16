@@ -849,9 +849,10 @@
                     <h3 class="font-title-md text-xs text-white leading-tight">${escapeHtml(p.name)}</h3>
                     <div class="flex items-center justify-between mt-0.5">
                         <div class="font-display-hero text-sm font-bold text-primary">Rp ${p.price.toLocaleString()}</div>
-                        <div class="w-7 h-7 rounded-lg glass-card flex items-center justify-center text-primary border-primary/20 hover:primary-gradient hover:text-white transition-all duration-300 btn-buy-mini" data-id="${p.id}" ${isOutOfStock ? 'style="opacity:0.5; cursor:not-allowed;"' : ''}>
-                            <span class="material-symbols-outlined text-sm">shopping_cart</span>
-                        </div>
+                        <!-- TOMBOL BELI DENGAN FONT AWESOME -->
+                        <button class="btn-buy-mini w-8 h-8 rounded-lg glass-card flex items-center justify-center text-primary border-primary/20 hover:primary-gradient hover:text-white transition-all duration-300" data-id="${p.id}" ${isOutOfStock ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : ''}>
+                            <i class="fas fa-cart-plus text-sm"></i>
+                        </button>
                     </div>
                 </div>
                 <div class="stock-info">
@@ -870,13 +871,17 @@
         });
         grid.innerHTML = '';
         grid.appendChild(fragment);
-        // Event listener sudah ditangani dengan delegation (lihat di bawah)
     }
 
-    // ===== DELEGASI EVENT UNTUK TOMBEL BELI =====
+    // ===== DELEGASI EVENT UNTUK TOMBOL BELI =====
     document.getElementById('productGrid').addEventListener('click', function(e) {
         const target = e.target.closest('.btn-buy-mini');
         if (!target) return;
+        // Cek apakah tombol disabled (stok habis)
+        if (target.disabled) {
+            showToast('Maaf, stok produk ini sudah habis.', true);
+            return;
+        }
         const id = parseInt(target.dataset.id);
         if (isNaN(id)) return;
         const product = allProducts.find(p => p.id === id);
