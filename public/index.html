@@ -107,6 +107,7 @@
         }
     </script>
     <style>
+        /* ===== GLOBAL ===== */
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
@@ -269,7 +270,7 @@
         .social-icon.tk { color: #fff; }
         .social-icon.wa { color: #25D366; }
 
-        /* ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== */
+        /* ===== MODAL PEMBAYARAN (CYBERVAULT) ===== */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -352,6 +353,302 @@
             pointer-events: none;
         }
 
+        /* ===== POPUP UPDATE (DESAIN BARU) ===== */
+        .popup-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s ease, opacity 0.3s ease;
+        }
+        .popup-modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .popup-container {
+            width: 92%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(19, 27, 46, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .popup-modal.active .popup-container {
+            transform: scale(1) translateY(0);
+        }
+        .popup-container::-webkit-scrollbar {
+            width: 4px;
+        }
+        .popup-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        .popup-container::-webkit-scrollbar-thumb {
+            background: #7c3aed;
+            border-radius: 10px;
+        }
+
+        .popup-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .popup-header .icon-wrap {
+            padding: 8px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 10px;
+        }
+        .popup-header .icon-wrap svg {
+            width: 24px;
+            height: 24px;
+            color: #7c3aed;
+        }
+        .popup-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .popup-body {
+            padding: 20px 24px;
+        }
+
+        .popup-section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            color: #7c3aed;
+        }
+        .popup-section-title svg {
+            width: 20px;
+            height: 20px;
+        }
+        .popup-section-title span {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .product-card-popup {
+            background: rgba(6, 14, 32, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: background 0.2s;
+        }
+        .product-card-popup:hover {
+            background: rgba(6, 14, 32, 0.8);
+        }
+        @media (min-width: 640px) {
+            .product-card-popup {
+                flex-direction: row;
+            }
+        }
+        .product-card-popup .product-img {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        @media (min-width: 640px) {
+            .product-card-popup .product-img {
+                width: 180px;
+                max-width: 180px;
+            }
+        }
+        .product-card-popup .product-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-card-popup .product-info h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+        .product-card-popup .product-info .desc {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .product-card-popup .product-info .price-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .product-card-popup .product-info .price-row .price-label {
+            font-size: 0.65rem;
+            color: #6b7280;
+        }
+        .product-card-popup .product-info .price-row .price-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .product-card-popup .product-info .price-row .time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        .product-card-popup .product-info .price-row .time svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .popup-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+
+        .popup-footer {
+            padding: 16px 24px;
+            background: rgba(6, 14, 32, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        @media (min-width: 640px) {
+            .popup-footer {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+        .popup-footer .checkbox-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .popup-footer .checkbox-wrap input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #131b2e;
+            accent-color: #7c3aed;
+            cursor: pointer;
+        }
+        .popup-footer .checkbox-wrap label {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .popup-footer .checkbox-wrap:hover label {
+            color: #e5e7eb;
+        }
+        .popup-footer .btn-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        @media (min-width: 640px) {
+            .popup-footer .btn-group {
+                width: auto;
+            }
+        }
+        .popup-footer .btn-group button {
+            flex: 1;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        @media (min-width: 640px) {
+            .popup-footer .btn-group button {
+                flex: none;
+            }
+        }
+        .popup-footer .btn-group .btn-close {
+            background: rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .popup-footer .btn-group .btn-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .popup-footer .btn-group .btn-view {
+            background: linear-gradient(135deg, #7c3aed 0%, #d946ef 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+        .popup-footer .btn-group .btn-view:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        .popup-footer .btn-group .btn-view:active {
+            transform: scale(0.97);
+        }
+
+        .announcement-card-popup {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(217, 70, 239, 0.05));
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .announcement-card-popup .announcement-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+        .announcement-card-popup .announcement-title i {
+            color: #7c3aed;
+        }
+        .announcement-card-popup .announcement-message {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        .announcement-card-popup .announcement-img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
         /* ===== TOAST ===== */
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -364,103 +661,7 @@
             #toast { white-space: normal; max-width: 90%; text-align: center; }
         }
 
-        /* ===== POPUP UPDATE ===== */
-        .popup-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(20px); z-index: 2001;
-            display: flex; align-items: center; justify-content: center;
-            visibility: hidden; opacity: 0;
-            transition: visibility 0.3s ease, opacity 0.3s ease;
-        }
-        .popup-modal.active { visibility: visible; opacity: 1; }
-        .popup-container {
-            width: 90%; max-width: 1000px; max-height: 85vh;
-            background: linear-gradient(145deg,#1a1d2e,#11131f);
-            border-radius: 32px; border: 1px solid rgba(88,166,255,0.3);
-            box-shadow: 0 30px 50px rgba(0,0,0,0.5), 0 0 0 1px rgba(88,166,255,0.1) inset;
-            overflow: hidden; display: flex; flex-direction: column;
-            animation: floatIn 0.4s cubic-bezier(0.2,0.9,0.4,1.1);
-        }
-        @keyframes floatIn {
-            from { opacity:0; transform:scale(0.96) translateY(20px); }
-            to { opacity:1; transform:scale(1) translateY(0); }
-        }
-        .popup-header {
-            padding: 20px 24px; background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid rgba(88,166,255,0.2);
-            display: flex; align-items: center; gap: 12px;
-        }
-        .popup-header i {
-            font-size: 2rem;
-            background: linear-gradient(135deg,#58a6ff,#bc66ff,#ff85e0);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .popup-header h2 {
-            font-size: 1.4rem; font-weight: 700;
-            background: linear-gradient(135deg,#58a6ff,#bc66ff,#ff85e0);
-            -webkit-background-clip: text; background-clip: text; color: transparent;
-        }
-        .popup-content { flex:1; overflow-y:auto; padding:20px 24px; scrollbar-width:thin; }
-        .popup-content::-webkit-scrollbar { width:5px; }
-        .popup-content::-webkit-scrollbar-track { background:rgba(255,255,255,0.05); border-radius:10px; }
-        .popup-content::-webkit-scrollbar-thumb { background:#58a6ff; border-radius:10px; }
-        .announcement-card {
-            background: linear-gradient(135deg,rgba(88,166,255,0.1),rgba(188,102,255,0.05));
-            border-radius: 24px; padding: 20px; margin-bottom: 24px;
-            border: 1px solid rgba(88,166,255,0.2);
-        }
-        .announcement-title {
-            font-size: 1.3rem; font-weight: 800; margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .announcement-title i { color: #58a6ff; }
-        .announcement-message { font-size: 0.95rem; line-height: 1.5; color: #94a3b8; margin-bottom: 12px; }
-        .announcement-img { max-width:100%; border-radius:16px; margin-top:12px; border:1px solid rgba(255,255,255,0.1); }
-        .products-section { margin-top: 8px; }
-        .products-section h3 {
-            font-size: 1.1rem; font-weight: 600; margin-bottom: 16px;
-            display: flex; align-items: center; gap: 8px; color: #58a6ff;
-        }
-        .products-grid {
-            display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scrollbar-width: thin;
-        }
-        .products-grid::-webkit-scrollbar { height:5px; }
-        .product-item {
-            flex: 0 0 200px; background: rgba(255,255,255,0.03);
-            border-radius: 20px; padding: 12px; transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .product-item:hover {
-            transform: translateY(-4px); border-color: #58a6ff; background: rgba(255,255,255,0.06);
-        }
-        .product-item img {
-            width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 16px; margin-bottom: 8px;
-        }
-        .product-item .name { font-weight: 700; font-size: 0.85rem; margin-bottom: 4px; line-height: 1.3; }
-        .product-item .price { color: #58a6ff; font-weight: 800; font-size: 0.9rem; }
-        .product-item .time { font-size: 0.65rem; color: #94a3b8; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
-        .popup-footer {
-            padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08);
-            display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2);
-        }
-        .popup-btn {
-            padding: 10px 24px; border-radius: 40px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s; border: none;
-        }
-        .popup-btn-secondary { background: rgba(255,255,255,0.08); color: #f3f4f6; }
-        .popup-btn-primary { background: linear-gradient(135deg,#7c3aed,#ec4899); color: white; }
-        .popup-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-        .popup-checkbox {
-            display: flex; align-items: center; gap: 8px; margin-right: auto;
-            font-size: 0.8rem; color: #94a3b8; cursor: pointer;
-        }
-        .popup-checkbox input { width:16px; height:16px; accent-color:#58a6ff; cursor:pointer; }
-        @media (max-width: 768px) {
-            .popup-container { width: 95%; max-height: 90vh; }
-            .product-item { flex: 0 0 160px; }
-            .popup-header h2 { font-size: 1.1rem; }
-        }
-
+        /* ===== EMPTY STATE ===== */
         .empty-state {
             grid-column: 1/-1; text-align: center; padding: 40px 20px;
             background: #1a1d2e; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08);
@@ -778,14 +979,10 @@
 <!-- ===== MODAL PEMBAYARAN (DESAIN CYBERVAULT) ===== -->
 <div class="modal-overlay" id="payModal">
     <div class="modal-content-wrapper relative">
-        <!-- Background Glow -->
         <div class="bg-glow-1"></div>
         <div class="bg-glow-2"></div>
 
-        <!-- Payment Card -->
         <div class="surface-glass-modal rounded-2xl p-6 md:p-8 flex flex-col items-center shadow-2xl relative z-10">
-            
-            <!-- Product Header -->
             <div class="text-center flex flex-col gap-1 mb-5 w-full">
                 <p class="text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-bold">Payment Confirmation</p>
                 <h3 id="mTitle" class="text-lg font-bold text-on-surface">Nama Produk</h3>
@@ -794,14 +991,12 @@
                 </div>
             </div>
 
-            <!-- QR Container -->
             <div class="w-full max-w-[200px] mx-auto bg-white rounded-xl p-3 mb-4 shadow-lg relative group transition-transform duration-300 hover:scale-105">
                 <div class="absolute inset-0 bg-primary/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img src="/gambar/qris.jpeg" alt="QRIS" class="w-full h-auto object-contain rounded-lg" loading="lazy">
             </div>
             <p class="text-center text-sm text-on-surface-variant mb-5 font-medium">Scan QRIS untuk membayar</p>
 
-            <!-- Transaction Details -->
             <div class="w-full bg-surface-container-low/80 rounded-xl p-4 flex flex-col gap-2.5 border border-white/5 backdrop-blur-sm">
                 <div class="flex justify-between items-center pb-2 border-b border-white/5">
                     <span class="text-on-surface-variant text-sm">ID Trx:</span>
@@ -829,7 +1024,6 @@
                 </div>
             </div>
 
-            <!-- Actions -->
             <div class="flex flex-col gap-3 w-full mt-5">
                 <button class="btn-gradient-modal text-white w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2" onclick="confirmWA()">
                     <span class="material-symbols-outlined text-xl">chat</span>
@@ -844,27 +1038,50 @@
     </div>
 </div>
 
-<!-- ===== POPUP UPDATE ===== -->
+<!-- ===== POPUP UPDATE (DESAIN BARU) ===== -->
 <div id="updatePopup" class="popup-modal">
     <div class="popup-container">
+        <!-- HEADER -->
         <div class="popup-header">
-            <i class="fas fa-bell"></i>
+            <div class="icon-wrap">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                </svg>
+            </div>
             <h2>Informasi Terbaru</h2>
         </div>
-        <div class="popup-content">
-            <div id="popupAnnouncement" class="announcement-card" style="display: none;"></div>
+
+        <!-- BODY -->
+        <div class="popup-body">
+            <!-- ANNOUNCEMENT -->
+            <div id="popupAnnouncement" class="announcement-card-popup" style="display: none;"></div>
+
+            <!-- PRODUCTS -->
             <div id="popupProducts" class="products-section" style="display: none;">
-                <h3><i class="fas fa-gift"></i> Produk Baru</h3>
-                <div id="popupProductsGrid" class="products-grid"></div>
+                <div class="popup-section-title">
+                    <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path clip-rule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" fill-rule="evenodd"></path>
+                        <path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z"></path>
+                    </svg>
+                    <span>Produk Baru</span>
+                </div>
+                <div id="popupProductsGrid" class="products-grid flex flex-col gap-4"></div>
             </div>
-            <div id="popupEmpty" style="text-align:center; padding:40px; color:#94a3b8;">Tidak ada informasi baru</div>
+
+            <!-- EMPTY -->
+            <div id="popupEmpty" class="popup-empty">Tidak ada informasi baru</div>
         </div>
+
+        <!-- FOOTER -->
         <div class="popup-footer">
-            <label class="popup-checkbox">
-                <input type="checkbox" id="popupDontShowAgain"> Jangan tampilkan lagi
-            </label>
-            <button id="popupCloseBtn" class="popup-btn popup-btn-secondary">Tutup</button>
-            <button id="popupViewAllBtn" class="popup-btn popup-btn-primary">Lihat Semua</button>
+            <div class="checkbox-wrap">
+                <input type="checkbox" id="popupDontShowAgain">
+                <label for="popupDontShowAgain">Jangan tampilkan lagi</label>
+            </div>
+            <div class="btn-group">
+                <button id="popupCloseBtn" class="btn-close">Tutup</button>
+                <button id="popupViewAllBtn" class="btn-view">Lihat Semua</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1048,12 +1265,10 @@
         selectedProduct = null;
     };
 
-    // Click outside modal
     document.getElementById('payModal').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });
 
-    // ESC key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeModal();
     });
@@ -1166,19 +1381,27 @@
     function showModernPopup(announcement, products) {
         if (isPopupShowing) return;
         isPopupShowing = true;
+
         const modal = document.getElementById('updatePopup');
         const announcementDiv = document.getElementById('popupAnnouncement');
         const productsDiv = document.getElementById('popupProducts');
         const productsGrid = document.getElementById('popupProductsGrid');
         const emptyDiv = document.getElementById('popupEmpty');
-        let hasAnnouncement = false, hasProducts = false;
+
+        let hasAnnouncement = false;
+        let hasProducts = false;
+
         announcementDiv.style.display = 'none';
         productsDiv.style.display = 'none';
         emptyDiv.style.display = 'none';
+
+        // ANNOUNCEMENT
         if (announcement) {
             hasAnnouncement = true;
             let imgHtml = '';
-            if (announcement.image) imgHtml = `<img src="${announcement.image}" class="announcement-img" onerror="this.style.display='none'" alt="pengumuman">`;
+            if (announcement.image) {
+                imgHtml = `<img src="${announcement.image}" class="announcement-img" onerror="this.style.display='none'" alt="pengumuman">`;
+            }
             announcementDiv.innerHTML = `
                 <div class="announcement-title"><i class="fas fa-megaphone"></i> ${escapeHtml(announcement.title || 'Pengumuman')}</div>
                 <div class="announcement-message">${escapeHtml(announcement.message || '')}</div>
@@ -1186,6 +1409,8 @@
             `;
             announcementDiv.style.display = 'block';
         }
+
+        // PRODUCTS
         if (products && products.length > 0) {
             hasProducts = true;
             productsGrid.innerHTML = '';
@@ -1193,26 +1418,51 @@
                 let timeText = 'Baru ditambahkan';
                 if (p.createdAt) {
                     const date = new Date(p.createdAt);
-                    if (!isNaN(date.getTime())) timeText = date.toLocaleString('id-ID', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+                    if (!isNaN(date.getTime())) {
+                        timeText = date.toLocaleString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }
                 }
                 const item = document.createElement('div');
-                item.className = 'product-item';
+                item.className = 'product-card-popup';
                 item.innerHTML = `
-                    <img src="${p.image || '/gambar/placeholder.png'}" onerror="this.src='/gambar/placeholder.png'">
-                    <div class="name">${escapeHtml(p.name)}</div>
-                    <div class="price">Rp ${p.price.toLocaleString()}</div>
-                    <div class="time"><i class="far fa-clock"></i> ${timeText}</div>
+                    <img src="${p.image || '/gambar/placeholder.png'}" class="product-img" onerror="this.src='/gambar/placeholder.png'" alt="${escapeHtml(p.name)}">
+                    <div class="product-info">
+                        <div>
+                            <h3>${escapeHtml(p.name)}</h3>
+                            <p class="desc">Nikmati layanan premium dengan harga terjangkau. Support berbagai perangkat.</p>
+                        </div>
+                        <div class="price-row">
+                            <div>
+                                <p class="price-label">Harga Mulai</p>
+                                <p class="price-value">Rp ${p.price.toLocaleString()}</p>
+                            </div>
+                            <div class="time">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                                </svg>
+                                ${timeText}
+                            </div>
+                        </div>
+                    </div>
                 `;
                 productsGrid.appendChild(item);
             });
             productsDiv.style.display = 'block';
         }
+
         if (!hasAnnouncement && !hasProducts) {
             emptyDiv.style.display = 'block';
         }
+
         modal.classList.add('active');
         const checkbox = document.getElementById('popupDontShowAgain');
         checkbox.checked = false;
+
         const closeModalFn = () => {
             modal.classList.remove('active');
             isPopupShowing = false;
@@ -1221,12 +1471,15 @@
                 dontShowPopup = true;
             }
         };
+
         document.getElementById('popupCloseBtn').onclick = closeModalFn;
         document.getElementById('popupViewAllBtn').onclick = () => {
             closeModalFn();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-        modal.onclick = (e) => { if (e.target === modal) closeModalFn(); };
+        modal.onclick = (e) => {
+            if (e.target === modal) closeModalFn();
+        };
     }
 
     // Polling update
