@@ -107,6 +107,48 @@
         }
     </script>
     <style>
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 30px rgba(210, 187, 255, 0.15);
+            border-color: rgba(210, 187, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #7c3aed 0%, #ffb0cd 100%);
+        }
+        .bg-blob {
+            filter: blur(100px);
+            opacity: 0.2;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.05); }
+        }
+        .animate-pulse-slow {
+            animation: pulse-slow 8s ease-in-out infinite;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+        }
         body {
             background-color: #020617;
             color: #dae2fd;
@@ -116,51 +158,9 @@
             display: inline-block;
             vertical-align: middle;
         }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-        .primary-gradient {
-            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
-        }
-        .glow-hover:hover {
-            box-shadow: 0 0 20px rgba(210, 187, 255, 0.2);
-            border-color: rgba(210, 187, 255, 0.4);
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .bg-blob {
-            filter: blur(80px);
-            opacity: 0.15;
-            z-index: -1;
-            pointer-events: none;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            transition: all 0.3s ease;
-        }
-        .btn-success:hover {
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
-            transform: translateY(-1px);
-        }
     </style>
 </head>
-<body class="font-body-base text-body-base selection:bg-primary/30 selection:text-primary">
+<body class="font-body-base text-body-base antialiased overflow-x-hidden selection:bg-primary/30 selection:text-primary">
 
 <!-- ===== NAVBAR ===== -->
 <nav class="fixed top-0 w-full z-[60] bg-surface-glass/80 backdrop-blur-2xl border-b border-white/5 transition-all duration-300 h-16">
@@ -172,6 +172,7 @@
         <div class="hidden md:flex items-center gap-6">
             <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="index.html">Beranda</a>
             <a class="font-title-md text-xs text-primary font-bold relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-primary after:rounded-full" href="#">Tips &amp; Trik</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="saluran.html">Saluran</a>
             <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="garansi.html">Claim Garansi</a>
             <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="contact.html">Hubungi</a>
         </div>
@@ -185,138 +186,169 @@
 </nav>
 
 <!-- ===== MAIN ===== -->
-<main class="pt-24 pb-12 px-4 relative overflow-hidden">
+<main class="pt-20 relative">
     <!-- Background Blobs -->
-    <div class="bg-blob absolute top-1/4 -left-20 w-96 h-96 bg-primary-container rounded-full"></div>
-    <div class="bg-blob absolute top-1/2 -right-20 w-80 h-80 bg-secondary-container rounded-full"></div>
-    <div class="bg-blob absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full"></div>
+    <div class="bg-blob absolute top-[-100px] left-1/4 w-[700px] h-[700px] bg-primary rounded-full animate-pulse-slow"></div>
+    <div class="bg-blob absolute top-[20%] right-[-100px] w-[500px] h-[500px] bg-secondary rounded-full"></div>
+    <div class="bg-blob absolute bottom-[10%] left-[-100px] w-[600px] h-[600px] bg-accent-cyan rounded-full opacity-10"></div>
 
-    <div class="max-w-6xl mx-auto relative z-10">
-
-        <!-- Hero Section -->
-        <header class="text-center mb-12">
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container/10 border border-primary-container/20 text-primary mb-4">
-                <span class="material-symbols-outlined text-[18px]">verified</span>
-                <span class="font-label-caps text-[10px] uppercase tracking-wider font-bold">Premium Content</span>
+    <!-- Hero Section -->
+    <header class="relative max-w-container-max mx-auto px-4 pt-16 pb-12 text-center">
+        <div class="hero-glow"></div>
+        <div class="relative z-10">
+            <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full px-5 py-2 mb-6 shadow-xl">
+                <span class="material-symbols-outlined text-primary text-[20px] animate-pulse">verified</span>
+                <span class="font-label-caps text-[10px] text-on-surface uppercase tracking-[0.2em] font-bold">Pusat Informasi Premium</span>
             </div>
-            <h1 class="font-display-hero text-3xl md:text-5xl text-on-surface mb-4">
-                Tips &amp; Trik <span class="text-transparent bg-clip-text primary-gradient">Premium</span>
+            <h1 class="font-display-hero text-3xl md:text-5xl lg:text-6xl mb-4 leading-[1.05] tracking-tight">
+                Tips &amp; Trik <br class="hidden md:block"><span class="text-transparent bg-clip-text primary-gradient">Lekszy Premium</span>
             </h1>
-            <p class="text-on-surface-variant max-w-2xl mx-auto text-sm md:text-base">
-                Dapatkan panduan eksklusif, tutorial penggunaan akun, dan info update terbaru langsung melalui Saluran WhatsApp kami.
+            <p class="max-w-2xl mx-auto font-body-base text-sm md:text-base text-on-surface-variant leading-relaxed opacity-90">
+                Optimalkan pengalaman digital Anda dengan panduan eksklusif, update fitur terbaru, dan bantuan teknis tercepat.
             </p>
-        </header>
+        </div>
+    </header>
 
-        <!-- Category Quick Nav -->
-        <section class="mb-10">
-            <div class="flex flex-wrap justify-center gap-3">
-                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-primary flex items-center gap-2 glow-hover transition-all border border-primary/20">
-                    <span class="material-symbols-outlined text-base">bolt</span> Optimasi Akun
-                </button>
-                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-on-surface-variant flex items-center gap-2 glow-hover transition-all">
-                    <span class="material-symbols-outlined text-base">menu_book</span> Tutorial Login
-                </button>
-                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-on-surface-variant flex items-center gap-2 glow-hover transition-all">
-                    <span class="material-symbols-outlined text-base">security</span> Keamanan Akun
-                </button>
-            </div>
-        </section>
+    <!-- Main Content -->
+    <section class="max-w-container-max mx-auto px-4 pb-12">
+        <div class="bento-grid">
 
-        <!-- Bento Grid Tips -->
-        <section class="mb-12">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
-
-                <!-- Large Featured Card -->
-                <div class="md:col-span-7 glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group">
-                    <div class="relative z-10">
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="bg-success-green/20 text-success-green px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">Terlaris</span>
-                        </div>
-                        <h3 class="font-headline-lg text-xl md:text-2xl text-on-surface mb-3">Panduan Optimasi Akun Premium</h3>
-                        <p class="text-on-surface-variant text-sm max-w-md mb-6">Cara menggunakan akun premium agar awet, tidak terkena limit share screen, dan tips keamanan login dari lokasi berbeda.</p>
-                        <ul class="space-y-3">
-                            <li class="flex items-center gap-3 text-sm">
-                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
-                                <span class="text-on-surface-variant">Gunakan profil yang sudah ditentukan</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-sm">
-                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
-                                <span class="text-on-surface-variant">Hindari login di banyak perangkat sekaligus</span>
-                            </li>
-                            <li class="flex items-center gap-3 text-sm">
-                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
-                                <span class="text-on-surface-variant">Tips membersihkan cache aplikasi berkala</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="absolute bottom-[-20%] right-[-10%] w-64 h-64 bg-primary/20 rounded-full blur-[60px] group-hover:bg-primary/30 transition-all duration-500"></div>
-                    <div class="mt-6">
-                        <button class="font-title-md text-sm text-primary flex items-center gap-2 group-hover:gap-4 transition-all">
-                            Baca Selengkapnya <span class="material-symbols-outlined text-base">arrow_forward</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step by Step Card -->
-                <div class="md:col-span-4 glass-card rounded-2xl p-6 glow-hover transition-all">
-                    <div class="w-12 h-12 rounded-2xl bg-accent-cyan/20 flex items-center justify-center mb-4">
-                        <span class="material-symbols-outlined text-accent-cyan text-2xl">login</span>
-                    </div>
-                    <h3 class="font-title-md text-base text-accent-cyan mb-2">Tutorial Login</h3>
-                    <p class="text-on-surface-variant text-sm mb-4">Panduan step-by-step untuk semua platform. Atasi kendala OTP atau reset password mandiri dengan cepat.</p>
-                    <div class="flex -space-x-3">
-                    </div>
-                </div>
-
-                <!-- Quick Tips Card -->
-                <div class="md:col-span-4 glass-card rounded-2xl p-6 glow-hover transition-all flex flex-col justify-between">
+            <!-- Row 1: 3 Cards -->
+            <!-- Optimasi Akun -->
+            <div class="col-span-12 lg:col-span-4 glass-card rounded-[32px] p-6 glow-hover group cursor-pointer border-t-2 border-primary/30 transition-all duration-1000 ease-out">
+                <div class="flex flex-col h-full justify-between gap-4">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-4">
-                            <span class="material-symbols-outlined text-primary text-2xl">lightbulb</span>
+                        <div class="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-4">
+                            <span class="material-symbols-outlined text-[28px]">bolt</span>
                         </div>
-                        <h3 class="font-title-md text-base text-primary mb-2">Tips Kilat</h3>
-                        <ul class="space-y-2 text-on-surface-variant text-sm">
-                            <li class="flex items-start gap-2">• Selalu logout setelah selesai menggunakan akun bersama</li>
-                            <li class="flex items-start gap-2">• Gunakan VPN jika akses dari luar negeri</li>
-                            <li class="flex items-start gap-2">• Laporkan ke admin jika ada aktivitas mencurigakan</li>
-                        </ul>
+                        <h3 class="font-headline-lg text-xl mb-1.5 text-on-surface">Optimasi Akun</h3>
+                        <p class="text-on-surface-variant text-sm mb-3">Tips awet &amp; no limit agar akun premium Anda bertahan lama tanpa kendala teknis.</p>
                     </div>
-                    <div class="pt-4 border-t border-white/5 mt-4">
-                        <span class="text-label-caps text-[10px] text-on-surface-variant opacity-60">#LEKSZYSTORE_TIPS</span>
+                    <button class="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider group-hover:gap-4 transition-all">
+                        Pelajari Detail <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tutorial Login -->
+            <div class="col-span-12 lg:col-span-4 glass-card rounded-[32px] p-6 glow-hover group cursor-pointer border-t-2 border-accent-cyan/30 transition-all duration-1000 ease-out">
+                <div class="flex flex-col h-full justify-between gap-4">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-accent-cyan/20 flex items-center justify-center text-accent-cyan mb-4">
+                            <span class="material-symbols-outlined text-[28px]">menu_book</span>
+                        </div>
+                        <h3 class="font-headline-lg text-xl mb-1.5 text-on-surface">Tutorial Login</h3>
+                        <p class="text-on-surface-variant text-sm mb-3">Step-by-step lengkap panduan masuk ke berbagai platform untuk menghindari blokir.</p>
+                    </div>
+                    <button class="flex items-center gap-2 text-accent-cyan font-bold text-xs uppercase tracking-wider group-hover:gap-4 transition-all">
+                        Lihat Panduan <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Keamanan Akun -->
+            <div class="col-span-12 lg:col-span-4 glass-card rounded-[32px] p-6 glow-hover group cursor-pointer border-t-2 border-secondary/30 transition-all duration-1000 ease-out">
+                <div class="flex flex-col h-full justify-between gap-4">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/20 flex items-center justify-center text-secondary mb-4">
+                            <span class="material-symbols-outlined text-[28px]">lock_open</span>
+                        </div>
+                        <h3 class="font-headline-lg text-xl mb-1.5 text-on-surface">Keamanan Akun</h3>
+                        <p class="text-on-surface-variant text-sm mb-3">Metode login terbaru untuk menghindari deteksi VPN dan proxy serta proteksi OTP.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] text-on-surface-variant font-bold self-center bg-white/5 px-2 py-0.5 rounded">Netflix</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold self-center bg-white/5 px-2 py-0.5 rounded">Spotify</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold self-center bg-white/5 px-2 py-0.5 rounded">Canva</span>
+                        <span class="text-[10px] text-on-surface-variant font-bold self-center">+12</span>
                     </div>
                 </div>
-
             </div>
-        </section>
 
-        <!-- CTA WhatsApp Section -->
-        <section class="mb-8">
-            <div class="relative overflow-hidden rounded-3xl primary-gradient p-[1px] animate-float">
-                <div class="bg-surface rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]"></div>
-                    <div class="relative z-10 text-center md:text-left">
-                        <h2 class="font-headline-lg text-2xl md:text-3xl text-on-surface mb-3">Gabung Saluran WhatsApp</h2>
-                        <p class="text-on-surface-variant text-sm max-w-lg">
-                            Jangan lewatkan info restock akun flash sale dan tutorial terbaru. Komunitas kami sudah diikuti oleh lebih dari 5,000+ pelanggan aktif.
+            <!-- Row 2: Featured Content (full width) -->
+            <div class="col-span-12 glass-card rounded-[32px] overflow-hidden group relative min-h-[340px] flex flex-col md:flex-row transition-all duration-1000 ease-out">
+                <div class="w-full md:w-1/2 p-6 flex flex-col justify-between relative z-10">
+                    <div>
+                        <span class="bg-success-green/20 text-success-green px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">Wajib Baca</span>
+                        <h2 class="font-headline-lg text-2xl leading-tight mb-3">Mastering Your <span class="text-primary">Premium Account</span></h2>
+                        <ul class="space-y-3 mb-4">
+                            <li class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">verified_user</span>
+                                <p class="text-on-surface-variant text-[13px]">Hindari deteksi multi-lokasi sistem keamanan.</p>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-primary text-sm mt-0.5">cached</span>
+                                <p class="text-on-surface-variant text-[13px]">Manajemen Cache Efektif untuk performa aplikasi.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <button class="group/btn flex items-center gap-2 font-title-md text-primary hover:text-white transition-all bg-primary/10 hover:bg-primary-container px-5 py-2.5 rounded-xl w-fit text-sm">
+                        Baca Selengkapnya
+                        <span class="material-symbols-outlined text-base transition-transform group-hover/btn:translate-x-1">arrow_right_alt</span>
+                    </button>
+                </div>
+                <div class="w-full md:w-1/2 relative bg-surface-container-high overflow-hidden min-h-[200px] md:min-h-0">
+                    <div class="absolute inset-0 bg-gradient-to-r md:bg-gradient-to-l from-transparent to-surface md:to-transparent z-10"></div>
+                    <div class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700 ease-out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBP_emfQaL-QVjgjyDtBMZNwEswR0Wrh2GW7Ko5uyHbL9LQ0z3QIfSQphs6cpZWa-t6oAD4E0akEhzOvZnlcPolKzZ-Cw7rmMoyBI8rGT-hvK7gVxcPdDrFumxsLyzn-8Jh1r-X8AqY3JuFLZsIMD33B9R69khqLdCGqEqeJLcVfuaEleROLS-slv57a_sNejde1K-M75zV806-BvNt63PiCN-5rK-xZbOuckUySLCNfOvDdBdLAtKAAiLT9DmXNZLLccRwO5W8x8B5'); background-position: center; background-size: cover;"></div>
+                </div>
+            </div>
+
+            <!-- Row 3: Tips Kilat (full width) -->
+            <div class="col-span-12 glass-card rounded-[32px] p-6 transition-all duration-1000 ease-out">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined text-primary text-2xl" style="font-variation-settings: 'FILL' 1;">flash_on</span>
+                    <h3 class="font-headline-lg text-lg text-on-surface">Tips Kilat</h3>
+                </div>
+                <ul class="space-y-2 text-on-surface-variant text-sm">
+                    <li class="flex items-start gap-2">• Selalu logout setelah selesai menggunakan akun bersama</li>
+                    <li class="flex items-start gap-2">• Gunakan VPN jika akses dari luar negeri</li>
+                    <li class="flex items-start gap-2">• Laporkan ke admin jika ada aktivitas mencurigakan</li>
+                </ul>
+                <div class="mt-3 pt-3 border-t border-white/5">
+                    <span class="text-label-caps text-[10px] text-on-surface-variant opacity-60">#LEKSZYSTORE_TIPS</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA WhatsApp Section -->
+    <section class="max-w-container-max mx-auto px-4 mb-12">
+        <div class="relative group">
+            <div class="absolute -inset-0.5 bg-gradient-to-r from-primary via-accent-cyan to-secondary rounded-[42px] opacity-30 group-hover:opacity-60 blur-xl transition duration-1000"></div>
+            <div class="relative bg-surface rounded-[32px] p-8 md:p-12 border border-white/10 overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-[80px]"></div>
+                <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/10 rounded-full blur-[80px]"></div>
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-8 relative z-10">
+                    <div class="flex-1 text-center lg:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full text-primary text-[10px] font-bold uppercase mb-4">
+                            <span class="material-symbols-outlined text-[14px]">groups</span> Saluran Exclusive
+                        </div>
+                        <h2 class="font-headline-lg text-2xl md:text-3xl mb-3 leading-[1.1]">Gabung Saluran <br class="hidden sm:block"> WhatsApp Kami</h2>
+                        <p class="text-on-surface-variant text-sm max-w-xl mx-auto lg:mx-0">
+                            Dapatkan panduan eksklusif, tutorial penggunaan akun, dan info update terbaru langsung melalui Saluran WhatsApp kami.
                         </p>
                     </div>
-                    <div class="relative z-10">
-                        <a href="https://www.whatsapp.com/channel/0029VbBYGq37IUYV8E8o8s0A" target="_blank" class="primary-gradient text-white px-8 py-4 rounded-2xl font-title-md text-sm shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-3">
-                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">chat</span>
-                            Buka Saluran Tips &amp; Trik
+                    <div class="flex flex-col items-center gap-3">
+                        <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" target="_blank" class="primary-gradient text-white px-10 py-4 rounded-[24px] font-title-md text-base shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-3 group/cta">
+                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">chat</span>
+                            Ikuti Saluran Sekarang
+                            <span class="material-symbols-outlined text-base transition-transform group-hover/cta:translate-x-1">north_east</span>
                         </a>
+
+                        </p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Kembali ke Beranda -->
-        <div class="text-center mt-6">
-            <a href="index.html" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm">
-                <span class="material-symbols-outlined text-base">arrow_back</span>
-                Kembali ke Beranda
-            </a>
         </div>
+    </section>
+
+    <!-- Kembali ke Beranda -->
+    <div class="text-center pb-6">
+        <a href="index.html" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm">
+            <span class="material-symbols-outlined text-base">arrow_back</span>
+            Kembali ke Beranda
+        </a>
     </div>
 </main>
 
@@ -340,11 +372,10 @@
         <div class="md:col-span-3 space-y-3">
             <h4 class="font-display-hero text-sm text-white font-bold">Menu Cepat</h4>
             <ul class="space-y-2">
-                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="#"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Beranda</a></li>
-                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="warranty.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Claim Garansi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="index.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Beranda</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="garansi.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Claim Garansi</a></li>
                 <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="saluran.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Saluran</a></li>
-                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="tips.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Tips &amp; Trik</a></li>
-
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="tips.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Tips &amp; Trik</a></li>
             </ul>
         </div>
         <div class="md:col-span-4 space-y-3">
@@ -369,17 +400,6 @@
 </footer>
 
 <script>
-    // ===== MICRO-INTERACTIONS =====
-    document.querySelectorAll('.glass-card').forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
-        });
-    });
-
     // ===== SCROLL HEADER =====
     window.addEventListener('scroll', () => {
         const nav = document.querySelector('nav');
@@ -391,19 +411,36 @@
     });
 
     // ===== SCROLL REVEAL =====
-    const observerOptions = { threshold: 0.1 };
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('opacity-100', 'translate-y-0');
-                entry.target.classList.remove('opacity-0', 'translate-y-10');
+                entry.target.classList.remove('opacity-0', 'translate-y-12');
+                observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    document.querySelectorAll('.glass-card').forEach(card => {
-        card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700', 'ease-out');
+    document.querySelectorAll('.glass-card').forEach((card, index) => {
+        card.classList.add('opacity-0', 'translate-y-12', 'transition-all', 'duration-700', 'ease-out');
+        card.style.transitionDelay = `${Math.min(index * 80, 400)}ms`;
         observer.observe(card);
+    });
+
+    // ===== MICRO-INTERACTIONS =====
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
     });
 </script>
 
