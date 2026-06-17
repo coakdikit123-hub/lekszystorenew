@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport"/>
+    <meta name="description" content="Tips & Trik Premium - LekszyStore, Panduan eksklusif untuk pengguna premium">
+    <title>Tips &amp; Trik Premium | LekszyStore</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-background": "#dae2fd",
+                        "secondary-fixed": "#ffd9e4",
+                        "tertiary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#dce5ff",
+                        "outline": "#958da1",
+                        "on-error": "#690005",
+                        "surface-variant": "#2d3449",
+                        "surface-container": "#171f33",
+                        "on-primary": "#3f008e",
+                        "surface-container-lowest": "#060e20",
+                        "error-container": "#93000a",
+                        "accent-cyan": "#22D3EE",
+                        "on-surface-variant": "#ccc3d8",
+                        "surface-container-high": "#222a3d",
+                        "surface-bright": "#31394d",
+                        "primary-container": "#7c3aed",
+                        "bg-deep": "#020617",
+                        "surface-glass": "rgba(15, 23, 42, 0.7)",
+                        "primary": "#d2bbff",
+                        "on-primary-fixed": "#25005a",
+                        "on-tertiary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "on-surface": "#dae2fd",
+                        "surface-tint": "#d2bbff",
+                        "surface-dim": "#0b1326",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#eaddff",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "secondary": "#ffb0cd",
+                        "inverse-primary": "#732ee4",
+                        "background": "#0b1326",
+                        "tertiary-container": "#0062d2",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "inverse-on-surface": "#283044",
+                        "secondary-container": "#aa0266",
+                        "on-tertiary": "#002e6a",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "tertiary": "#adc6ff",
+                        "on-secondary": "#640039",
+                        "primary-fixed-dim": "#d2bbff",
+                        "outline-variant": "#4a4455",
+                        "on-primary-container": "#ede0ff",
+                        "success-green": "#10B981",
+                        "on-secondary-fixed": "#3e0022",
+                        "on-secondary-container": "#ffbad3",
+                        "surface": "#0b1326",
+                        "surface-container-low": "#131b2e"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "section-gap": "4rem",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem"
+                    },
+                    fontFamily: {
+                        "title-md": ["Plus Jakarta Sans"],
+                        "body-base": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-hero": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "title-md": ["18px", { lineHeight: "1.5", fontWeight: "600" }],
+                        "body-base": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "label-caps": ["12px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "body-sm": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "display-hero": ["48px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #dae2fd;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(210, 187, 255, 0.2);
+            border-color: rgba(210, 187, 255, 0.4);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .bg-blob {
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="font-body-base text-body-base selection:bg-primary/30 selection:text-primary">
+
+<!-- ===== NAVBAR ===== -->
+<nav class="fixed top-0 w-full z-[60] bg-surface-glass/80 backdrop-blur-2xl border-b border-white/5 transition-all duration-300 h-16">
+    <div class="flex justify-between items-center h-16 px-4 max-w-container-max mx-auto">
+        <a href="index.html" class="flex items-center gap-2">
+            <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="eager">
+            <span class="font-display-hero text-base font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">LekszyStore</span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="index.html">Beranda</a>
+            <a class="font-title-md text-xs text-primary font-bold relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-primary after:rounded-full" href="#">Tips &amp; Trik</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="garansi.html">Claim Garansi</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="contact.html">Hubungi</a>
+        </div>
+        <div class="flex items-center gap-2">
+            <a class="primary-gradient text-white px-4 py-1.5 rounded-full font-title-md text-[11px] font-bold flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20" href="https://wa.me/6285810630431">
+                <span class="material-symbols-outlined text-sm">chat</span>
+                <span class="hidden sm:inline">Hubungi</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<main class="pt-24 pb-12 px-4 relative overflow-hidden">
+    <!-- Background Blobs -->
+    <div class="bg-blob absolute top-1/4 -left-20 w-96 h-96 bg-primary-container rounded-full"></div>
+    <div class="bg-blob absolute top-1/2 -right-20 w-80 h-80 bg-secondary-container rounded-full"></div>
+    <div class="bg-blob absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+
+        <!-- Hero Section -->
+        <header class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container/10 border border-primary-container/20 text-primary mb-4">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span class="font-label-caps text-[10px] uppercase tracking-wider font-bold">Premium Content</span>
+            </div>
+            <h1 class="font-display-hero text-3xl md:text-5xl text-on-surface mb-4">
+                Tips &amp; Trik <span class="text-transparent bg-clip-text primary-gradient">Premium</span>
+            </h1>
+            <p class="text-on-surface-variant max-w-2xl mx-auto text-sm md:text-base">
+                Dapatkan panduan eksklusif, tutorial penggunaan akun, dan info update terbaru langsung melalui Saluran WhatsApp kami.
+            </p>
+        </header>
+
+        <!-- Category Quick Nav -->
+        <section class="mb-10">
+            <div class="flex flex-wrap justify-center gap-3">
+                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-primary flex items-center gap-2 glow-hover transition-all border border-primary/20">
+                    <span class="material-symbols-outlined text-base">bolt</span> Optimasi Akun
+                </button>
+                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-on-surface-variant flex items-center gap-2 glow-hover transition-all">
+                    <span class="material-symbols-outlined text-base">update</span> Fitur Terbaru
+                </button>
+                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-on-surface-variant flex items-center gap-2 glow-hover transition-all">
+                    <span class="material-symbols-outlined text-base">menu_book</span> Tutorial Login
+                </button>
+                <button class="glass-card px-5 py-2.5 rounded-full font-title-md text-sm text-on-surface-variant flex items-center gap-2 glow-hover transition-all">
+                    <span class="material-symbols-outlined text-base">security</span> Keamanan Akun
+                </button>
+            </div>
+        </section>
+
+        <!-- Bento Grid Tips -->
+        <section class="mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+
+                <!-- Large Featured Card -->
+                <div class="md:col-span-7 glass-card rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="bg-success-green/20 text-success-green px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">Terlaris</span>
+                        </div>
+                        <h3 class="font-headline-lg text-xl md:text-2xl text-on-surface mb-3">Panduan Optimasi Akun Premium</h3>
+                        <p class="text-on-surface-variant text-sm max-w-md mb-6">Cara menggunakan akun premium agar awet, tidak terkena limit share screen, dan tips keamanan login dari lokasi berbeda.</p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-3 text-sm">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-on-surface-variant">Gunakan profil yang sudah ditentukan</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-on-surface-variant">Hindari login di banyak perangkat sekaligus</span>
+                            </li>
+                            <li class="flex items-center gap-3 text-sm">
+                                <span class="material-symbols-outlined text-primary text-base">check_circle</span>
+                                <span class="text-on-surface-variant">Tips membersihkan cache aplikasi berkala</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="absolute bottom-[-20%] right-[-10%] w-64 h-64 bg-primary/20 rounded-full blur-[60px] group-hover:bg-primary/30 transition-all duration-500"></div>
+                    <div class="mt-6">
+                        <button class="font-title-md text-sm text-primary flex items-center gap-2 group-hover:gap-4 transition-all">
+                            Baca Selengkapnya <span class="material-symbols-outlined text-base">arrow_forward</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Update Card -->
+                <div class="md:col-span-5 glass-card rounded-2xl p-6 glow-hover transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-secondary/20 flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-secondary text-2xl">new_releases</span>
+                        </div>
+                        <h3 class="font-title-md text-base text-secondary mb-2">Update Fitur</h3>
+                        <p class="text-on-surface-variant text-sm">Info fitur terbaru dari Netflix (Ads update), Spotify (DJ mode), dan Canva Magic Studio langsung untuk kamu.</p>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 mt-4">
+                        <span class="text-label-caps text-[10px] text-on-surface-variant opacity-60">DIPERBARUI 2 JAM YANG LALU</span>
+                    </div>
+                </div>
+
+                <!-- Step by Step Card -->
+                <div class="md:col-span-4 glass-card rounded-2xl p-6 glow-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-accent-cyan/20 flex items-center justify-center mb-4">
+                        <span class="material-symbols-outlined text-accent-cyan text-2xl">login</span>
+                    </div>
+                    <h3 class="font-title-md text-base text-accent-cyan mb-2">Tutorial Login</h3>
+                    <p class="text-on-surface-variant text-sm mb-4">Panduan step-by-step untuk semua platform. Atasi kendala OTP atau reset password mandiri dengan cepat.</p>
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-surface-container bg-surface flex items-center justify-center overflow-hidden">
+                            <img alt="Netflix" class="w-5 h-5 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYuoS0pa1ylk2sMv_ZIh0dFAeh9Obe-r_4CjDmrRUA-XyKpkjHlRaqqu8enKPk3WY4uCF2nIpguX6bcKH30DgAbzSP5c9rpwbK9FUlZ9qbVoJLssG0jcwPBuQ13dw5YwPggmSq6Ia-eyKIWbTnvBiA7uDiKumqh1ddh8k3NowkvMDqR9IVD4IkbdjoLN40-XBt8igu5E3ddvao1J6xBuNyUt-XwxV1SBq0GwEJwqW9Lf0lcMsQkM1vpmvSDjftRcXu0XmpWmvCa2PF">
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-surface-container bg-surface flex items-center justify-center overflow-hidden">
+                            <img alt="Spotify" class="w-5 h-5 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiaLgEJLsJ6QRwgxEnV31BBie-Z89c5CUgSwD-M7f1PMSY1_1dDjy0BHb-EdbnTnNFkBX--ERogewpA7jCoIYqPGOQu7XilSmooN-CGhiPl9TI2GOALY0Htn73lVrNYm1iu-D-dVx1Q8kjPfrZn3o4chSWM_2J3X1gxgmYMRzsX6kON_-tPLkyZA5_NSjc83-HSlrpa49BDQw0pRuPXy94eNjiNlQDh_7l2zIZkhIFtKCYEGHJhSQ_abMiEF6und4P40YjeNwKKLFY">
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-surface-container bg-surface flex items-center justify-center overflow-hidden">
+                            <img alt="Canva" class="w-5 h-5 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgth16kqMhBWRiTErjCb2wOdrWbHw27Pf1Pgxf5kAo-mVzhAMHQPQ5ywao6MglcQqahcal6yq_HjfeUlX40jtOcp9tCsnWPEL3dSENQq38lCu5XoADRXgzU-Q5JMaUAfbkiNnz9jGMg9K_IJHRptKxMKQWeV5YIkyBjqe0U2RgZPRqWWB3ixUYaLNRcXTAFh-qZMrYqJTX29QoQaCihD1w946JliSlq8kPpG_f9ewhGPFRgA5yD5pPRu2mDyjNU58w_c9e9CFjoJLC">
+                        </div>
+                        <div class="w-10 h-10 rounded-full border-2 border-surface-container bg-surface flex items-center justify-center text-[10px] font-bold text-on-surface-variant">
+                            +12
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Image / Placeholder -->
+                <div class="md:col-span-8 glass-card rounded-2xl overflow-hidden relative min-h-[220px]">
+                    <div class="absolute inset-0 bg-gradient-to-t from-bg-deep to-transparent z-10"></div>
+                    <div class="absolute bottom-6 left-6 z-20">
+                        <img alt="Brand Logo" class="mb-3 opacity-80 w-12 h-12 rounded-xl" src="/gambar/logo2.png">
+                        <h4 class="font-title-md text-sm text-white">Ekosistem Belanja Digital Terpercaya</h4>
+                    </div>
+                    <div class="w-full h-full" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBP_emfQaL-QVjgjyDtBMZNwEswR0Wrh2GW7Ko5uyHbL9LQ0z3QIfSQphs6cpZWa-t6oAD4E0akEhzOvZnlcPolKzZ-Cw7rmMoyBI8rGT-hvK7gVxcPdDrFumxsLyzn-8Jh1r-X8AqY3JuFLZsIMD33B9R69khqLdCGqEqeJLcVfuaEleROLS-slv57a_sNejde1K-M75zV806-BvNt63PiCN-5rK-xZbOuckUySLCNfOvDdBdLAtKAAiLT9DmXNZLLccRwO5W8x8B5'); background-size: cover; background-position: center;"></div>
+                </div>
+
+                <!-- Quick Tips Card -->
+                <div class="md:col-span-4 glass-card rounded-2xl p-6 glow-hover transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center mb-4">
+                            <span class="material-symbols-outlined text-primary text-2xl">lightbulb</span>
+                        </div>
+                        <h3 class="font-title-md text-base text-primary mb-2">Tips Kilat</h3>
+                        <ul class="space-y-2 text-on-surface-variant text-sm">
+                            <li class="flex items-start gap-2">• Selalu logout setelah selesai menggunakan akun bersama</li>
+                            <li class="flex items-start gap-2">• Gunakan VPN jika akses dari luar negeri</li>
+                            <li class="flex items-start gap-2">• Laporkan ke admin jika ada aktivitas mencurigakan</li>
+                        </ul>
+                    </div>
+                    <div class="pt-4 border-t border-white/5 mt-4">
+                        <span class="text-label-caps text-[10px] text-on-surface-variant opacity-60">#LEKSZYSTORE_TIPS</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CTA WhatsApp Section -->
+        <section class="mb-8">
+            <div class="relative overflow-hidden rounded-3xl primary-gradient p-[1px] animate-float">
+                <div class="bg-surface rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]"></div>
+                    <div class="relative z-10 text-center md:text-left">
+                        <h2 class="font-headline-lg text-2xl md:text-3xl text-on-surface mb-3">Gabung Saluran WhatsApp</h2>
+                        <p class="text-on-surface-variant text-sm max-w-lg">
+                            Jangan lewatkan info restock akun flash sale dan tutorial terbaru. Komunitas kami sudah diikuti oleh lebih dari 5,000+ pelanggan aktif.
+                        </p>
+                    </div>
+                    <div class="relative z-10">
+                        <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" target="_blank" class="primary-gradient text-white px-8 py-4 rounded-2xl font-title-md text-sm shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-3">
+                            <span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">chat</span>
+                            Buka Saluran Tips &amp; Trik
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kembali ke Beranda -->
+        <div class="text-center mt-6">
+            <a href="index.html" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-[#020617] border-t border-white/5 pt-10 pb-6">
+    <div class="max-w-container-max mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 mb-8">
+        <div class="md:col-span-5 space-y-4">
+            <div class="flex items-center gap-2">
+                <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="lazy">
+                <span class="font-display-hero text-xl font-bold text-white">LekszyStore</span>
+            </div>
+            <p class="text-on-surface-variant text-xs leading-relaxed max-w-md">
+                Solusi terbaik untuk akun premium aplikasi favorit dengan harga terjangkau. Garansi 100%, proses cepat, support 24/7.
+            </p>
+            <div class="flex gap-2">
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.instagram.com/lekszystore"><span class="material-symbols-outlined text-lg">photo_camera</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.tiktok.com/@lekszystore"><span class="material-symbols-outlined text-lg">video_library</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://wa.me/6285810630431"><span class="material-symbols-outlined text-lg">chat</span></a>
+            </div>
+        </div>
+        <div class="md:col-span-3 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Menu Cepat</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="index.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Beranda</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="tips.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Tips &amp; Trik</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="garansi.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Claim Garansi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="contact.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Hubungi Kami</a></li>
+            </ul>
+        </div>
+        <div class="md:col-span-4 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Bantuan</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="terms.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Syarat &amp; Ketentuan</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="privacy.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Kebijakan Privasi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="contact.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Hubungi Kami</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="tips.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Tips &amp; Trik</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="max-w-container-max mx-auto px-4 pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
+        <p class="text-on-surface-variant text-[10px]">© 2024 LekszyStore. Premium Digital Goods Marketplace.</p>
+        <span class="flex items-center gap-2 text-[10px] text-success-green font-medium">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-green opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-success-green"></span>
+            </span>
+            System: Operational
+        </span>
+    </div>
+</footer>
+
+<script>
+    // ===== MICRO-INTERACTIONS =====
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // ===== SCROLL HEADER =====
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 10) {
+            nav.classList.add('bg-surface-glass/95');
+        } else {
+            nav.classList.remove('bg-surface-glass/95');
+        }
+    });
+
+    // ===== SCROLL REVEAL =====
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700', 'ease-out');
+        observer.observe(card);
+    });
+</script>
+
+</body>
+</html>
