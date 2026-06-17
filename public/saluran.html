@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="dark" lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport"/>
+    <meta name="description" content="Saluran LekszyStore - Update stok real-time, info terbaru, dan tips premium eksklusif">
+    <title>Saluran | LekszyStore</title>
+    <link rel="icon" type="image/png" href="/gambar/logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-background": "#dae2fd",
+                        "secondary-fixed": "#ffd9e4",
+                        "tertiary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#dce5ff",
+                        "outline": "#958da1",
+                        "on-error": "#690005",
+                        "surface-variant": "#2d3449",
+                        "surface-container": "#171f33",
+                        "on-primary": "#3f008e",
+                        "surface-container-lowest": "#060e20",
+                        "error-container": "#93000a",
+                        "accent-cyan": "#22D3EE",
+                        "on-surface-variant": "#ccc3d8",
+                        "surface-container-high": "#222a3d",
+                        "surface-bright": "#31394d",
+                        "primary-container": "#7c3aed",
+                        "bg-deep": "#020617",
+                        "surface-glass": "rgba(15, 23, 42, 0.7)",
+                        "primary": "#d2bbff",
+                        "on-primary-fixed": "#25005a",
+                        "on-tertiary-fixed": "#001a42",
+                        "on-primary-fixed-variant": "#5a00c6",
+                        "on-surface": "#dae2fd",
+                        "surface-tint": "#d2bbff",
+                        "surface-dim": "#0b1326",
+                        "error": "#ffb4ab",
+                        "primary-fixed": "#eaddff",
+                        "secondary-fixed-dim": "#ffb0cd",
+                        "secondary": "#ffb0cd",
+                        "inverse-primary": "#732ee4",
+                        "background": "#0b1326",
+                        "tertiary-container": "#0062d2",
+                        "on-error-container": "#ffdad6",
+                        "inverse-surface": "#dae2fd",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "surface-container-highest": "#2d3449",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "inverse-on-surface": "#283044",
+                        "secondary-container": "#aa0266",
+                        "on-tertiary": "#002e6a",
+                        "on-secondary-fixed-variant": "#8c0053",
+                        "tertiary": "#adc6ff",
+                        "on-secondary": "#640039",
+                        "primary-fixed-dim": "#d2bbff",
+                        "outline-variant": "#4a4455",
+                        "on-primary-container": "#ede0ff",
+                        "success-green": "#10B981",
+                        "on-secondary-fixed": "#3e0022",
+                        "on-secondary-container": "#ffbad3",
+                        "surface": "#0b1326",
+                        "surface-container-low": "#131b2e"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                    spacing: {
+                        "container-max": "1280px",
+                        "gutter": "1.5rem",
+                        "stack-lg": "2rem",
+                        "section-gap": "4rem",
+                        "stack-md": "1rem",
+                        "stack-sm": "0.5rem"
+                    },
+                    fontFamily: {
+                        "title-md": ["Plus Jakarta Sans"],
+                        "body-base": ["Inter"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "display-hero": ["Plus Jakarta Sans"]
+                    },
+                    fontSize: {
+                        "title-md": ["18px", { lineHeight: "1.5", fontWeight: "600" }],
+                        "body-base": ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+                        "headline-lg": ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "1.2", fontWeight: "700" }],
+                        "label-caps": ["12px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "body-sm": ["14px", { lineHeight: "1.5", fontWeight: "400" }],
+                        "display-hero": ["48px", { lineHeight: "1.1", letterSpacing: "-0.02em", fontWeight: "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020617;
+            color: #dae2fd;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #d2bbff 0%, #ffb0cd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+            transform: translateY(-1px);
+        }
+        .bg-blob {
+            filter: blur(80px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .glow-on-hover:hover {
+            box-shadow: 0 0 20px rgba(210, 187, 255, 0.2);
+        }
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #d2bbff 0%, #ffb0cd 100%);
+        }
+    </style>
+</head>
+<body class="font-body-base text-body-base selection:bg-primary/30 selection:text-primary">
+
+<!-- ===== NAVBAR ===== -->
+<nav class="fixed top-0 w-full z-[60] bg-surface-glass/80 backdrop-blur-2xl border-b border-white/5 transition-all duration-300 h-16">
+    <div class="flex justify-between items-center h-16 px-4 max-w-container-max mx-auto">
+        <a href="index.html" class="flex items-center gap-2">
+            <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="eager">
+            <span class="font-display-hero text-base font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">LekszyStore</span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="index.html">Beranda</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="tips.html">Tips &amp; Trik</a>
+            <a class="font-title-md text-xs text-primary font-bold relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-primary after:rounded-full" href="saluran.html">Saluran</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="garansi.html">Claim Garansi</a>
+            <a class="font-title-md text-xs text-on-surface-variant hover:text-primary transition-colors" href="contact.html">Hubungi</a>
+        </div>
+        <div class="flex items-center gap-2">
+            <a class="primary-gradient text-white px-4 py-1.5 rounded-full font-title-md text-[11px] font-bold flex items-center gap-1.5 hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20" href="https://wa.me/6285810630431">
+                <span class="material-symbols-outlined text-sm">chat</span>
+                <span class="hidden sm:inline">Hubungi</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== MAIN ===== -->
+<main class="pt-24 pb-12 px-4 relative overflow-hidden">
+    <!-- Background Blobs -->
+    <div class="bg-blob absolute top-1/4 -left-20 w-96 h-96 bg-primary-container rounded-full"></div>
+    <div class="bg-blob absolute top-1/2 -right-20 w-80 h-80 bg-secondary-container rounded-full"></div>
+    <div class="bg-blob absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/20 blur-[120px] rounded-full"></div>
+
+    <div class="max-w-6xl mx-auto relative z-10">
+
+        <!-- ===== HERO SECTION ===== -->
+        <section class="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+            <div class="max-w-container-max mx-auto grid md:grid-cols-2 gap-10 items-center">
+                <div class="text-left space-y-5">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Real-Time Updates
+                    </div>
+                    <h1 class="font-display-hero text-3xl md:text-5xl lg:text-6xl leading-tight">
+                        Gabung Saluran <br/>
+                        <span class="text-gradient-primary">LekszyStore</span>
+                    </h1>
+                    <p class="text-on-surface-variant text-sm max-w-lg leading-relaxed">
+                        Destinasi utama untuk mendapatkan update stok real-time, info terbaru, dan tips premium untuk akun Netflix, Spotify, hingga Canva Anda.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                        <a href="https://whatsapp.com/channel/0029Vb7nGUN7tkj4BxbudG0o" target="_blank" class="inline-flex flex-col items-center justify-center px-8 py-4 rounded-2xl bg-gradient-primary text-on-primary-fixed font-title-md text-base hover:scale-105 transition-transform shadow-[0_0_30px_rgba(210,187,255,0.3)] text-center group">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-xl font-bold">forum</span>
+                                <span>Saluran WhatsApp</span>
+                            </div>
+                            <span class="text-xs opacity-80 font-body-sm mt-0.5">Klik Untuk Bergabung</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="relative hidden md:block">
+                    <div class="relative z-10 animate-float">
+                        <div class="rounded-3xl overflow-hidden glass-card p-4 rotate-3 hover:rotate-0 transition-transform duration-700">
+                            <img alt="WhatsApp Channel Interface" class="w-full h-auto rounded-2xl object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtga6VWQSSoqM-KKwTYsspYVaMmWk1cf-BSTjeEoXZwR5VHKYi2xGOVzRSF-sa1-Mo2Eiy7PKsYKhilxpO3SAW4gWf3s5-XYHcMctOfvbNuRAhwDbxvxk8ZnSXaKhEwG_CZOQcFujvSgOfzvE-B0OrcBiH61olydthA4h8M3fZZOdUx7SjvwbzfSO9Fhtmn55ajRvWHa-3c0-UC2LeDNy60pY34_f3lwMNQ3QNzR_qF2-aNGpoZvVgLhAIs">
+                        </div>
+                    </div>
+                    <div class="absolute -top-8 -right-8 w-28 h-28 glass-card rounded-full flex items-center justify-center animate-bounce delay-100">
+                        <span class="material-symbols-outlined text-3xl text-primary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                    </div>
+                    <div class="absolute -bottom-8 -left-8 w-20 h-20 glass-card rounded-2xl flex items-center justify-center rotate-12">
+                        <span class="material-symbols-outlined text-2xl text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== VALUE PROPOSITION ===== -->
+        <section class="py-12">
+            <div class="text-center mb-10">
+                <h2 class="font-display-hero text-2xl md:text-3xl text-on-surface mb-3">Mengapa Harus Bergabung?</h2>
+                <div class="w-20 h-1 bg-gradient-primary mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- Card 1: Info Stok Tercepat -->
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition-all group border-primary/20">
+                    <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined text-2xl text-primary" style="font-variation-settings: 'FILL' 1;">notifications_active</span>
+                    </div>
+                    <h3 class="font-title-md text-lg text-on-surface mb-2">Info Stok Tercepat</h3>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Jadilah yang pertama tahu saat Netflix, Spotify Premium, atau Canva Pro kembali tersedia. Jangan sampai kehabisan lagi!
+                    </p>
+                </div>
+
+                <!-- Card 2: Info Terbaru (sebelumnya Flash Sale Eksklusif) -->
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition-all group border-secondary/20">
+                    <div class="w-14 h-14 rounded-2xl bg-secondary/10 flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
+                        <span class="material-symbols-outlined text-2xl text-secondary" style="font-variation-settings: 'FILL' 1;">new_releases</span>
+                    </div>
+                    <h3 class="font-title-md text-lg text-on-surface mb-2">Info Terbaru</h3>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Dapatkan update produk terbaru, promo spesial, dan informasi penting lainnya yang hanya dibagikan secara eksklusif di saluran WhatsApp kami.
+                    </p>
+                </div>
+
+                <!-- Card 3: Tips & Tutorial -->
+                <div class="glass-card p-6 rounded-2xl hover:bg-white/5 transition-all group border-tertiary/20">
+                    <div class="w-14 h-14 rounded-2xl bg-tertiary/10 flex items-center justify-center mb-4 group-hover:bg-tertiary/20 transition-colors">
+                        <span class="material-symbols-outlined text-2xl text-tertiary" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+                    </div>
+                    <h3 class="font-title-md text-lg text-on-surface mb-2">Tips &amp; Tutorial</h3>
+                    <p class="text-sm text-on-surface-variant leading-relaxed">
+                        Panduan eksklusif tentang cara mengoptimalkan penggunaan akun premium Anda agar lebih awet dan terhindar dari kendala teknis.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== KEMBALI KE BERANDA ===== -->
+        <div class="text-center mt-6">
+            <a href="index.html" class="inline-flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors text-sm">
+                <span class="material-symbols-outlined text-base">arrow_back</span>
+                Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer class="bg-[#020617] border-t border-white/5 pt-10 pb-6">
+    <div class="max-w-container-max mx-auto px-4 grid grid-cols-1 md:grid-cols-12 gap-8 mb-8">
+        <div class="md:col-span-5 space-y-4">
+            <div class="flex items-center gap-2">
+                <img alt="LekszyStore Logo" class="h-8 w-8 rounded-lg" src="/gambar/logo2.png" loading="lazy">
+                <span class="font-display-hero text-xl font-bold text-white">LekszyStore</span>
+            </div>
+            <p class="text-on-surface-variant text-xs leading-relaxed max-w-md">
+                Solusi terbaik untuk akun premium aplikasi favorit dengan harga terjangkau. Garansi 100%, proses cepat, support 24/7.
+            </p>
+            <div class="flex gap-2">
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.instagram.com/lekszystore"><span class="material-symbols-outlined text-lg">photo_camera</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://www.tiktok.com/@lekszystore"><span class="material-symbols-outlined text-lg">video_library</span></a>
+                <a class="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-on-surface-variant hover:text-primary hover:border-primary/40 transition-all duration-300" href="https://wa.me/6285810630431"><span class="material-symbols-outlined text-lg">chat</span></a>
+            </div>
+        </div>
+        <div class="md:col-span-3 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Menu Cepat</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="index.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Beranda</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="garansi.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Claim Garansi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="saluran.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Saluran</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="tips.html"><span class="w-1 h-1 rounded-full bg-primary/20"></span> Tips &amp; Trik</a></li>
+            </ul>
+        </div>
+        <div class="md:col-span-4 space-y-3">
+            <h4 class="font-display-hero text-sm text-white font-bold">Bantuan</h4>
+            <ul class="space-y-2">
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="terms.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Syarat &amp; Ketentuan</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="privacy.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Kebijakan Privasi</a></li>
+                <li><a class="text-on-surface-variant hover:text-primary transition-colors text-xs font-medium flex items-center gap-2" href="contact.html"><span class="w-1 h-1 rounded-full bg-secondary/20"></span> Hubungi Kami</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="max-w-container-max mx-auto px-4 pt-4 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-3">
+        <p class="text-on-surface-variant text-[10px]">© 2024 LekszyStore. Premium Digital Goods Marketplace.</p>
+        <span class="flex items-center gap-2 text-[10px] text-success-green font-medium">
+            <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-green opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-success-green"></span>
+            </span>
+            System: Operational
+        </span>
+    </div>
+</footer>
+
+<script>
+    // ===== MICRO-INTERACTIONS =====
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
+    // ===== SCROLL HEADER =====
+    window.addEventListener('scroll', () => {
+        const nav = document.querySelector('nav');
+        if (window.scrollY > 10) {
+            nav.classList.add('bg-surface-glass/95');
+        } else {
+            nav.classList.remove('bg-surface-glass/95');
+        }
+    });
+
+    // ===== SCROLL REVEAL =====
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('opacity-100', 'translate-y-0');
+                entry.target.classList.remove('opacity-0', 'translate-y-10');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.glass-card').forEach(card => {
+        card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700', 'ease-out');
+        observer.observe(card);
+    });
+</script>
+</body>
+</html>
