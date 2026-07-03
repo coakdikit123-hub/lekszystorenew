@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-// ========== KONEKSI DATABASE (LANGSUNG DI FILE INI) ==========
+// ========== KONEKSI DATABASE ==========
 let cachedClient = null;
 let cachedDb = null;
 
@@ -95,14 +95,17 @@ async function deleteSession(chatId) {
   }
 }
 
+// ========== FORMAT RUPIAH ==========
+function formatRupiah(angka) {
+  return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+}
+
 // ========== MAIN HANDLER ==========
 export default async function handler(req, res) {
-  // Cek method
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Cek environment variables
   const token = process.env.TELEGRAM_BOT_TOKEN;
   if (!token) {
     console.error('TELEGRAM_BOT_TOKEN is missing');
@@ -119,26 +122,22 @@ export default async function handler(req, res) {
     const update = req.body;
     console.log('Received update:', JSON.stringify(update).substring(0, 200));
 
-    // ========== HANDLE TEXT MESSAGE ==========
     if (update.message && update.message.text) {
       const chatId = update.message.chat.id;
       const text = update.message.text.trim();
       const username = update.message.from.username;
 
-      // Hanya admin yang bisa menggunakan bot
       if (chatId !== ADMIN_ID) {
         await sendMessage(chatId, '🔒 *Bot ini hanya untuk admin.*', 'Markdown');
         return res.status(200).json({ ok: true });
       }
 
-      // ===== CANCEL =====
       if (text === '/cancel') {
         await deleteSession(chatId);
         await sendMessage(chatId, '❌ *Operasi dibatalkan.*', 'Markdown');
         return res.status(200).json({ ok: true });
       }
 
-      // ===== START =====
       if (text === '/start') {
         await deleteSession(chatId);
         const banner = 'https://testingweb-five.vercel.app/gambar/ownermenu.png';
@@ -167,7 +166,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ===== LIST PRODUCT (Sekarang menampilkan modal/cost) =====
       if (text === '/list') {
         try {
           const db = await getDb();
@@ -179,8 +177,8 @@ export default async function handler(req, res) {
           let msg = '📋 *Daftar Produk:*\n━━━━━━━━━━━━━━━━━━━━━\n';
           products.forEach(p => {
             msg += `*${p.id}.* ${p.name}\n`;
-            msg += `💰 Harga Jual: Rp ${p.price.toLocaleString()}\n`;
-            if (p.cost) msg += `💸 Modal: Rp ${p.cost.toLocaleString()}\n`;
+            msg += `💰 Harga Jual: ${formatRupiah(p.price)}\n`;
+            if (p.cost) msg += `💸 Modal: ${formatRupiah(p.cost)}\n`;
             msg += `📦 Stok: ${p.stock} | 🏷️ ${p.category}\n`;
             if (p.duration) msg += `⏱️ ${p.duration}\n`;
             msg += `\n`;
@@ -194,7 +192,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ===== ADD PRODUCT FLOW =====
       if (text === '/add') {
         await deleteSession(chatId);
         await saveSession(chatId, 'add_name', {});
@@ -233,8 +230,8 @@ export default async function handler(req, res) {
 
           let msg = `📊 *Laporan Bulanan* ${start.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}\n━━━━━━━━━━━━━━━━━━━━━\n`;
           msg += `📦 Total Transaksi: ${totalTrans}\n`;
-          msg += `💰 Total Pendapatan: Rp ${totalRevenue.toLocaleString()}\n`;
-          msg += `📈 Total Keuntungan: Rp ${totalProfit.toLocaleString()}\n`;
+          msg += `💰 Total Pendapatan: ${formatRupiah(totalRevenue)}\n`;
+          msg += `📈 Total Keuntungan: ${formatRupiah(totalProfit)}\n`;
           msg += `━━━━━━━━━━━━━━━━━━━━━`;
           await sendMessage(chatId, msg, 'Markdown');
         } catch (err) {
@@ -263,7 +260,7 @@ export default async function handler(req, res) {
             const date = new Date(t.createdAt);
             msg += `${i+1}. *${t.productName}*\n`;
             msg += `   🆔 \`${t.transactionId}\`\n`;
-            msg += `   💰 Rp ${t.totalAmount.toLocaleString()}\n`;
+            msg += `   💰 ${formatRupiah(t.totalAmount)}\n`;
             msg += `   📦 ${t.quantity}x\n`;
             msg += `   🕒 ${date.toLocaleString('id-ID')}\n\n`;
           });
@@ -404,7 +401,7 @@ export default async function handler(req, res) {
               createdAt: new Date()
             };
             await db.collection('products').insertOne(newProduct);
-            await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n🆔 ID: ${newId}\n📛 ${temp.name}\n💸 Modal: Rp ${temp.cost.toLocaleString()}\n💰 Harga Jual: Rp ${temp.price.toLocaleString()}\n📦 ${temp.stock}`, 'Markdown');
+            await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n🆔 ID: ${newId}\n📛 ${temp.name}\n💸 Modal: ${formatRupiah(temp.cost)}\n💰 Harga Jual: ${formatRupiah(temp.price)}\n📦 Stok: ${temp.stock}`, 'Markdown');
           } catch (err) {
             console.error('Add product error:', err);
             await sendMessage(chatId, `❌ Error: ${err.message}`, 'Markdown');
@@ -429,7 +426,7 @@ export default async function handler(req, res) {
               return res.status(200).json({ ok: true });
             }
             await saveSession(chatId, 'edit_field', { editId: id, product });
-            await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\nField: name, price, cost, category, stock, duration, hot, image\nKirimkan nama field yang ingin diubah.`, 'Markdown');
+            await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\n📛 Nama: ${product.name}\n💰 Harga Jual: ${formatRupiah(product.price)}\n💸 Modal: ${product.cost ? formatRupiah(product.cost) : 'Tidak ada'}\n📦 Stok: ${product.stock}\n🏷️ Kategori: ${product.category}\n⏱️ Durasi: ${product.duration || '-'}\n🔥 Hot: ${product.hot ? 'Ya' : 'Tidak'}\n🖼️ Gambar: ${product.image || '-'}\n\n📌 Field yang bisa diubah:\n\`name, price, cost, category, stock, duration, hot, image\`\n\nKirimkan nama field yang ingin diubah.`, 'Markdown');
           } catch (err) {
             console.error('Edit wait id error:', err);
             await sendMessage(chatId, '❌ Gagal mengambil produk.', 'Markdown');
@@ -441,8 +438,20 @@ export default async function handler(req, res) {
             await sendMessage(chatId, '❌ Field tidak valid. Pilih: name, price, cost, category, stock, duration, hot, image', 'Markdown');
             return res.status(200).json({ ok: true });
           }
+          // Simpan field yang dipilih dan ambil nilai lama dari session product
+          const editId = temp.editId;
+          const db = await getDb();
+          const product = await db.collection('products').findOne({ id: editId });
+          if (!product) {
+            await sendMessage(chatId, '❌ Produk tidak ditemukan.', 'Markdown');
+            await deleteSession(chatId);
+            return res.status(200).json({ ok: true });
+          }
+          const oldValue = product[text];
           temp.field = text;
+          temp.oldValue = oldValue;
           await saveSession(chatId, 'edit_value', temp);
+          
           let prompt = '';
           if (text === 'hot') prompt = '🔥 Kirim 1 untuk ya, 0 untuk tidak';
           else if (['price','cost','stock'].includes(text)) prompt = '🔢 Kirimkan angka';
@@ -452,7 +461,10 @@ export default async function handler(req, res) {
         } else if (step === 'edit_value') {
           const field = temp.field;
           const editId = temp.editId;
+          const oldValue = temp.oldValue;
           let newValue = text;
+          
+          // Konversi untuk field numerik
           if (['price','cost','stock'].includes(field)) {
             const num = parseInt(newValue);
             if (isNaN(num)) {
@@ -468,10 +480,37 @@ export default async function handler(req, res) {
             }
             newValue = (newValue === '1');
           }
+          
           try {
             const db = await getDb();
             await db.collection('products').updateOne({ id: editId }, { $set: { [field]: newValue } });
-            await sendMessage(chatId, `✅ *Update berhasil!*\n${field}: ${newValue}`, 'Markdown');
+            
+            // Ambil produk terbaru untuk ditampilkan
+            const updatedProduct = await db.collection('products').findOne({ id: editId });
+            
+            // Format nilai lama dan baru untuk tampilan
+            let oldDisplay = oldValue;
+            let newDisplay = newValue;
+            if (['price','cost'].includes(field)) {
+              oldDisplay = formatRupiah(oldValue);
+              newDisplay = formatRupiah(newValue);
+            }
+            if (field === 'hot') {
+              oldDisplay = oldValue ? 'Ya' : 'Tidak';
+              newDisplay = newValue ? 'Ya' : 'Tidak';
+            }
+            
+            const msg = `✅ *Update berhasil!*\n━━━━━━━━━━━━━━━━━━━━━
+📋 *Field:* ${field}
+🔄 *Nilai lama:* ${oldDisplay}
+🆕 *Nilai baru:* ${newDisplay}
+📦 *Produk:* ${updatedProduct.name}
+💰 *Harga Jual:* ${formatRupiah(updatedProduct.price)}
+💸 *Modal:* ${updatedProduct.cost ? formatRupiah(updatedProduct.cost) : 'Tidak ada'}
+📦 *Stok:* ${updatedProduct.stock}
+━━━━━━━━━━━━━━━━━━━━━
+✨ *Perubahan telah disimpan.*`;
+            await sendMessage(chatId, msg, 'Markdown');
           } catch (err) {
             console.error('Edit value error:', err);
             await sendMessage(chatId, `❌ Error: ${err.message}`, 'Markdown');
@@ -489,17 +528,29 @@ export default async function handler(req, res) {
           }
           try {
             const db = await getDb();
-            const result = await db.collection('products').deleteOne({ id });
-            if (result.deletedCount) {
-              await sendMessage(chatId, `✅ *Produk ID ${id} berhasil dihapus.*`, 'Markdown');
-            } else {
+            const product = await db.collection('products').findOne({ id });
+            if (!product) {
               await sendMessage(chatId, '❌ Produk tidak ditemukan.', 'Markdown');
+              await deleteSession(chatId);
+              return res.status(200).json({ ok: true });
             }
+            // Konfirmasi sebelum hapus
+            const keyboard = {
+              inline_keyboard: [
+                [
+                  { text: '✅ Ya, Hapus', callback_data: `confirm_delete_${id}` },
+                  { text: '❌ Batal', callback_data: 'cancel_delete' }
+                ]
+              ]
+            };
+            await sendMessage(chatId, `⚠️ *Konfirmasi Hapus*\n━━━━━━━━━━━━━━━━━━━━━\n📛 Produk: ${product.name}\n🆔 ID: ${id}\n\n*Yakin ingin menghapus produk ini?*`, 'Markdown', keyboard);
+            // Simpan session untuk sementara
+            await saveSession(chatId, 'delete_confirm', { deleteId: id });
           } catch (err) {
             console.error('Delete product error:', err);
             await sendMessage(chatId, `❌ Error: ${err.message}`, 'Markdown');
+            await deleteSession(chatId);
           }
-          await deleteSession(chatId);
           return res.status(200).json({ ok: true });
         }
 
@@ -575,7 +626,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // Jika tidak ada perintah yang cocok
       await sendMessage(chatId, '🤖 Gunakan /start untuk menu.', 'Markdown');
       return res.status(200).json({ ok: true });
     }
@@ -604,6 +654,62 @@ export default async function handler(req, res) {
             text: '❌ Penghapusan laporan dibatalkan.'
           })
         });
+        return res.status(200).json({ ok: true });
+      }
+
+      if (data === 'cancel_delete') {
+        await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            message_id: messageId,
+            text: '❌ Penghapusan produk dibatalkan.'
+          })
+        });
+        await deleteSession(chatId);
+        return res.status(200).json({ ok: true });
+      }
+
+      if (data.startsWith('confirm_delete_')) {
+        const id = parseInt(data.split('_')[2]);
+        try {
+          const db = await getDb();
+          const result = await db.collection('products').deleteOne({ id });
+          if (result.deletedCount) {
+            await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                text: `✅ *Produk ID ${id} berhasil dihapus.*`
+              })
+            });
+          } else {
+            await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                text: '❌ Produk tidak ditemukan.'
+              })
+            });
+          }
+        } catch (err) {
+          console.error('Delete confirm error:', err);
+          await fetch(`https://api.telegram.org/bot${token}/editMessageText`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              message_id: messageId,
+              text: '❌ Gagal menghapus produk.'
+            })
+          });
+        }
+        await deleteSession(chatId);
         return res.status(200).json({ ok: true });
       }
 
@@ -646,7 +752,6 @@ export default async function handler(req, res) {
     res.status(200).json({ ok: true });
   } catch (error) {
     console.error('Unhandled error:', error);
-    // Kirim notifikasi error ke admin
     try {
       await fetch(`https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: 'POST',
