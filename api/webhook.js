@@ -1,4 +1,29 @@
-import clientPromise from '../../lib/db';
+import { MongoClient } from 'mongodb';
+
+// ========== KONEKSI DATABASE (LANGSUNG DI FILE INI) ==========
+let cachedClient = null;
+let cachedDb = null;
+
+async function getDb() {
+  if (cachedDb) return cachedDb;
+  
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    throw new Error('MONGODB_URI is not defined');
+  }
+  
+  if (!cachedClient) {
+    cachedClient = new MongoClient(uri, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+    await cachedClient.connect();
+  }
+  
+  cachedDb = cachedClient.db('lekszystore');
+  return cachedDb;
+}
 
 // ========== TELEGRAM HELPER ==========
 async function sendMessage(chatId, text, parseMode = 'Markdown', replyMarkup = null) {
@@ -37,17 +62,7 @@ async function sendPhoto(chatId, photoUrl, caption = null, parseMode = 'Markdown
   }
 }
 
-// ========== DATABASE HELPER ==========
-async function getDb() {
-  try {
-    const client = await clientPromise;
-    return client.db('lekszystore');
-  } catch (e) {
-    console.error('Database connection error:', e);
-    throw new Error('Database connection failed');
-  }
-}
-
+// ========== SESSION HELPER ==========
 async function getSession(chatId) {
   try {
     const db = await getDb();
@@ -626,6 +641,6 @@ export default async function handler(req, res) {
         })
       });
     } catch (e) {}
-    return res.status(200).json({ ok: true }); // Tetap return 200 agar Telegram tidak retry
+    return res.status(200).json({ ok: true });
   }
 }
