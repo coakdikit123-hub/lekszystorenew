@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { productId, quantity = 1, transactionId } = req.body;
+  const { productId, quantity = 1, transactionId, customer } = req.body;
   if (!productId) {
     return res.status(400).json({ error: 'Product ID required' });
   }
@@ -50,18 +50,19 @@ export default async function handler(req, res) {
       profit,
       transactionId: finalTransactionId,
       status: 'completed',
-      createdAt: new Date()
+      createdAt: new Date(),
+      customer: customer || null
     };
     await db.collection('transactions').insertOne(transaction);
 
-    // Update statistik total terjual (opsional)
+    // Update statistik total terjual
     await db.collection('stats').updateOne(
       { key: 'total_sold' },
       { $inc: { value: quantity } },
       { upsert: true }
     );
 
-    // ========== KIRIM NOTIFIKASI KE TELEGRAM (OWNER) ==========
+    // ========== KIRIM NOTIFIKASI KE TELEGRAM ==========
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const ownerId = parseInt(process.env.ADMIN_ID) || 0;
     if (botToken && ownerId) {
@@ -70,17 +71,13 @@ export default async function handler(req, res) {
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit', second: '2-digit'
       });
-      const message = `🛍️ *Pesanan Baru!*
-━━━━━━━━━━━━━━━━━━━━━
-📦 *Produk:* ${product.name}
-💰 *Harga:* Rp ${price.toLocaleString()}
-📅 *Waktu:* ${waktu}
-🆔 *ID Transaksi:* \`${finalTransactionId}\`
-📊 *Jumlah:* ${quantity}
-💵 *Total:* Rp ${totalAmount.toLocaleString()}
-📈 *Keuntungan:* Rp ${profit.toLocaleString()}
-━━━━━━━━━━━━━━━━━━━━━
-✅ *Silakan diproses.*`;
+      let message = `🛍️ *Pesanan Baru!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Produk:* ${product.name}\n💰 *Harga:* Rp ${price.toLocaleString()}\n📅 *Waktu:* ${waktu}\n🆔 *ID Transaksi:* \`${finalTransactionId}\`\n📊 *Jumlah:* ${quantity}\n💵 *Total:* Rp ${totalAmount.toLocaleString()}\n📈 *Keuntungan:* Rp ${profit.toLocaleString()}\n`;
+      
+      if (customer) {
+        message += `\n👤 *Nama:* ${customer.name || '-'}\n📧 *Email:* ${customer.email || '-'}\n📱 *WhatsApp:* ${customer.phone || '-'}\n`;
+      }
+      message += `━━━━━━━━━━━━━━━━━━━━━\n✅ *Silakan diproses.*`;
+      
       try {
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
@@ -93,7 +90,6 @@ export default async function handler(req, res) {
         });
       } catch (notifErr) {
         console.error('Gagal kirim notifikasi ke owner:', notifErr);
-        // Tidak mengganggu proses checkout utama
       }
     }
 
