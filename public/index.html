@@ -270,6 +270,129 @@
         .social-icon.tk { color: #fff; }
         .social-icon.wa { color: #25D366; }
 
+        /* ===== MODAL ORDER FORM ===== */
+        .order-form-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            z-index: 1999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .order-form-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        .order-form-container {
+            width: 100%;
+            max-width: 440px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(19, 27, 46, 0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 32px 28px;
+            transform: scale(0.95) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        }
+        .order-form-modal.active .order-form-container {
+            transform: scale(1) translateY(0);
+        }
+        .order-form-container h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f3f4f6;
+            margin-bottom: 6px;
+        }
+        .order-form-container .subtitle {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+        .order-form-container label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .order-form-container input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #f3f4f6;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            margin-bottom: 16px;
+        }
+        .order-form-container input:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+        }
+        .order-form-container input::placeholder {
+            color: #64748b;
+        }
+        .order-form-container .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #7c3aed 0%, #ec4899 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+        .order-form-container .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+        }
+        .order-form-container .btn-submit:active {
+            transform: scale(0.97);
+        }
+        .order-form-container .btn-close-form {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 12px;
+            transition: color 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+        .order-form-container .btn-close-form:hover {
+            color: #f3f4f6;
+        }
+        .order-form-container .product-name-preview {
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .order-form-container .product-name-preview span {
+            color: #d2bbff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
         /* ===== MODAL PEMBAYARAN (CYBERVAULT) ===== */
         .modal-overlay {
             position: fixed;
@@ -353,7 +476,7 @@
             pointer-events: none;
         }
 
-        /* ===== POPUP UPDATE (DESAIN BARU) ===== */
+        /* ===== POPUP UPDATE ===== */
         .popup-modal {
             position: fixed;
             inset: 0;
@@ -749,8 +872,9 @@
             <div class="guide-content">
                 1. Pilih produk<br>
                 2. Klik tombol keranjang.<br>
-                3. Scan QRIS.<br>
-                4. Klik Konfirmasi &amp; kirim bukti transfer Whatsapp.<br>
+                3. Isi data pemesanan.<br>
+                4. Scan QRIS.<br>
+                5. Klik Konfirmasi &amp; kirim bukti transfer Whatsapp.<br>
                 <b>Pesanan akan di proses oleh Admin kami!</b>
             </div>
         </details>
@@ -894,15 +1018,22 @@
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">3</div>
                         <div>
-                            <h4 class="font-title-md text-base text-white">Scan QRIS</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Lakukan pembayaran secara instan menggunakan QRIS dari e-wallet manapun.</p>
+                            <h4 class="font-title-md text-base text-white">Isi Data Pemesanan</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Masukkan Nama, Email, dan Nomor WhatsApp untuk konfirmasi pesanan.</p>
                         </div>
                     </div>
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">4</div>
                         <div>
+                            <h4 class="font-title-md text-base text-white">Scan QRIS</h4>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Lakukan pembayaran secara instan menggunakan QRIS dari e-wallet manapun.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 items-start group">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">5</div>
+                        <div>
                             <h4 class="font-title-md text-base text-white">Konfirmasi WA</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Klik "Konfirmasi Whatsapp" otomatis akan langsung di arahkan ke Whatsapp, Kirim bukti transfer dan format teks yang sudah otomatis terisi ke WhatsApp admin kami.</p>
+                            <p class="text-on-surface-variant text-sm leading-relaxed">Klik "Konfirmasi WhatsApp", kirim bukti transfer dengan data yang sudah otomatis terisi ke admin.</p>
                         </div>
                     </div>
                 </div>
@@ -961,6 +1092,37 @@
         </span>
     </div>
 </footer>
+
+<!-- ===== MODAL ORDER FORM ===== -->
+<div class="order-form-modal" id="orderFormModal">
+    <div class="order-form-container">
+        <h2>📋 Data Pemesanan</h2>
+        <p class="subtitle">Isi data diri Anda untuk melanjutkan pembayaran.</p>
+
+        <div class="product-name-preview" id="orderProductPreview">
+            <span class="material-symbols-outlined text-primary">shopping_cart</span>
+            <span id="orderProductName">Produk</span>
+        </div>
+
+        <form id="orderForm" onsubmit="submitOrderForm(event)">
+            <label for="customerName">Nama Lengkap</label>
+            <input type="text" id="customerName" placeholder="Masukkan nama lengkap Anda" required>
+
+            <label for="customerEmail">Alamat Email</label>
+            <input type="email" id="customerEmail" placeholder="Masukkan alamat email Anda" required>
+
+            <label for="customerPhone">Nomor WhatsApp</label>
+            <input type="tel" id="customerPhone" placeholder="Contoh: 081234567890" required>
+
+            <button type="submit" class="btn-submit">
+                <span class="material-symbols-outlined" style="vertical-align: middle;">arrow_forward</span>
+                Lanjutkan ke Pembayaran
+            </button>
+        </form>
+
+        <button class="btn-close-form" onclick="closeOrderForm()">Kembali</button>
+    </div>
+</div>
 
 <!-- ===== MODAL PEMBAYARAN (CYBERVAULT) ===== -->
 <div class="modal-overlay" id="payModal">
@@ -1073,6 +1235,7 @@
     // ========== FUNGSI UTAMA ==========
     let allProducts = [];
     let selectedProduct = null;
+    let customerData = JSON.parse(localStorage.getItem('customerData')) || {};
     let dontShowPopup = localStorage.getItem('dontShowNewProductPopup') === 'true';
     let isPopupShowing = false;
     let lastSeenAnnouncementId = localStorage.getItem('lastSeenAnnouncementId') || '';
@@ -1185,11 +1348,70 @@
         if (isNaN(id)) return;
         const product = allProducts.find(p => p.id === id);
         if (product && product.stock > 0) {
-            openModal(product);
+            // Buka form pemesanan dulu, bukan langsung modal pembayaran
+            openOrderForm(product);
         } else {
             showToast('Maaf, stok produk ini sudah habis.', true);
         }
     });
+
+    // ===== ORDER FORM =====
+    function openOrderForm(product) {
+        if (product.stock <= 0) {
+            showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
+            return;
+        }
+        selectedProduct = product;
+        document.getElementById('orderProductName').innerText = product.name;
+        // Isi form dengan data yang tersimpan (jika ada)
+        document.getElementById('customerName').value = customerData.name || '';
+        document.getElementById('customerEmail').value = customerData.email || '';
+        document.getElementById('customerPhone').value = customerData.phone || '';
+        document.getElementById('orderFormModal').classList.add('active');
+    }
+
+    function closeOrderForm() {
+        document.getElementById('orderFormModal').classList.remove('active');
+        selectedProduct = null;
+    }
+
+    function submitOrderForm(e) {
+        e.preventDefault();
+        const name = document.getElementById('customerName').value.trim();
+        const email = document.getElementById('customerEmail').value.trim();
+        const phone = document.getElementById('customerPhone').value.trim();
+
+        if (!name || !email || !phone) {
+            showToast('Semua field harus diisi!', true);
+            return;
+        }
+
+        // Simpan data ke localStorage
+        customerData = { name, email, phone };
+        localStorage.setItem('customerData', JSON.stringify(customerData));
+
+        // Tutup form, buka modal pembayaran
+        closeOrderForm();
+        // Buka modal pembayaran dengan delay agar transisi halus
+        setTimeout(() => {
+            if (selectedProduct) {
+                openPaymentModal(selectedProduct);
+            }
+        }, 300);
+    }
+
+    // ===== PAYMENT MODAL =====
+    function openPaymentModal(product) {
+        if (product.stock <= 0) {
+            showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
+            return;
+        }
+        document.getElementById('mTitle').innerText = product.name;
+        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
+        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        document.getElementById('mTrxID').innerText = trx;
+        document.getElementById('payModal').classList.add('active');
+    }
 
     // ===== API FUNGSI =====
     async function loadProducts() {
@@ -1223,19 +1445,6 @@
         }
     }
 
-    function openModal(product) {
-        if (product.stock <= 0) {
-            showToast('Stok produk ini sudah habis, tidak dapat dipesan.', true);
-            return;
-        }
-        selectedProduct = product;
-        document.getElementById('mTitle').innerText = product.name;
-        document.getElementById('mPrice').innerText = `Rp ${product.price.toLocaleString()}`;
-        const trx = '#LS-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
-        document.getElementById('mTrxID').innerText = trx;
-        document.getElementById('payModal').classList.add('active');
-    }
-
     window.closeModal = function() {
         document.getElementById('payModal').classList.remove('active');
         selectedProduct = null;
@@ -1246,7 +1455,10 @@
     });
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape') {
+            closeModal();
+            closeOrderForm();
+        }
     });
 
     window.copyQRIS = function() {
@@ -1261,12 +1473,17 @@
             loadProducts();
             return;
         }
+
+        // Ambil data customer dari localStorage
+        const customer = JSON.parse(localStorage.getItem('customerData')) || {};
         const payBtn = document.querySelector('.btn-gradient-modal');
         const originalText = payBtn.innerText;
         payBtn.innerText = '⏳ Memproses...';
         payBtn.disabled = true;
+
         const trx = document.getElementById('mTrxID').innerText;
         const result = await checkout(selectedProduct.id, trx);
+
         if (!result.success) {
             showToast(result.error || 'Gagal memproses pesanan.', true);
             payBtn.innerText = originalText;
@@ -1275,11 +1492,14 @@
             closeModal();
             return;
         }
+
         selectedProduct.stock = result.newStock;
         const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
         if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
         renderProducts(allProducts);
-        const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
+
+        // Buat pesan WhatsApp dengan data lengkap
+        const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\n*👤 Data Pemesan:*\n- Nama: ${customer.name || '-'}\n- Email: ${customer.email || '-'}\n- WhatsApp: ${customer.phone || '-'}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
         showToast('Pesanan berhasil! Stok telah dikurangi.');
         payBtn.innerText = originalText;
@@ -1475,6 +1695,13 @@
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
         setTimeout(() => checkForUpdates(), 1500);
+
+        // Jika ada data customer tersimpan, pre-fill form
+        if (customerData.name) {
+            document.getElementById('customerName').value = customerData.name;
+            document.getElementById('customerEmail').value = customerData.email;
+            document.getElementById('customerPhone').value = customerData.phone;
+        }
     });
 </script>
 </body>
