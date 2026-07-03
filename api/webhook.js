@@ -167,7 +167,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ===== LIST PRODUCT =====
+      // ===== LIST PRODUCT (Sekarang menampilkan modal/cost) =====
       if (text === '/list') {
         try {
           const db = await getDb();
@@ -178,7 +178,10 @@ export default async function handler(req, res) {
           }
           let msg = '📋 *Daftar Produk:*\n━━━━━━━━━━━━━━━━━━━━━\n';
           products.forEach(p => {
-            msg += `*${p.id}.* ${p.name}\n💰 Harga: Rp ${p.price.toLocaleString()}\n📦 Stok: ${p.stock} | 🏷️ ${p.category}\n`;
+            msg += `*${p.id}.* ${p.name}\n`;
+            msg += `💰 Harga Jual: Rp ${p.price.toLocaleString()}\n`;
+            if (p.cost) msg += `💸 Modal: Rp ${p.cost.toLocaleString()}\n`;
+            msg += `📦 Stok: ${p.stock} | 🏷️ ${p.category}\n`;
             if (p.duration) msg += `⏱️ ${p.duration}\n`;
             msg += `\n`;
           });
@@ -341,12 +344,21 @@ export default async function handler(req, res) {
         // ADD FLOW
         if (step === 'add_name') {
           temp.name = text;
+          await saveSession(chatId, 'add_cost', temp);
+          await sendMessage(chatId, '💸 *Harga Modal*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga modal* (angka)', 'Markdown');
+        } else if (step === 'add_cost') {
+          const cost = parseInt(text);
+          if (isNaN(cost)) {
+            await sendMessage(chatId, '❌ *Harga modal tidak valid.* Kirimkan angka.', 'Markdown');
+            return res.status(200).json({ ok: true });
+          }
+          temp.cost = cost;
           await saveSession(chatId, 'add_price', temp);
           await sendMessage(chatId, '💰 *Harga Jual*\n━━━━━━━━━━━━━━━━━━━━━\n🔢 Kirimkan *harga jual* (angka)', 'Markdown');
         } else if (step === 'add_price') {
           const price = parseInt(text);
           if (isNaN(price)) {
-            await sendMessage(chatId, '❌ *Harga tidak valid.* Kirimkan angka.', 'Markdown');
+            await sendMessage(chatId, '❌ *Harga jual tidak valid.* Kirimkan angka.', 'Markdown');
             return res.status(200).json({ ok: true });
           }
           temp.price = price;
@@ -383,6 +395,7 @@ export default async function handler(req, res) {
               id: newId,
               name: temp.name,
               price: temp.price,
+              cost: temp.cost,
               category: temp.category,
               stock: temp.stock,
               duration: temp.duration,
@@ -391,7 +404,7 @@ export default async function handler(req, res) {
               createdAt: new Date()
             };
             await db.collection('products').insertOne(newProduct);
-            await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n🆔 ID: ${newId}\n📛 ${temp.name}\n💰 Rp ${temp.price.toLocaleString()}\n📦 ${temp.stock}`, 'Markdown');
+            await sendMessage(chatId, `✅ *Produk berhasil ditambahkan!*\n🆔 ID: ${newId}\n📛 ${temp.name}\n💸 Modal: Rp ${temp.cost.toLocaleString()}\n💰 Harga Jual: Rp ${temp.price.toLocaleString()}\n📦 ${temp.stock}`, 'Markdown');
           } catch (err) {
             console.error('Add product error:', err);
             await sendMessage(chatId, `❌ Error: ${err.message}`, 'Markdown');
@@ -416,27 +429,31 @@ export default async function handler(req, res) {
               return res.status(200).json({ ok: true });
             }
             await saveSession(chatId, 'edit_field', { editId: id, product });
-            await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\nField: name, price, category, stock, duration, hot, image\nKirimkan nama field yang ingin diubah.`, 'Markdown');
+            await sendMessage(chatId, `✏️ *Edit Produk ID ${id}*\nField: name, price, cost, category, stock, duration, hot, image\nKirimkan nama field yang ingin diubah.`, 'Markdown');
           } catch (err) {
             console.error('Edit wait id error:', err);
             await sendMessage(chatId, '❌ Gagal mengambil produk.', 'Markdown');
           }
           return res.status(200).json({ ok: true });
         } else if (step === 'edit_field') {
-          const allowed = ['name','price','category','stock','duration','hot','image'];
+          const allowed = ['name','price','cost','category','stock','duration','hot','image'];
           if (!allowed.includes(text)) {
-            await sendMessage(chatId, '❌ Field tidak valid.', 'Markdown');
+            await sendMessage(chatId, '❌ Field tidak valid. Pilih: name, price, cost, category, stock, duration, hot, image', 'Markdown');
             return res.status(200).json({ ok: true });
           }
           temp.field = text;
           await saveSession(chatId, 'edit_value', temp);
-          await sendMessage(chatId, `📝 Kirimkan nilai baru untuk *${text}*`, 'Markdown');
+          let prompt = '';
+          if (text === 'hot') prompt = '🔥 Kirim 1 untuk ya, 0 untuk tidak';
+          else if (['price','cost','stock'].includes(text)) prompt = '🔢 Kirimkan angka';
+          else prompt = `📝 Kirimkan nilai baru untuk *${text}*`;
+          await sendMessage(chatId, `✏️ *Ubah ${text}*\n━━━━━━━━━━━━━━━━━━━━━\n${prompt}`, 'Markdown');
           return res.status(200).json({ ok: true });
         } else if (step === 'edit_value') {
           const field = temp.field;
           const editId = temp.editId;
           let newValue = text;
-          if (['price','stock'].includes(field)) {
+          if (['price','cost','stock'].includes(field)) {
             const num = parseInt(newValue);
             if (isNaN(num)) {
               await sendMessage(chatId, '❌ Harus angka.', 'Markdown');
