@@ -54,7 +54,6 @@ async function deleteSession(chatId) {
   await db.collection('sessions').deleteOne({ chatId });
 }
 
-// ========== MAIN HANDLER ==========
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -73,20 +72,17 @@ export default async function handler(req, res) {
     const userId = update.message.from.id;
     const username = update.message.from.username;
 
-    // Hanya admin yang bisa menggunakan bot
     if (chatId !== ADMIN_ID) {
       await sendMessage(chatId, '🔒 *Bot ini hanya untuk admin.*', 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
-    // ===== CANCEL =====
     if (text === '/cancel') {
       await deleteSession(chatId);
       await sendMessage(chatId, '❌ *Operasi dibatalkan.*', 'Markdown');
       return res.status(200).json({ ok: true });
     }
 
-    // ===== START =====
     if (text === '/start') {
       await deleteSession(chatId);
       const banner = 'https://testingweb-five.vercel.app/gambar/ownermenu.png';
@@ -115,7 +111,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== LIST PRODUCT =====
     if (text === '/list') {
       try {
         const db = await getDb();
@@ -138,7 +133,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== ADD PRODUCT (Flow) =====
+    // ===== ADD PRODUCT FLOW =====
     if (text === '/add') {
       await deleteSession(chatId);
       await saveSession(chatId, 'add_name', {});
@@ -146,7 +141,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== EDIT PRODUCT =====
     if (text === '/edit') {
       await deleteSession(chatId);
       await saveSession(chatId, 'edit_wait_id', {});
@@ -154,7 +148,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== DELETE PRODUCT =====
     if (text === '/delete') {
       await deleteSession(chatId);
       await saveSession(chatId, 'delete_wait_id', {});
@@ -162,7 +155,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== REPORT BULANAN =====
     if (text === '/report') {
       try {
         const db = await getDb();
@@ -190,7 +182,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== TRANSAKSI TERBARU =====
     if (text === '/transactions') {
       try {
         const db = await getDb();
@@ -222,7 +213,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== HAPUS TRANSAKSI =====
     if (text === '/deletetrx') {
       await deleteSession(chatId);
       await saveSession(chatId, 'deletetrx_wait_id', {});
@@ -230,7 +220,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== HAPUS LAPORAN =====
     if (text === '/clearreport') {
       const db = await getDb();
       const now = new Date();
@@ -259,7 +248,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== ANNOUNCEMENT =====
     if (text === '/announce') {
       await deleteSession(chatId);
       await saveSession(chatId, 'announce_wait_title', {});
@@ -278,13 +266,13 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // ===== SESSION HANDLING (ADD, EDIT, DELETE, ANNOUNCE) =====
+    // ===== SESSION HANDLING =====
     const session = await getSession(chatId);
     if (session) {
       const step = session.step;
       let temp = session.tempData || {};
 
-      // ----- ADD FLOW -----
+      // ADD FLOW
       if (step === 'add_name') {
         temp.name = text;
         await saveSession(chatId, 'add_price', temp);
@@ -345,7 +333,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ----- EDIT FLOW -----
+      // EDIT FLOW
       if (step === 'edit_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) {
@@ -400,7 +388,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ----- DELETE PRODUCT -----
+      // DELETE PRODUCT
       if (step === 'delete_wait_id') {
         const id = parseInt(text);
         if (isNaN(id)) {
@@ -422,7 +410,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ----- DELETE TRANSACTION -----
+      // DELETE TRANSACTION
       if (step === 'deletetrx_wait_id') {
         try {
           const db = await getDb();
@@ -458,7 +446,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true });
       }
 
-      // ----- ANNOUNCEMENT FLOW -----
+      // ANNOUNCEMENT FLOW
       if (step === 'announce_wait_title') {
         temp.title = text;
         await saveSession(chatId, 'announce_wait_message', temp);
@@ -490,7 +478,6 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
-    // Jika tidak ada perintah yang cocok
     await sendMessage(chatId, '🤖 Gunakan /start untuk menu.', 'Markdown');
     return res.status(200).json({ ok: true });
   }
@@ -503,7 +490,6 @@ export default async function handler(req, res) {
     const data = callback.data;
     const token = process.env.TELEGRAM_BOT_TOKEN;
 
-    // Answer callback
     await fetch(`https://api.telegram.org/bot${token}/answerCallbackQuery`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
