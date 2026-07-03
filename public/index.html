@@ -989,7 +989,7 @@
         <div id="productGrid" class="product-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
     </section>
 
-    <!-- ===== PANDUAN ORDER (TENGAH, FULL WIDTH) ===== -->
+    <!-- ===== PANDUAN ORDER ===== -->
     <section class="px-4 max-w-container-max mx-auto pb-6">
         <div class="max-w-3xl mx-auto">
             <div class="glass-card p-6 md:p-8 rounded-2xl relative overflow-hidden border-white/5" id="panduan">
@@ -1003,38 +1003,23 @@
                 <div class="space-y-5 max-w-2xl mx-auto">
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">1</div>
-                        <div>
-                            <h4 class="font-title-md text-base text-white">Pilih produk</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Pilih akun premium favorit dari kategori yang tersedia.</p>
-                        </div>
+                        <div><h4 class="font-title-md text-base text-white">Pilih produk</h4><p class="text-on-surface-variant text-sm leading-relaxed">Pilih akun premium favorit dari kategori yang tersedia.</p></div>
                     </div>
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">2</div>
-                        <div>
-                            <h4 class="font-title-md text-base text-white">Klik keranjang</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Tambahkan produk ke pesanan Anda dan lanjutkan ke pembayaran.</p>
-                        </div>
+                        <div><h4 class="font-title-md text-base text-white">Klik keranjang</h4><p class="text-on-surface-variant text-sm leading-relaxed">Tambahkan produk ke pesanan Anda dan lanjutkan ke pembayaran.</p></div>
                     </div>
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">3</div>
-                        <div>
-                            <h4 class="font-title-md text-base text-white">Isi Data Pemesanan</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Masukkan Nama, Email, dan Nomor WhatsApp untuk konfirmasi pesanan.</p>
-                        </div>
+                        <div><h4 class="font-title-md text-base text-white">Isi Data Pemesanan</h4><p class="text-on-surface-variant text-sm leading-relaxed">Masukkan Nama, Email, dan Nomor WhatsApp untuk konfirmasi pesanan.</p></div>
                     </div>
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">4</div>
-                        <div>
-                            <h4 class="font-title-md text-base text-white">Scan QRIS</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Lakukan pembayaran secara instan menggunakan QRIS dari e-wallet manapun.</p>
-                        </div>
+                        <div><h4 class="font-title-md text-base text-white">Scan QRIS</h4><p class="text-on-surface-variant text-sm leading-relaxed">Lakukan pembayaran secara instan menggunakan QRIS dari e-wallet manapun.</p></div>
                     </div>
                     <div class="flex gap-4 items-start group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary font-bold text-sm group-hover:primary-gradient group-hover:text-white transition-all duration-300">5</div>
-                        <div>
-                            <h4 class="font-title-md text-base text-white">Konfirmasi WA</h4>
-                            <p class="text-on-surface-variant text-sm leading-relaxed">Klik "Konfirmasi WhatsApp", kirim bukti transfer dengan data yang sudah otomatis terisi ke admin.</p>
-                        </div>
+                        <div><h4 class="font-title-md text-base text-white">Konfirmasi WA</h4><p class="text-on-surface-variant text-sm leading-relaxed">Klik "Konfirmasi WhatsApp", kirim bukti transfer dengan data yang sudah otomatis terisi ke admin.</p></div>
                     </div>
                 </div>
                 <div class="mt-6 p-3 md:p-4 bg-primary/5 border border-primary/10 rounded-xl backdrop-blur-sm max-w-2xl mx-auto text-center">
@@ -1098,28 +1083,22 @@
     <div class="order-form-container">
         <h2>📋 Data Pemesanan</h2>
         <p class="subtitle">Isi data diri Anda untuk melanjutkan pembayaran.</p>
-
         <div class="product-name-preview" id="orderProductPreview">
             <span class="material-symbols-outlined text-primary">shopping_cart</span>
             <span id="orderProductName">Produk</span>
         </div>
-
         <form id="orderForm" onsubmit="submitOrderForm(event)">
             <label for="customerName">Nama Lengkap</label>
             <input type="text" id="customerName" placeholder="Masukkan nama lengkap Anda" required>
-
             <label for="customerEmail">Alamat Email</label>
             <input type="email" id="customerEmail" placeholder="Masukkan alamat email Anda" required>
-
             <label for="customerPhone">Nomor WhatsApp</label>
             <input type="tel" id="customerPhone" placeholder="Contoh: 081234567890" required>
-
             <button type="submit" class="btn-submit">
                 <span class="material-symbols-outlined" style="vertical-align: middle;">arrow_forward</span>
                 Lanjutkan ke Pembayaran
             </button>
         </form>
-
         <button class="btn-close-form" onclick="closeOrderForm()">Kembali</button>
     </div>
 </div>
@@ -1129,7 +1108,6 @@
     <div class="modal-content-wrapper relative">
         <div class="bg-glow-1"></div>
         <div class="bg-glow-2"></div>
-
         <div class="surface-glass-modal rounded-2xl p-6 md:p-8 flex flex-col items-center shadow-2xl relative z-10">
             <div class="text-center flex flex-col gap-1 mb-5 w-full">
                 <p class="text-[10px] uppercase tracking-[0.15em] text-on-surface-variant font-bold">Payment Confirmation</p>
@@ -1138,13 +1116,11 @@
                     <span id="mPrice" class="text-primary font-bold text-3xl tracking-tight">Rp 0</span>
                 </div>
             </div>
-
             <div class="w-full max-w-[200px] mx-auto bg-white rounded-xl p-3 mb-4 shadow-lg relative group transition-transform duration-300 hover:scale-105">
                 <div class="absolute inset-0 bg-primary/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <img src="/gambar/qris.jpeg" alt="QRIS" class="w-full h-auto object-contain rounded-lg" loading="lazy">
             </div>
             <p class="text-center text-sm text-on-surface-variant mb-5 font-medium">Scan QRIS untuk membayar</p>
-
             <div class="w-full bg-surface-container-low/80 rounded-xl p-4 flex flex-col gap-2.5 border border-white/5 backdrop-blur-sm">
                 <div class="flex justify-between items-center pb-2 border-b border-white/5">
                     <span class="text-on-surface-variant text-sm">ID Trx:</span>
@@ -1171,7 +1147,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex flex-col gap-3 w-full mt-5">
                 <button class="btn-gradient-modal text-white w-full py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2" onclick="confirmWA()">
                     <span class="material-symbols-outlined text-xl">chat</span>
@@ -1232,11 +1207,6 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script>
-    // ========== KONFIGURASI TELEGRAM ==========
-    // Ganti dengan token bot dan chat ID Anda
-    const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Contoh: '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'
-    const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';   // Contoh: '-1001234567890' atau '123456789'
-
     // ========== FUNGSI UTAMA ==========
     let allProducts = [];
     let selectedProduct = null;
@@ -1412,28 +1382,18 @@
         document.getElementById('payModal').classList.add('active');
     }
 
-    // ===== API FUNGSI =====
-    async function loadProducts() {
-        try {
-            const res = await fetch('/api/products?_=' + Date.now());
-            if (!res.ok) throw new Error();
-            allProducts = await res.json();
-            allProducts.sort((a, b) => a.id - b.id);
-            renderProducts(allProducts);
-            document.getElementById('countOrder').innerText = allProducts.length;
-        } catch(e) {
-            console.error(e);
-            showToast('Gagal memuat produk. Refresh halaman.', true);
-            document.getElementById('productGrid').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>Gagal memuat produk</h3><p>Terjadi kesalahan saat mengambil data. Silakan refresh halaman.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
-        }
-    }
-
-    async function checkout(productId, transactionId) {
+    // ===== API FUNGSI (checkout dengan customer) =====
+    async function checkout(productId, transactionId, customer) {
         try {
             const res = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity: 1, transactionId })
+                body: JSON.stringify({ 
+                    productId, 
+                    quantity: 1, 
+                    transactionId,
+                    customer: customer
+                })
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Checkout gagal');
@@ -1444,45 +1404,9 @@
         }
     }
 
-    // ===== TELEGRAM NOTIFICATION =====
-    async function sendTelegramNotification(transaction) {
-        const { product, customer, price, trxId } = transaction;
-        const message = `
-🆕 *TRANSAKSI BARU*
-
-📦 *Produk:* ${product.name}
-💰 *Harga:* Rp ${price.toLocaleString()}
-🆔 *ID Transaksi:* ${trxId}
-👤 *Nama:* ${customer.name}
-📧 *Email:* ${customer.email}
-📱 *WhatsApp:* ${customer.phone}
-📅 *Waktu:* ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
-
-⚠️ *Status:* Menunggu Pembayaran
-        `.trim();
-
-        try {
-            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: TELEGRAM_CHAT_ID,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
-            if (!res.ok) {
-                const err = await res.json();
-                console.error('Telegram error:', err);
-            }
-        } catch (e) {
-            console.error('Failed to send Telegram notification:', e);
-        }
-    }
-
-    // ===== CONFIRM WA =====
     window.closeModal = function() {
         document.getElementById('payModal').classList.remove('active');
+        selectedProduct = null;
     };
 
     document.getElementById('payModal').addEventListener('click', function(e) {
@@ -1500,6 +1424,7 @@
         showToast('Screenshot QRIS dan bayar via bank/ewallet.');
     };
 
+    // ===== CONFIRM WA =====
     window.confirmWA = async function() {
         if (!selectedProduct) return;
         if (selectedProduct.stock <= 0) {
@@ -1516,7 +1441,7 @@
         payBtn.disabled = true;
 
         const trx = document.getElementById('mTrxID').innerText;
-        const result = await checkout(selectedProduct.id, trx);
+        const result = await checkout(selectedProduct.id, trx, customer);
 
         if (!result.success) {
             showToast(result.error || 'Gagal memproses pesanan.', true);
@@ -1527,21 +1452,11 @@
             return;
         }
 
-        // Update stok
         selectedProduct.stock = result.newStock;
         const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
         if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
         renderProducts(allProducts);
 
-        // Kirim notifikasi Telegram
-        await sendTelegramNotification({
-            product: selectedProduct,
-            customer: customer,
-            price: selectedProduct.price,
-            trxId: trx
-        });
-
-        // Kirim WhatsApp
         const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\n*👤 Data Pemesan:*\n- Nama: ${customer.name || '-'}\n- Email: ${customer.email || '-'}\n- WhatsApp: ${customer.phone || '-'}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
         showToast('Pesanan berhasil! Stok telah dikurangi.');
@@ -1740,14 +1655,27 @@
     document.addEventListener('DOMContentLoaded', async () => {
         await loadProducts();
         setTimeout(() => checkForUpdates(), 1500);
-
         if (customerData.name) {
             document.getElementById('customerName').value = customerData.name;
             document.getElementById('customerEmail').value = customerData.email;
             document.getElementById('customerPhone').value = customerData.phone;
         }
     });
-</script>
 
+    async function loadProducts() {
+        try {
+            const res = await fetch('/api/products?_=' + Date.now());
+            if (!res.ok) throw new Error();
+            allProducts = await res.json();
+            allProducts.sort((a, b) => a.id - b.id);
+            renderProducts(allProducts);
+            document.getElementById('countOrder').innerText = allProducts.length;
+        } catch(e) {
+            console.error(e);
+            showToast('Gagal memuat produk. Refresh halaman.', true);
+            document.getElementById('productGrid').innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><h3>Gagal memuat produk</h3><p>Terjadi kesalahan saat mengambil data. Silakan refresh halaman.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
+        }
+    }
+</script>
 </body>
 </html>
