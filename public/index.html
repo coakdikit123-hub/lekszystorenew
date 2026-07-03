@@ -1232,6 +1232,11 @@
 
 <!-- ===== SCRIPTS ===== -->
 <script>
+    // ========== KONFIGURASI TELEGRAM ==========
+    // Ganti dengan token bot dan chat ID Anda
+    const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE'; // Contoh: '1234567890:ABCdefGHIjklMNOpqrsTUVwxyz'
+    const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';   // Contoh: '-1001234567890' atau '123456789'
+
     // ========== FUNGSI UTAMA ==========
     let allProducts = [];
     let selectedProduct = null;
@@ -1348,7 +1353,6 @@
         if (isNaN(id)) return;
         const product = allProducts.find(p => p.id === id);
         if (product && product.stock > 0) {
-            // Buka form pemesanan dulu, bukan langsung modal pembayaran
             openOrderForm(product);
         } else {
             showToast('Maaf, stok produk ini sudah habis.', true);
@@ -1363,7 +1367,6 @@
         }
         selectedProduct = product;
         document.getElementById('orderProductName').innerText = product.name;
-        // Isi form dengan data yang tersimpan (jika ada)
         document.getElementById('customerName').value = customerData.name || '';
         document.getElementById('customerEmail').value = customerData.email || '';
         document.getElementById('customerPhone').value = customerData.phone || '';
@@ -1372,7 +1375,6 @@
 
     function closeOrderForm() {
         document.getElementById('orderFormModal').classList.remove('active');
-        selectedProduct = null;
     }
 
     function submitOrderForm(e) {
@@ -1386,13 +1388,10 @@
             return;
         }
 
-        // Simpan data ke localStorage
         customerData = { name, email, phone };
         localStorage.setItem('customerData', JSON.stringify(customerData));
 
-        // Tutup form, buka modal pembayaran
         closeOrderForm();
-        // Buka modal pembayaran dengan delay agar transisi halus
         setTimeout(() => {
             if (selectedProduct) {
                 openPaymentModal(selectedProduct);
@@ -1445,9 +1444,45 @@
         }
     }
 
+    // ===== TELEGRAM NOTIFICATION =====
+    async function sendTelegramNotification(transaction) {
+        const { product, customer, price, trxId } = transaction;
+        const message = `
+🆕 *TRANSAKSI BARU*
+
+📦 *Produk:* ${product.name}
+💰 *Harga:* Rp ${price.toLocaleString()}
+🆔 *ID Transaksi:* ${trxId}
+👤 *Nama:* ${customer.name}
+📧 *Email:* ${customer.email}
+📱 *WhatsApp:* ${customer.phone}
+📅 *Waktu:* ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
+
+⚠️ *Status:* Menunggu Pembayaran
+        `.trim();
+
+        try {
+            const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                console.error('Telegram error:', err);
+            }
+        } catch (e) {
+            console.error('Failed to send Telegram notification:', e);
+        }
+    }
+
+    // ===== CONFIRM WA =====
     window.closeModal = function() {
         document.getElementById('payModal').classList.remove('active');
-        selectedProduct = null;
     };
 
     document.getElementById('payModal').addEventListener('click', function(e) {
@@ -1474,7 +1509,6 @@
             return;
         }
 
-        // Ambil data customer dari localStorage
         const customer = JSON.parse(localStorage.getItem('customerData')) || {};
         const payBtn = document.querySelector('.btn-gradient-modal');
         const originalText = payBtn.innerText;
@@ -1493,21 +1527,32 @@
             return;
         }
 
+        // Update stok
         selectedProduct.stock = result.newStock;
         const productIndex = allProducts.findIndex(p => p.id === selectedProduct.id);
         if (productIndex !== -1) allProducts[productIndex].stock = result.newStock;
         renderProducts(allProducts);
 
-        // Buat pesan WhatsApp dengan data lengkap
+        // Kirim notifikasi Telegram
+        await sendTelegramNotification({
+            product: selectedProduct,
+            customer: customer,
+            price: selectedProduct.price,
+            trxId: trx
+        });
+
+        // Kirim WhatsApp
         const msg = `Halo Admin *LekszyStore*\nSaya ingin konfirmasi pembelian:\n\n*📦 Produk*: ${selectedProduct.name}\n*💰 Harga:* Rp ${selectedProduct.price.toLocaleString()}\n*🆔 ID Transaksi*: ${trx}\n\n*👤 Data Pemesan:*\n- Nama: ${customer.name || '-'}\n- Email: ${customer.email || '-'}\n- WhatsApp: ${customer.phone || '-'}\n\nBerikut bukti pembayaran yang telah saya lakukan:`;
         window.open(`https://wa.me/6285810630431?text=${encodeURIComponent(msg)}`, '_blank');
         showToast('Pesanan berhasil! Stok telah dikurangi.');
+
         payBtn.innerText = originalText;
         payBtn.disabled = false;
         closeModal();
         await loadProducts();
     };
 
+    // ===== FILTER & SEARCH =====
     window.filterProduct = function(category, btn) {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -1696,7 +1741,6 @@
         await loadProducts();
         setTimeout(() => checkForUpdates(), 1500);
 
-        // Jika ada data customer tersimpan, pre-fill form
         if (customerData.name) {
             document.getElementById('customerName').value = customerData.name;
             document.getElementById('customerEmail').value = customerData.email;
@@ -1704,5 +1748,6 @@
         }
     });
 </script>
+
 </body>
 </html>
