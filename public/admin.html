@@ -382,7 +382,6 @@ DASHBOARD UTAMA
         VIEW: DASHBOARD
         ============================================================ -->
         <div id="viewDashboard" class="view active">
-            <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
@@ -434,7 +433,6 @@ DASHBOARD UTAMA
                 </div>
             </div>
 
-            <!-- Chart Row -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -479,7 +477,6 @@ DASHBOARD UTAMA
                 </div>
             </div>
 
-            <!-- Recent Activity -->
             <div class="glass-card rounded-2xl p-5 md:p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Aktivitas Terbaru</h3>
@@ -521,10 +518,7 @@ DASHBOARD UTAMA
                     <div class="flex gap-2 ml-auto">
                         <select id="productCategoryFilter" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                             <option value="all">Semua Kategori</option>
-                            <option value="game">Game</option>
-                            <option value="voucher">Voucher</option>
-                            <option value="pulsa">Pulsa</option>
-                            <option value="lainnya">Lainnya</option>
+                            <!-- akan diisi JS -->
                         </select>
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
@@ -749,7 +743,6 @@ DASHBOARD UTAMA
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- General Settings -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
@@ -785,7 +778,6 @@ DASHBOARD UTAMA
                         </div>
                     </div>
 
-                    <!-- Bot Settings -->
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
                             <span class="material-symbols-outlined text-[#06b6d4]">telegram</span>
@@ -821,7 +813,6 @@ DASHBOARD UTAMA
                     </div>
                 </div>
 
-                <!-- Side Panel -->
                 <div class="space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
@@ -881,7 +872,7 @@ DASHBOARD UTAMA
 </div>
 
 <!-- ================================================================
-MODAL PRODUK (Dengan Kategori & Gambar)
+MODAL PRODUK
 ================================================================ -->
 <div id="productModal" class="modal-overlay">
     <div class="modal-box">
@@ -899,11 +890,10 @@ MODAL PRODUK (Dengan Kategori & Gambar)
             <div>
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Kategori</label>
                 <select id="pCategory" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition mt-1">
-                    <option value="game">Game</option>
-                    <option value="voucher">Voucher</option>
-                    <option value="pulsa">Pulsa</option>
-                    <option value="lainnya">Lainnya</option>
+                    <option value="">Pilih Kategori...</option>
+                    <!-- Kategori akan diisi oleh JavaScript -->
                 </select>
+                <p class="text-xs text-[#ccc3d8] mt-1">Pilih kategori yang sudah ada atau tambah baru dari dropdown</p>
             </div>
             <div>
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label>
@@ -1006,6 +996,7 @@ JAVASCRIPT – FULL LOGIKA
     let allOrders = [];
     let allProducts = [];
     let allUsers = [];
+    let productCategories = [];
     let orderPage = 1,
         productPage = 1,
         userPage = 1;
@@ -1031,12 +1022,7 @@ JAVASCRIPT – FULL LOGIKA
     function showToast(message, type = 'info', duration = 4000) {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        const icons = {
-            success: 'check_circle',
-            error: 'error',
-            warning: 'warning',
-            info: 'info'
-        };
+        const icons = { success: 'check_circle', error: 'error', warning: 'warning', info: 'info' };
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
                 <span class="material-symbols-outlined text-${type === 'success' ? '#4ade80' : type === 'error' ? '#ffb4ab' : type === 'warning' ? '#fbbf24' : '#06b6d4'}">${icons[type] || 'info'}</span>
@@ -1163,6 +1149,96 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
+    // KATEGORI DINAMIS
+    // ================================================================
+    function loadCategories() {
+        authFetch(`${API_BASE}?action=categories`)
+            .then(res => res.json())
+            .then(data => {
+                productCategories = data || [];
+                updateCategoryDropdowns();
+                updateCategoryFilter();
+            })
+            .catch(err => console.error('Gagal load kategori:', err));
+    }
+
+    function updateCategoryDropdowns() {
+        const select = document.getElementById('pCategory');
+        if (!select) return;
+        const currentValue = select.value;
+        select.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = 'Pilih Kategori...';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        select.appendChild(defaultOption);
+        if (productCategories.length === 0) {
+            const emptyOption = document.createElement('option');
+            emptyOption.value = '';
+            emptyOption.textContent = 'Belum ada kategori';
+            emptyOption.disabled = true;
+            select.appendChild(emptyOption);
+        } else {
+            productCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+                select.appendChild(option);
+            });
+        }
+        const addOption = document.createElement('option');
+        addOption.value = '__new__';
+        addOption.textContent = '+ Tambah Kategori Baru';
+        addOption.style.color = '#4ade80';
+        addOption.style.fontWeight = 'bold';
+        select.appendChild(addOption);
+        select.onchange = function() {
+            if (this.value === '__new__') {
+                const newCategory = prompt('Masukkan nama kategori baru:');
+                if (newCategory && newCategory.trim()) {
+                    const cat = newCategory.trim().toLowerCase();
+                    if (!productCategories.includes(cat)) {
+                        productCategories.push(cat);
+                        updateCategoryDropdowns();
+                        updateCategoryFilter();
+                        select.value = cat;
+                        showToast('Kategori "' + cat + '" berhasil ditambahkan!', 'success');
+                    } else {
+                        showToast('Kategori "' + cat + '" sudah ada!', 'warning');
+                        select.value = currentValue || '';
+                    }
+                } else {
+                    select.value = currentValue || '';
+                }
+            }
+        };
+        if (currentValue && productCategories.includes(currentValue)) {
+            select.value = currentValue;
+        }
+    }
+
+    function updateCategoryFilter() {
+        const filter = document.getElementById('productCategoryFilter');
+        if (!filter) return;
+        const currentValue = filter.value;
+        filter.innerHTML = '';
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = 'Semua Kategori';
+        filter.appendChild(allOption);
+        productCategories.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat;
+            option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+            filter.appendChild(option);
+        });
+        if (currentValue && (currentValue === 'all' || productCategories.includes(currentValue))) {
+            filter.value = currentValue;
+        }
+    }
+
+    // ================================================================
     // LOAD ALL DATA
     // ================================================================
     function loadAllData() {
@@ -1179,6 +1255,7 @@ JAVASCRIPT – FULL LOGIKA
             document.getElementById('orderBadge').innerText = pending.length;
             document.getElementById('userBadge').innerText = allUsers.length;
             if (pending.length > 0) document.getElementById('notifDot').classList.remove('hidden');
+            loadCategories();
             navigateTo('dashboard');
         }).catch(err => {
             console.error('Gagal load data:', err);
@@ -1196,7 +1273,6 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('dashTotalOrders').innerText = allOrders.length;
         document.getElementById('dashTotalProfit').innerText = formatRupiah(totalProfit);
         document.getElementById('dashTotalProducts').innerText = allProducts.length;
-
         const today = new Date().toDateString();
         const todayOrders = allOrders.filter(o => new Date(o.createdAt).toDateString() === today);
         const todayRevenue = todayOrders.reduce((s, o) => s + (o.total || 0), 0);
@@ -1206,7 +1282,6 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('quickTodayProfit').innerText = formatRupiah(todayProfit);
         const avg = allOrders.length > 0 ? totalRevenue / allOrders.length : 0;
         document.getElementById('quickAvgOrder').innerText = formatRupiah(avg);
-
         const productSales = {};
         allOrders.forEach(o => {
             const name = o.productName || o.product?.name || 'Unknown';
@@ -1219,7 +1294,6 @@ JAVASCRIPT – FULL LOGIKA
                 topProduct = name; }
         }
         document.getElementById('quickTopProduct').innerText = topProduct;
-
         const container = document.getElementById('recentActivityList');
         container.innerHTML = '';
         const recent = allOrders.slice(0, 5);
@@ -1330,7 +1404,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // PRODUK (Dengan Kategori & Gambar)
+    // PRODUK
     // ================================================================
     function loadProducts() {
         authFetch(`${API_BASE}?action=list`)
@@ -1460,20 +1534,23 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('editProductId').value = '';
         document.getElementById('modalProductTitle').innerText = 'Tambah Produk';
         document.getElementById('pName').value = '';
-        document.getElementById('pCategory').value = 'game';
         document.getElementById('pImage').value = '';
         document.getElementById('pPrice').value = '';
         document.getElementById('pCost').value = '';
         document.getElementById('pStock').value = '';
+        // Reset kategori
+        document.getElementById('pCategory').value = '';
         if (product) {
             document.getElementById('modalProductTitle').innerText = 'Edit Produk';
             document.getElementById('editProductId').value = product.id;
             document.getElementById('pName').value = product.name || '';
-            document.getElementById('pCategory').value = product.category || 'game';
             document.getElementById('pImage').value = product.image || '';
             document.getElementById('pPrice').value = product.price || '';
             document.getElementById('pCost').value = product.cost || '';
             document.getElementById('pStock').value = product.stock || '';
+            if (product.category && productCategories.includes(product.category)) {
+                document.getElementById('pCategory').value = product.category;
+            }
         }
     }
 
@@ -1485,7 +1562,7 @@ JAVASCRIPT – FULL LOGIKA
         const id = document.getElementById('editProductId').value;
         const product = {
             name: document.getElementById('pName').value.trim(),
-            category: document.getElementById('pCategory').value,
+            category: document.getElementById('pCategory').value || 'lainnya',
             image: document.getElementById('pImage').value.trim(),
             price: Number(document.getElementById('pPrice').value),
             cost: Number(document.getElementById('pCost').value) || 0,
@@ -1502,6 +1579,7 @@ JAVASCRIPT – FULL LOGIKA
                 closeProductModal();
                 loadProducts();
                 loadDashboard();
+                loadCategories();
                 showToast(id ? 'Produk berhasil diupdate' : 'Produk berhasil ditambahkan', 'success');
             })
             .catch(err => showToast('Gagal simpan: ' + err.message, 'error'));
@@ -1510,9 +1588,12 @@ JAVASCRIPT – FULL LOGIKA
     function deleteProduct(id) {
         if (!confirm('Yakin hapus produk ini?')) return;
         authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
-            .then(() => { loadProducts();
+            .then(() => {
+                loadProducts();
                 loadDashboard();
-                showToast('Produk berhasil dihapus', 'success'); })
+                loadCategories();
+                showToast('Produk berhasil dihapus', 'success');
+            })
             .catch(err => showToast('Gagal hapus: ' + err.message, 'error'));
     }
 
@@ -1529,7 +1610,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // PESANAN (dengan hapus)
+    // PESANAN
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
@@ -1715,7 +1796,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // HAPUS PESANAN (FITUR BARU)
+    // HAPUS PESANAN
     // ================================================================
     function deleteOrder(transactionId) {
         if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
@@ -2096,6 +2177,7 @@ JAVASCRIPT – FULL LOGIKA
                     loadOrders();
                     loadUsers();
                     loadDashboard();
+                    loadCategories();
                     showToast('✅ Restore data berhasil!', 'success');
                 } catch (err) {
                     showToast('❌ File tidak valid', 'error');
