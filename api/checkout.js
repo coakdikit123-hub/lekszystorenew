@@ -1,83 +1,161 @@
-import clientPromise from '../lib/db';
+// api/checkout.js
+import clientPromise from '../lib/db.js';
 
 export default async function handler(req, res) {
+  // CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { productId, quantity = 1, transactionId, customer } = req.body;
+  const { productId, quantity = 1, transactionId: customTxId, customer, notes } = req.body;
+
   if (!productId) {
-    return res.status(400).json({ error: 'Product ID required' });
+    return res.status(400).json({ error: 'Product ID wajib diisi' });
   }
 
   try {
     const client = await clientPromise;
     const db = client.db('lekszystore');
 
-    // Cari produk
-    const product = await db.collection('products').findOne({ id: productId });
+    // =============================================================
+    // 1. CARI PRODUK
+    // =============================================================
+    const product = await db.collection('products').findOne({ id: Number(productId) });
     if (!product) {
       return res.status(404).json({ error: 'Produk tidak ditemukan' });
     }
-    if (product.stock < quantity) {
+
+    const qty = Number(quantity);
+    if (product.stock < qty) {
       return res.status(400).json({ error: 'Stok tidak mencukupi' });
     }
 
-    // Kurangi stok (atomic)
+    // =============================================================
+    // 2. KURANGI STOK (atomic)
+    // =============================================================
     const updateResult = await db.collection('products').updateOne(
-      { id: productId, stock: { $gte: quantity } },
-      { $inc: { stock: -quantity } }
+      { id: Number(productId), stock: { $gte: qty } },
+      { $inc: { stock: -qty } }
     );
+
     if (updateResult.modifiedCount === 0) {
-      return res.status(409).json({ error: 'Stok habis saat diproses, coba lagi' });
+      return res.status(409).json({ error: 'Stok habis saat diproses, silakan coba lagi' });
     }
 
-    // Hitung profit
-    const price = product.price;
-    const cost = product.cost || 0;
-    const totalAmount = price * quantity;
-    const profit = (price - cost) * quantity;
+    // =============================================================
+    // 3. HITUNG TOTAL & PROFIT
+    // =============================================================
+    const price = Number(product.price) || 0;
+    const cost = Number(product.cost) || 0;
+    const totalAmount = price * qty;
+    const profit = (price - cost) * qty;
 
-    // Buat transaksi
-    const finalTransactionId = transactionId || `TX-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
+    // =============================================================
+    // 4. BUAT TRANSACTION ID (format: LS-{timestamp}-{random})
+    // =============================================================
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    const transactionId = customTxId || `LS-${timestamp}-${random}`;
+
+    // =============================================================
+    // 5. BUAT OBJEK TRANSAKSI (lengkap untuk admin panel)
+    // =============================================================
     const transaction = {
-      productId,
-      productName: product.name,
-      price,
-      cost,
-      quantity,
-      totalAmount,
-      profit,
-      transactionId: finalTransactionId,
-      status: 'completed',
-      createdAt: new Date(),
-      customer: customer || null
+      transactionId: transactionId,
+      customer: {
+        name: customer?.name || 'Tidak diketahui',
+        uid: customer?.uid || 'N/A',
+        email: customer?.email || '',
+        phone: customer?.phone || '',
+      },
+      product: {
+        id: product.id,
+        name: product.name,
+        price: price,
+        cost: cost,
+      },
+      items: [
+        {
+          name: product.name,
+          price: price,
+          cost: cost,
+          quantity: qty,
+        }
+      ],
+      total: totalAmount,
+      profit: profit,
+      status: 'pending', // default pending, bisa diubah admin ke 'completed' atau 'cancelled'
+      notes: notes || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
+
+    // =============================================================
+    // 6. SIMPAN TRANSAKSI
+    // =============================================================
     await db.collection('transactions').insertOne(transaction);
 
-    // Update statistik total terjual
+    // =============================================================
+    // 7. UPDATE STATISTIK TOTAL TERJUAL
+    // =============================================================
     await db.collection('stats').updateOne(
       { key: 'total_sold' },
-      { $inc: { value: quantity } },
+      { $inc: { value: qty } },
       { upsert: true }
     );
 
-    // ========== KIRIM NOTIFIKASI KE TELEGRAM ==========
+    // =============================================================
+    // 8. KIRIM NOTIFIKASI KE TELEGRAM
+    // =============================================================
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const ownerId = parseInt(process.env.ADMIN_ID) || 0;
+    const ownerId = process.env.ADMIN_ID ? parseInt(process.env.ADMIN_ID) : null;
+
     if (botToken && ownerId) {
       const now = new Date();
       const waktu = now.toLocaleString('id-ID', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit'
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
       });
-      let message = `🛍️ *Pesanan Baru!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Produk:* ${product.name}\n💰 *Harga:* Rp ${price.toLocaleString()}\n📅 *Waktu:* ${waktu}\n🆔 *ID Transaksi:* \`${finalTransactionId}\`\n📊 *Jumlah:* ${quantity}\n💵 *Total:* Rp ${totalAmount.toLocaleString()}\n📈 *Keuntungan:* Rp ${profit.toLocaleString()}\n`;
-      
+
+      // Format Rupiah
+      const formatRp = (val) => `Rp ${Number(val).toLocaleString('id-ID')}`;
+
+      let message = `🛍️ *PESANAN BARU!*\n`;
+      message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      message += `📦 *Produk:* ${product.name}\n`;
+      message += `💰 *Harga:* ${formatRp(price)}\n`;
+      message += `📊 *Jumlah:* ${qty}\n`;
+      message += `💵 *Total:* ${formatRp(totalAmount)}\n`;
+      message += `📈 *Keuntungan:* ${formatRp(profit)}\n`;
+      message += `🆔 *ID Transaksi:* \`${transactionId}\`\n`;
+      message += `📅 *Waktu:* ${waktu}\n`;
+
       if (customer) {
-        message += `\n👤 *Nama:* ${customer.name || '-'}\n📧 *Email:* ${customer.email || '-'}\n📱 *WhatsApp:* ${customer.phone || '-'}\n`;
+        message += `\n👤 *Nama:* ${customer.name || '-'}\n`;
+        if (customer.uid) message += `🆔 *UID:* ${customer.uid}\n`;
+        if (customer.email) message += `📧 *Email:* ${customer.email}\n`;
+        if (customer.phone) message += `📱 *WhatsApp:* ${customer.phone}\n`;
       }
-      message += `━━━━━━━━━━━━━━━━━━━━━\n✅ *Silakan diproses.*`;
-      
+
+      if (notes) {
+        message += `\n📝 *Catatan:* ${notes}\n`;
+      }
+
+      message += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      message += `✅ *Silakan diproses.*`;
+
       try {
         await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
           method: 'POST',
@@ -85,22 +163,32 @@ export default async function handler(req, res) {
           body: JSON.stringify({
             chat_id: ownerId,
             text: message,
-            parse_mode: 'Markdown'
-          })
+            parse_mode: 'Markdown',
+          }),
         });
       } catch (notifErr) {
-        console.error('Gagal kirim notifikasi ke owner:', notifErr);
+        console.error('Gagal kirim notifikasi ke Telegram:', notifErr.message);
+        // Tidak menghentikan proses checkout jika notifikasi gagal
       }
     }
 
+    // =============================================================
+    // 9. KIRIM RESPONSE
+    // =============================================================
     res.status(200).json({
       success: true,
-      transactionId: finalTransactionId,
-      newStock: product.stock - quantity,
-      profit
+      transactionId: transactionId,
+      newStock: product.stock - qty,
+      total: totalAmount,
+      profit: profit,
+      message: 'Checkout berhasil!',
     });
+
   } catch (err) {
     console.error('Checkout error:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({
+      error: 'Internal server error',
+      details: err.message,
+    });
   }
 }
