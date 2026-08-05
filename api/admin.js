@@ -55,6 +55,12 @@ export default async function handler(req, res) {
         return res.status(200).json(transactions);
       }
 
+      // UNIQUE CATEGORIES
+      if (action === 'categories') {
+        const categories = await productsCollection.distinct('category');
+        return res.status(200).json(categories);
+      }
+
       // SETTINGS
       if (action === 'getSettings') {
         const settings = await settingsCollection.findOne({ _id: 'global' });
@@ -74,7 +80,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
       const { action, product, transactionId, status } = req.body;
 
-      // --- TAMBAH PRODUK (dengan kategori & gambar) ---
+      // --- TAMBAH PRODUK ---
       if (action === 'add') {
         if (!product.name || !product.price) {
           return res.status(400).json({ error: 'Nama dan Harga wajib diisi' });
@@ -176,7 +182,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true });
       }
 
-      // --- SIMPAN BOT SETTINGS (tambahan) ---
+      // --- SIMPAN BOT SETTINGS ---
       if (action === 'saveBotSettings') {
         const { botToken, adminId, notifEnabled } = req.body;
         await settingsCollection.updateOne(
