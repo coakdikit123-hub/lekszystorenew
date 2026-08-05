@@ -4,669 +4,1466 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LekszyStore - Admin Panel</title>
-    <!-- Tailwind + Fonts -->
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=JetBrains+Mono:wght@500&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
     <style>
-        /* ============================================================
-           CSS INTERNAL – Gaya & Komponen
-           ============================================================ */
+        /* ================================================================
+           ROOT VARIABLES & BASE
+           ================================================================ */
         :root {
-            --background-deep: #020617;
-            --on-surface: #dae2fc;
-            --primary: #d2bbff;
+            --bg-deep: #020617;
+            --bg-surface: #0b1326;
+            --bg-surface-low: #131b2e;
+            --bg-surface-lowest: #060e20;
+            --bg-surface-high: #222a3d;
+            --bg-surface-highest: #2d3449;
+
+            --text-on-surface: #dae2fc;
+            --text-on-surface-variant: #ccc3d8;
+            --text-primary: #d2bbff;
+            --text-secondary: #ffb0cd;
+            --text-tertiary: #ffb784;
+            --text-error: #ffb4ab;
+            --text-electric-cyan: #06b6d4;
+
+            --border-outline-variant: #4a4455;
+            --border-primary: #d2bbff;
+
             --primary-container: #7c3aed;
-            --surface-container-low: #131b2e;
-            --surface-container-lowest: #060e20;
-            --surface-container-highest: #2d3449;
-            --outline-variant: #4a4455;
-            --on-surface-variant: #ccc3d8;
-            --error: #ffb4ab;
-            --electric-cyan: #06B6D4;
-            --tertiary: #ffb784;
-            --secondary: #ffb0cd;
             --inverse-primary: #732ee4;
+
+            --shadow-glow: rgba(210, 187, 255, 0.25);
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { background: var(--background-deep); color: var(--on-surface); font-family: 'Inter', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-        /* === GLASS CARD === */
+        body {
+            background: var(--bg-deep);
+            color: var(--text-on-surface);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================================================================
+           GLASSMORPHISM
+           ================================================================ */
         .glass-card {
-            background: rgba(19, 27, 46, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(218, 226, 253, 0.1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            background: rgba(19, 27, 46, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(218, 226, 253, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            transition: border-color 0.3s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(218, 226, 253, 0.15);
         }
 
-        /* === NEON GLOW === */
+        /* ================================================================
+           NEON GLOW EFFECTS
+           ================================================================ */
         .neon-glow:focus-within {
-            box-shadow: 0 0 15px rgba(210, 187, 255, 0.3);
-            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(210, 187, 255, 0.15), inset 0 0 20px rgba(210, 187, 255, 0.05);
+            border-color: var(--border-primary);
         }
+
         .btn-primary-glow {
-            box-shadow: 0 0 20px rgba(210, 187, 255, 0.2);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
         }
         .btn-primary-glow:hover {
-            box-shadow: 0 0 25px rgba(210, 187, 255, 0.4);
+            box-shadow: 0 0 45px rgba(124, 58, 237, 0.4);
+            transform: translateY(-1px);
         }
 
-        /* === TOGGLE SWITCH === */
+        /* ================================================================
+           CUSTOM TOGGLE SWITCH
+           ================================================================ */
         .toggle-checkbox {
             right: -4px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
         }
         .toggle-checkbox:checked {
             right: 0;
-            border-color: var(--primary);
-            background: var(--primary);
+            border-color: var(--border-primary);
+            background: var(--border-primary);
         }
-        .toggle-checkbox:checked + .toggle-label {
+        .toggle-checkbox:checked+.toggle-label {
             background: var(--primary-container);
         }
         .toggle-label {
-            background: var(--surface-container-highest);
+            background: var(--bg-surface-highest);
+            transition: background 0.3s ease;
         }
 
-        /* === SIDEBAR NAV === */
+        /* ================================================================
+           SIDEBAR NAVIGATION
+           ================================================================ */
+        .nav-link {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-link:hover {
+            background: rgba(210, 187, 255, 0.06);
+            color: var(--text-primary);
+        }
         .nav-link.active {
-            color: var(--primary);
-            font-weight: bold;
-            border-right: 2px solid var(--primary);
-            background: rgba(210, 187, 255, 0.05);
+            color: var(--text-primary);
+            font-weight: 700;
+            background: rgba(210, 187, 255, 0.08);
+        }
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 3px;
+            background: var(--text-primary);
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0 0 12px rgba(210, 187, 255, 0.5);
         }
         .nav-link .material-symbols-outlined {
-            font-size: 24px;
+            font-size: 22px;
+            transition: color 0.2s;
         }
 
-        /* === VIEW SWITCH === */
-        .view { display: none; }
-        .view.active { display: block; }
-
-        /* === MODAL === */
-        .modal { display: none; }
-        .modal.show { display: flex; }
-
-        /* === SCROLLBAR === */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--background-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-        /* === TABEL === */
-        table th { font-weight: 600; color: var(--on-surface-variant); }
-        table td { padding: 12px 16px; border-bottom: 1px solid rgba(74, 68, 85, 0.2); }
-        table tr:hover { background: rgba(210, 187, 255, 0.05); }
-
-        /* === STATUS BADGE === */
-        .status-paid { background: rgba(6, 182, 212, 0.15); color: var(--electric-cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
-        .status-waiting { background: rgba(255, 183, 132, 0.15); color: var(--tertiary); border: 1px solid rgba(255, 183, 132, 0.3); }
-        .status-cancelled { background: rgba(255, 180, 171, 0.15); color: var(--error); border: 1px solid rgba(255, 180, 171, 0.3); }
-        .status-paid { background: rgba(6, 182, 212, 0.15); color: #06B6D4; border: 1px solid rgba(6, 182, 212, 0.3); }
-        .status-waiting { background: rgba(255, 183, 132, 0.15); color: #ffb784; border: 1px solid rgba(255, 183, 132, 0.3); }
-        .status-cancelled { background: rgba(255, 180, 171, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.3); }
-
-        /* ============================================================
-           RESPONSIVE FIXES
-           ============================================================ */
-        @media (max-width: 768px) {
-            .sidebar-mobile { display: block; }
+        /* ================================================================
+           VIEW SWITCHING
+           ================================================================ */
+        .view {
+            display: none;
+            animation: fadeIn 0.35s ease;
         }
-    </style>
-</head>
-<body class="bg-background-deep text-on-background font-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container flex">
-
-    <!-- ============================================================
-         LAYAR LOGIN
-         ============================================================ -->
-    <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-background-deep z-50">
-        <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/30 max-w-sm w-full mx-4 shadow-2xl">
-            <div class="text-center mb-8">
-                <span class="material-symbols-outlined text-6xl text-primary">storefront</span>
-                <h2 class="font-headline-lg text-headline-lg font-bold text-primary mt-2">LekszyStore</h2>
-                <p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Admin Panel</p>
-            </div>
-            <div class="space-y-4">
-                <div class="relative neon-glow">
-                    <input id="tokenInput" type="password" placeholder="Masukkan Token Admin" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-3 px-4 text-on-background placeholder-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-                </div>
-                <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary-container rounded-lg font-nav-link text-nav-link hover:opacity-90 transition btn-primary-glow">Login</button>
-                <p id="loginError" class="text-error text-sm text-center hidden">Token salah! Coba lagi.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================================
-         DASHBOARD UTAMA
-         ============================================================ -->
-    <div id="dashboard" style="display:none;" class="flex w-full">
-
-        <!-- === SIDEBAR === -->
-        <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant/10 backdrop-blur-xl flex-col py-6 z-40">
-            <div class="px-6 mb-8">
-                <h1 class="font-headline-lg text-headline-lg font-bold text-primary tracking-tighter">LekszyStore</h1>
-                <p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mt-1">Admin Suite</p>
-            </div>
-            <nav class="flex-1 px-4 space-y-2">
-                <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-3 rounded-lg text-primary font-bold border-r-2 border-primary bg-primary/5 transition-all">
-                    <span class="material-symbols-outlined fill">dashboard</span> Dashboard
-                </a>
-                <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary-container/10 hover:text-primary transition-all">
-                    <span class="material-symbols-outlined">inventory_2</span> Produk
-                </a>
-                <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary-container/10 hover:text-primary transition-all">
-                    <span class="material-symbols-outlined">shopping_cart</span> Pesanan
-                </a>
-                <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-primary-container/10 hover:text-primary transition-all">
-                    <span class="material-symbols-outlined">settings</span> Pengaturan
-                </a>
-            </nav>
-            <div class="px-4 mt-auto">
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-surface-container-high transition">
-                    <span class="material-symbols-outlined text-sm">logout</span> Logout
-                </button>
-            </div>
-        </aside>
-
-        <!-- === KONTEN UTAMA === -->
-        <div class="flex-1 md:ml-64 min-h-screen">
-
-            <!-- TOPBAR -->
-            <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-background/80 backdrop-blur-xl border-b border-outline-variant/10 flex items-center justify-between px-6 z-30">
-                <h2 id="pageTitle" class="font-headline-lg text-headline-lg font-bold text-on-background hidden md:block">Dashboard</h2>
-                <div class="flex items-center gap-4 ml-auto">
-                    <div class="relative hidden lg:block">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-                        <input type="text" placeholder="Cari..." class="w-64 bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 pl-10 pr-4 text-on-background placeholder-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-                    </div>
-                    <button class="text-on-surface-variant hover:text-primary transition relative">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full animate-pulse"></span>
-                    </button>
-                    <div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg" alt="avatar" class="w-full h-full object-cover" />
-                    </div>
-                </div>
-            </header>
-
-            <!-- MAIN CANVAS -->
-            <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
-
-                <!-- ============================================================
-                     VIEW: DASHBOARD
-                     ============================================================ -->
-                <div id="viewDashboard" class="view active space-y-8">
-                    <!-- Statistik Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div class="glass-card rounded-xl p-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl text-primary">payments</span></div>
-                            <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Pendapatan</p>
-                            <h3 id="statRevenue" class="font-headline-lg text-headline-lg font-bold text-on-background">Rp 0</h3>
-                            <div class="mt-4 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-primary to-electric-cyan w-[75%] rounded-full"></div></div>
-                        </div>
-                        <div class="glass-card rounded-xl p-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl text-electric-cyan">receipt_long</span></div>
-                            <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Pesanan</p>
-                            <h3 id="statOrders" class="font-headline-lg text-headline-lg font-bold text-on-background">0</h3>
-                            <div class="mt-4 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-electric-cyan to-primary w-[60%] rounded-full"></div></div>
-                        </div>
-                        <div class="glass-card rounded-xl p-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl text-tertiary">pending_actions</span></div>
-                            <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pesanan Pending</p>
-                            <h3 id="statPending" class="font-headline-lg text-headline-lg font-bold text-on-background">0</h3>
-                            <div class="mt-4 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-tertiary to-primary w-[30%] rounded-full"></div></div>
-                        </div>
-                        <div class="glass-card rounded-xl p-6 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl text-secondary">inventory_2</span></div>
-                            <p class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Produk</p>
-                            <h3 id="statProducts" class="font-headline-lg text-headline-lg font-bold text-on-background">0</h3>
-                            <div class="mt-4 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-secondary to-primary w-[85%] rounded-full"></div></div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Orders -->
-                    <div class="glass-card rounded-xl p-6">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background">Pesanan Terbaru</h3>
-                            <a href="#" onclick="navigateTo('orders')" class="text-primary hover:text-primary-fixed-dim transition font-label-sm uppercase">Lihat Semua</a>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="font-label-sm text-label-sm text-on-surface-variant uppercase border-b border-outline-variant/10">
-                                    <tr><th class="py-2 pr-4">ID</th><th class="py-2 pr-4">Pembeli</th><th class="py-2 pr-4">Total</th><th class="py-2">Status</th></tr>
-                                </thead>
-                                <tbody id="recentOrdersBody" class="divide-y divide-outline-variant/10">
-                                    <!-- diisi JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ============================================================
-                     VIEW: PRODUK
-                     ============================================================ -->
-                <div id="viewProducts" class="view">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background">Manajemen Produk</h3>
-                        <button onclick="openProductModal()" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary-container rounded-lg font-nav-link text-nav-link hover:opacity-90 transition">+ Tambah Produk</button>
-                    </div>
-                    <div class="glass-card rounded-xl overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="font-label-sm text-label-sm text-on-surface-variant uppercase border-b border-outline-variant/10 bg-surface-container/50">
-                                    <tr><th class="py-3 px-4">ID</th><th class="py-3 px-4">Nama</th><th class="py-3 px-4">Harga</th><th class="py-3 px-4">Modal</th><th class="py-3 px-4">Stok</th><th class="py-3 px-4 text-right">Aksi</th></tr>
-                                </thead>
-                                <tbody id="productTableBody" class="divide-y divide-outline-variant/10"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ============================================================
-                     VIEW: PESANAN
-                     ============================================================ -->
-                <div id="viewOrders" class="view">
-                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background mb-6">Daftar Pesanan</h3>
-                    <div class="glass-card rounded-xl overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="font-label-sm text-label-sm text-on-surface-variant uppercase border-b border-outline-variant/10 bg-surface-container/50">
-                                    <tr><th class="py-3 px-4">ID Transaksi</th><th class="py-3 px-4">Pembeli</th><th class="py-3 px-4">Total</th><th class="py-3 px-4">Status</th><th class="py-3 px-4">Tanggal</th><th class="py-3 px-4 text-right">Aksi</th></tr>
-                                </thead>
-                                <tbody id="orderTableBody" class="divide-y divide-outline-variant/10"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ============================================================
-                     VIEW: PENGATURAN
-                     ============================================================ -->
-                <div id="viewSettings" class="view">
-                    <h3 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background mb-6">Pengaturan</h3>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- General -->
-                        <div class="lg:col-span-2 glass-card rounded-xl p-6 space-y-6">
-                            <div class="flex items-center gap-3 border-b border-outline-variant/10 pb-4">
-                                <span class="material-symbols-outlined text-primary">build</span>
-                                <h4 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background">Umum</h4>
-                            </div>
-                            <div>
-                                <label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Nama Toko</label>
-                                <input id="siteName" type="text" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-                            </div>
-                            <div>
-                                <label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Email Dukungan</label>
-                                <input id="supportEmail" type="email" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-                            </div>
-                            <div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-lg border border-outline-variant/30">
-                                <div><h4 class="font-nav-link text-nav-link text-on-background">Mode Pemeliharaan</h4><p class="font-label-sm text-label-sm text-on-surface-variant">Nonaktifkan akses publik</p></div>
-                                <div class="relative inline-block w-12">
-                                    <input type="checkbox" id="maintenanceToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-background border-4 border-outline-variant appearance-none cursor-pointer transition-all z-10" />
-                                    <label for="maintenanceToggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-variant cursor-pointer transition-colors"></label>
-                                </div>
-                            </div>
-                            <div class="flex justify-end"><button onclick="saveSettings()" class="bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary-container px-6 py-2 rounded-lg font-nav-link text-nav-link hover:opacity-90 transition">Simpan</button></div>
-                        </div>
-                        <!-- Profil Admin -->
-                        <div class="glass-card rounded-xl p-6 flex flex-col items-center text-center">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-primary mb-4 relative group cursor-pointer">
-                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg" alt="admin" class="w-full h-full object-cover" />
-                                <div class="absolute inset-0 bg-background-deep/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><span class="material-symbols-outlined text-on-surface">edit</span></div>
-                            </div>
-                            <h4 class="font-nav-link text-nav-link text-on-background text-lg">Administrator</h4>
-                            <span class="font-label-sm bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20 mt-1">Super Admin</span>
-                            <div class="w-full mt-6 text-left space-y-3">
-                                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Username</label><input type="text" value="admin_root" disabled class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-3 text-on-surface-variant" /></div>
-                                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Password</label><div class="relative"><input type="password" value="********" disabled class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-3 text-on-surface-variant" /><button class="absolute right-3 top-1/2 -translate-y-1/2 text-primary text-sm hover:text-inverse-primary">Ubah</button></div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </main>
-        </div>
-    </div>
-
-    <!-- ============================================================
-         MODAL PRODUK
-         ============================================================ -->
-    <div id="productModal" class="modal fixed inset-0 bg-background-deep/70 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-        <div class="bg-surface-container-lowest rounded-2xl p-6 w-full max-w-md mx-4 border border-outline-variant/30">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modalTitle" class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-on-background">Tambah Produk</h3>
-                <button onclick="closeModal()" class="text-on-surface-variant hover:text-primary">&times;</button>
-            </div>
-            <input type="hidden" id="editId" />
-            <div class="space-y-4">
-                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Nama</label><input id="pName" type="text" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary" placeholder="Nama produk" /></div>
-                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Harga Jual</label><input id="pPrice" type="number" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary" placeholder="Harga" /></div>
-                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Harga Modal</label><input id="pCost" type="number" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary" placeholder="Modal" /></div>
-                <div><label class="font-label-sm text-label-sm text-on-surface-variant uppercase">Stok</label><input id="pStock" type="number" class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg py-2 px-4 text-on-background focus:outline-none focus:border-primary" placeholder="Jumlah stok" /></div>
-            </div>
-            <button onclick="saveProduct()" class="w-full mt-6 py-2 bg-gradient-to-r from-primary-container to-inverse-primary text-on-primary-container rounded-lg font-nav-link text-nav-link hover:opacity-90 transition">Simpan</button>
-        </div>
-    </div>
-
-    <!-- ============================================================
-         JAVASCRIPT INTERNAL – Semua Logika
-         ============================================================ -->
-    <script>
-        // ================================================================
-        //  KONFIGURASI & STATE
-        // ================================================================
-        const API_BASE = '/api/admin';
-        let currentToken = localStorage.getItem('adminToken');
-
-        // ================================================================
-        //  AUTENTIKASI
-        // ================================================================
-        function handleLogin() {
-            const token = document.getElementById('tokenInput').value.trim();
-            if (!token) return alert('Masukkan token!');
-            localStorage.setItem('adminToken', token);
-            currentToken = token;
-            verifyToken(token);
+        .view.active {
+            display: block;
         }
 
-        function verifyToken(token) {
-            fetch(`${API_BASE}?action=list`, { headers: { 'Authorization': `Bearer ${token}` } })
-                .then(res => {
-                    if (res.status === 401) {
-                        document.getElementById('loginError').style.display = 'block';
-                        localStorage.removeItem('adminToken');
-                        return;
-                    }
-                    if (!res.ok) throw new Error('Gagal koneksi');
-                    document.getElementById('loginScreen').style.display = 'none';
-                    document.getElementById('dashboard').style.display = 'flex';
-                    navigateTo('dashboard');
-                })
-                .catch(err => alert('Error: ' + err.message));
-        }
-
-        // Auto-login
-        if (currentToken) verifyToken(currentToken);
-
-        function handleLogout() {
-            localStorage.removeItem('adminToken');
-            location.reload();
-        }
-
-        // ================================================================
-        //  NAVIGASI
-        // ================================================================
-        function navigateTo(view) {
-            // Update sidebar
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
-            if (activeLink) activeLink.classList.add('active');
-
-            // Update title
-            const titles = { dashboard: 'Dashboard', products: 'Produk', orders: 'Pesanan', settings: 'Pengaturan' };
-            document.getElementById('pageTitle').innerText = titles[view] || view;
-
-            // Tampilkan view
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const viewId = `view${view.charAt(0).toUpperCase() + view.slice(1)}`;
-            const targetView = document.getElementById(viewId);
-            if (targetView) targetView.classList.add('active');
-
-            // Load data
-            if (view === 'dashboard') loadStats();
-            if (view === 'products') loadProducts();
-            if (view === 'orders') loadOrders();
-            if (view === 'settings') loadSettings();
-        }
-
-        // Event listener untuk nav link
-        document.querySelectorAll('.nav-link').forEach(el => {
-            el.addEventListener('click', e => {
-                e.preventDefault();
-                const view = el.dataset.view;
-                if (view) navigateTo(view);
-            });
-        });
-
-        // ================================================================
-        //  HELPER FETCH
-        // ================================================================
-        function authFetch(url, options = {}) {
-            return fetch(url, {
-                ...options,
-                headers: {
-                    ...options.headers,
-                    'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-        }
-
-        // ================================================================
-        //  DASHBOARD
-        // ================================================================
-        function loadStats() {
-            authFetch(`${API_BASE}?action=stats`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('statRevenue').innerText = 'Rp ' + (data.totalRevenue || 0).toLocaleString('id-ID');
-                    document.getElementById('statOrders').innerText = data.orderCount || 0;
-                    document.getElementById('statProducts').innerText = data.productCount || 0;
-                    // Hitung pending
-                    authFetch(`${API_BASE}?action=transactions`)
-                        .then(res => res.json())
-                        .then(orders => {
-                            const pending = orders.filter(o => o.status === 'pending' || o.status === 'waiting').length;
-                            document.getElementById('statPending').innerText = pending;
-                        });
-                })
-                .catch(console.error);
-
-            // Load recent orders (limit 5)
-            authFetch(`${API_BASE}?action=transactions`)
-                .then(res => res.json())
-                .then(orders => {
-                    const tbody = document.getElementById('recentOrdersBody');
-                    tbody.innerHTML = '';
-                    const recent = orders.slice(0, 5);
-                    if (recent.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-on-surface-variant py-4">Belum ada pesanan</td></tr>';
-                        return;
-                    }
-                    recent.forEach(o => {
-                        const statusClass = o.status === 'paid' ? 'status-paid' : o.status === 'cancelled' ? 'status-cancelled' : 'status-waiting';
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="py-2 pr-4 font-label-sm text-primary">${o.transactionId || o._id}</td>
-                            <td class="py-2 pr-4">${o.customer?.name || 'Tidak diketahui'}</td>
-                            <td class="py-2 pr-4">Rp ${(o.total || 0).toLocaleString('id-ID')}</td>
-                            <td class="py-2"><span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${statusClass}">${o.status || 'Pending'}</span></td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                });
-        }
-
-        // ================================================================
-        //  PRODUK
-        // ================================================================
-        function loadProducts() {
-            authFetch(`${API_BASE}?action=list`)
-                .then(res => res.json())
-                .then(products => {
-                    const tbody = document.getElementById('productTableBody');
-                    tbody.innerHTML = '';
-                    if (!products || products.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-on-surface-variant py-4">Belum ada produk</td></tr>';
-                        return;
-                    }
-                    products.forEach(p => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="py-3 px-4">${p.id}</td>
-                            <td class="py-3 px-4 font-medium">${p.name}</td>
-                            <td class="py-3 px-4">Rp ${(p.price || 0).toLocaleString('id-ID')}</td>
-                            <td class="py-3 px-4">Rp ${(p.cost || 0).toLocaleString('id-ID')}</td>
-                            <td class="py-3 px-4">${p.stock || 0}</td>
-                            <td class="py-3 px-4 text-right space-x-2">
-                                <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="text-primary hover:text-primary-fixed-dim"><span class="material-symbols-outlined text-sm">edit</span></button>
-                                <button onclick="deleteProduct(${p.id})" class="text-error hover:text-error/80"><span class="material-symbols-outlined text-sm">delete</span></button>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                })
-                .catch(err => alert('Gagal load produk: ' + err.message));
-        }
-
-        function openProductModal(product = null) {
-            const modal = document.getElementById('productModal');
-            modal.classList.add('show');
-            document.getElementById('editId').value = '';
-            document.getElementById('modalTitle').innerText = 'Tambah Produk';
-            document.getElementById('pName').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pCost').value = '';
-            document.getElementById('pStock').value = '';
-            if (product) {
-                document.getElementById('modalTitle').innerText = 'Edit Produk';
-                document.getElementById('editId').value = product.id;
-                document.getElementById('pName').value = product.name || '';
-                document.getElementById('pPrice').value = product.price || '';
-                document.getElementById('pCost').value = product.cost || '';
-                document.getElementById('pStock').value = product.stock || '';
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        function closeModal() {
-            document.getElementById('productModal').classList.remove('show');
+        /* ================================================================
+           STATUS BADGES
+           ================================================================ */
+        .badge-paid {
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--text-electric-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+        }
+        .badge-waiting {
+            background: rgba(255, 183, 132, 0.15);
+            color: var(--text-tertiary);
+            border: 1px solid rgba(255, 183, 132, 0.25);
+        }
+        .badge-cancelled {
+            background: rgba(255, 180, 171, 0.15);
+            color: var(--text-error);
+            border: 1px solid rgba(255, 180, 171, 0.25);
+        }
+        .badge-success {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--text-electric-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        .badge-pending {
+            background: rgba(255, 183, 132, 0.12);
+            color: var(--text-tertiary);
+            border: 1px solid rgba(255, 183, 132, 0.2);
         }
 
-        function saveProduct() {
-            const id = document.getElementById('editId').value;
-            const product = {
-                name: document.getElementById('pName').value.trim(),
-                price: Number(document.getElementById('pPrice').value),
-                cost: Number(document.getElementById('pCost').value) || 0,
-                stock: Number(document.getElementById('pStock').value) || 0,
-            };
-            if (!product.name) return alert('Nama produk wajib diisi!');
-            if (!product.price || product.price <= 0) return alert('Harga harus lebih dari 0!');
-
-            const action = id ? 'edit' : 'add';
-            const payload = { action, product };
-            if (id) payload.product.id = Number(id);
-
-            authFetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) })
-                .then(res => res.json())
-                .then(data => {
-                    closeModal();
-                    loadProducts();
-                    loadStats();
-                })
-                .catch(err => alert('Gagal simpan: ' + err.message));
+        /* ================================================================
+           MODAL
+           ================================================================ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--bg-surface-low);
+            border: 1px solid var(--border-outline-variant);
+            border-radius: 1.25rem;
+            padding: 1.75rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
-        function deleteProduct(id) {
-            if (!confirm('Yakin hapus produk ini?')) return;
-            authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
-                .then(() => { loadProducts(); loadStats(); })
-                .catch(err => alert('Gagal hapus: ' + err.message));
+        /* ================================================================
+           SCROLLBAR
+           ================================================================ */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-outline-variant);
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-primary);
         }
 
-        // ================================================================
-        //  PESANAN (dengan update status)
-        // ================================================================
-        function loadOrders() {
-            authFetch(`${API_BASE}?action=transactions`)
-                .then(res => res.json())
-                .then(orders => {
-                    const tbody = document.getElementById('orderTableBody');
-                    tbody.innerHTML = '';
-                    if (!orders || orders.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-on-surface-variant py-4">Belum ada pesanan</td></tr>';
-                        return;
-                    }
-                    orders.forEach(o => {
-                        const statusClass = o.status === 'paid' ? 'status-paid' : o.status === 'cancelled' ? 'status-cancelled' : 'status-waiting';
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="py-3 px-4 font-label-sm text-primary">${o.transactionId || o._id}</td>
-                            <td class="py-3 px-4">${o.customer?.name || 'Tidak diketahui'}</td>
-                            <td class="py-3 px-4">Rp ${(o.total || 0).toLocaleString('id-ID')}</td>
-                            <td class="py-3 px-4"><span class="inline-block px-2 py-0.5 rounded text-xs font-bold ${statusClass}">${o.status || 'Pending'}</span></td>
-                            <td class="py-3 px-4">${new Date(o.createdAt).toLocaleString('id-ID')}</td>
-                            <td class="py-3 px-4 text-right">
-                                ${o.status !== 'paid' && o.status !== 'cancelled' ? `<button onclick="updateOrderStatus('${o.transactionId || o._id}', 'paid')" class="text-electric-cyan hover:text-electric-cyan/80 text-sm font-medium">Proses</button>` : ''}
-                                ${o.status !== 'cancelled' ? `<button onclick="updateOrderStatus('${o.transactionId || o._id}', 'cancelled')" class="text-error hover:text-error/80 text-sm font-medium ml-2">Batal</button>` : ''}
-                            </td>
+        /* ================================================================
+           RESPONSIVE FIXES
+           ================================================================ */
+        @media (max-width: 768px) {
+            .sidebar-mobile {
+                display: block;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ================================================================
+           CHART BARS ANIMATION
+           ================================================================ */
+        .chart-bar {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            min-height: 8px;
+        }
+        .chart-bar:hover {
+            filter: brightness(1.25);
+            transform: scaleY(1.02);
+            transform-origin: bottom;
+        }
+
+        /* ================================================================
+           PAYMENT GATEWAY CARDS
+           ================================================================ */
+        .gateway-card {
+            transition: all 0.25s ease;
+            cursor: default;
+        }
+        .gateway-card:hover {
+            border-color: var(--border-primary);
+            background: rgba(210, 187, 255, 0.04);
+        }
+
+        /* ================================================================
+           UTILITY
+           ================================================================ */
+        .truncate-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, var(--text-primary), var(--text-electric-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================================================================
+    LOGIN SCREEN
+    ================================================================ -->
+    <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-[9999]">
+        <div class="bg-[#0b1326] p-8 rounded-2xl border border-[#4a4455]/30 max-w-sm w-full mx-4 shadow-2xl">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 mx-auto rounded-full bg-[#7c3aed]/20 flex items-center justify-center mb-4 border border-[#d2bbff]/30">
+                    <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
+                </div>
+                <h2 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff]">LekszyStore</h2>
+                <p class="text-sm text-[#ccc3d8] mt-1 font-medium">Admin Panel</p>
+            </div>
+            <div class="space-y-4">
+                <div class="relative neon-glow rounded-xl transition-all">
+                    <input id="tokenInput" type="password" placeholder="Masukkan Token Admin"
+                    class="w-full bg-[#060e20] border border-[#4a4455]/50 rounded-xl py-3 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition text-sm" />
+                </div>
+                <button onclick="handleLogin()"
+                class="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
+                Login
+            </button>
+            <p id="loginError" class="text-[#ffb4ab] text-sm text-center hidden">Token salah! Coba lagi.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================
+DASHBOARD UTAMA
+================================================================ -->
+<div id="dashboard" style="display:none;" class="flex w-full min-h-screen">
+
+    <!-- ============================================================
+    SIDEBAR
+    ============================================================ -->
+    <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
+        <!-- Brand -->
+        <div class="px-6 mb-8">
+            <h1 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff] tracking-tight">LekszyStore</h1>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-[#ccc3d8] mt-1 font-medium">Admin Suite</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-3 space-y-1">
+            <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
+            </a>
+            <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">inventory_2</span> Products
+            </a>
+            <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">shopping_cart</span> Orders
+            </a>
+            <a href="#" data-view="users" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">group</span> Users
+            </a>
+            <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">settings</span> Settings
+            </a>
+        </nav>
+
+        <!-- Bottom -->
+        <div class="px-4 mt-auto pt-4 border-t border-[#4a4455]/20">
+            <button onclick="handleLogout()"
+            class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium">
+            <span class="material-symbols-outlined text-[18px]">logout</span> Logout
+        </button>
+    </div>
+</aside>
+
+<!-- ============================================================
+MAIN CONTENT
+================================================================ -->
+<div class="flex-1 md:ml-64 min-h-screen">
+
+    <!-- TOPBAR -->
+    <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
+        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
+
+        <div class="flex items-center gap-4 ml-auto">
+            <!-- Search -->
+            <div class="relative hidden lg:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
+                <input type="text" placeholder="Search products, orders, users..."
+                class="w-72 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
+            </div>
+
+            <!-- Notifications -->
+            <button class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="absolute top-0 right-0 w-2 h-2 bg-[#ffb4ab] rounded-full animate-pulse"></span>
+            </button>
+
+            <!-- Profile -->
+            <div class="w-9 h-9 rounded-full overflow-hidden border border-[#d2bbff]/30 flex-shrink-0">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
+                alt="Admin" class="w-full h-full object-cover" />
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CANVAS -->
+    <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
+
+        <!-- ============================================================
+        VIEW: DASHBOARD
+        ============================================================ -->
+        <div id="viewDashboard" class="view active space-y-8">
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Sales</p>
+                    <h3 id="statRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">$0</h3>
+                    <div class="flex items-center gap-1.5 mt-1 text-[#06b6d4] text-xs font-medium">
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        <span>+0%</span>
+                    </div>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#06b6d4]">group</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Active Users</p>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">8,432</h3>
+                    <div class="flex items-center gap-1.5 mt-1 text-[#06b6d4] text-xs font-medium">
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        <span>+12.4%</span>
+                    </div>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb784]">pending_actions</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Pending Orders</p>
+                    <h3 id="statPending" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
+                    <div class="flex items-center gap-1.5 mt-1 text-[#ffb784] text-xs font-medium">
+                        <span class="material-symbols-outlined text-[14px]">trending_down</span>
+                        <span>-2.1%</span>
+                    </div>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#ffb784] to-[#d2bbff] w-[30%] rounded-full shadow-[0_0_12px_rgba(255,183,132,0.3)]"></div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb0cd]">account_balance_wallet</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Net Revenue</p>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">$89,200</h3>
+                    <div class="flex items-center gap-1.5 mt-1 text-[#06b6d4] text-xs font-medium">
+                        <span class="material-symbols-outlined text-[14px]">trending_up</span>
+                        <span>+18.7%</span>
+                    </div>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[85%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart + Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Chart (2/3) -->
+                <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Sales Overview</h3>
+                            <p class="text-xs text-[#ccc3d8] mt-0.5">Last 30 days performance</p>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <button class="px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition">1W</button>
+                            <button class="px-3 py-1 rounded-lg bg-[#d2bbff]/10 border border-[#d2bbff]/40 text-[#d2bbff] text-xs font-medium">1M</button>
+                            <button class="px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition">1Y</button>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="relative h-56 md:h-64 pt-2">
+                        <!-- Grid lines -->
+                        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10 px-1">
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                        </div>
+
+                        <!-- Bars -->
+                        <div class="relative h-full flex items-end justify-between gap-1 md:gap-2">
+                            <div class="chart-bar w-full bg-[#d2bbff]/20 hover:bg-[#d2bbff]/30" style="height:28%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/20 hover:bg-[#d2bbff]/30" style="height:42%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/25 hover:bg-[#d2bbff]/35" style="height:35%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/30 hover:bg-[#d2bbff]/40" style="height:58%;"></div>
+                            <div class="chart-bar w-full bg-[#06b6d4]/25 hover:bg-[#06b6d4]/35" style="height:48%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/35 hover:bg-[#d2bbff]/45" style="height:72%;"></div>
+                            <div class="chart-bar w-full bg-[#06b6d4]/35 hover:bg-[#06b6d4]/45" style="height:82%;box-shadow:0 0 20px rgba(6,182,212,0.15);"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/30 hover:bg-[#d2bbff]/40" style="height:62%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/35 hover:bg-[#d2bbff]/45" style="height:88%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/50 hover:bg-[#d2bbff]/60" style="height:100%;box-shadow:0 0 24px rgba(210,187,255,0.2);"></div>
+                        </div>
+
+                        <!-- X-Axis Labels -->
+                        <div class="flex justify-between text-[10px] text-[#ccc3d8]/60 mt-2 px-1 font-medium">
+                            <span>Week 1</span>
+                            <span>Week 2</span>
+                            <span>Week 3</span>
+                            <span>Week 4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity (1/3) -->
+                <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Recent Activity</h3>
+                        <a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline">View All</a>
+                    </div>
+                    <div id="recentActivityList" class="flex-1 space-y-3 overflow-y-auto max-h-[240px] pr-1">
+                        <!-- diisi JS -->
+                        <div class="text-center text-[#ccc3d8] text-sm py-6">Memuat...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        VIEW: PRODUCTS
+        ============================================================ -->
+        <div id="viewProducts" class="view">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Products</h3>
+                    <p class="text-sm text-[#ccc3d8]">Manage game titles, currencies, and inventory.</p>
+                </div>
+                <button onclick="openProductModal()"
+                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
+                <span class="material-symbols-outlined text-[18px]">add</span> Add Product
+            </button>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <!-- Toolbar -->
+            <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+                <div class="flex items-center gap-2">
+                    <span id="productCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Products</span>
+                    <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Live Sync
+                    </span>
+                </div>
+                <div class="ml-auto relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                    <input type="text" id="productSearch" placeholder="Search product name..."
+                    class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">Product Details</th>
+                            <th class="py-3 px-4 font-semibold hidden sm:table-cell">Category</th>
+                            <th class="py-3 px-4 font-semibold text-right">Base Price</th>
+                            <th class="py-3 px-4 font-semibold text-right hidden md:table-cell">Stock / Status</th>
+                            <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody" class="divide-y divide-[#4a4455]/15">
+                        <!-- diisi JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                <span class="text-xs text-[#ccc3d8] hidden sm:block">Showing <span id="productShowFrom">1</span>-<span id="productShowTo">5</span> of <span id="productTotalItems">0</span> items</span>
+                <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                    <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                    </button>
+                    <div id="productPaginationNumbers" class="flex gap-1">
+                        <!-- diisi JS -->
+                    </div>
+                    <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    VIEW: ORDERS
+    ============================================================ -->
+    <div id="viewOrders" class="view">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Orders Management</h3>
+                <p class="text-sm text-[#ccc3d8]">Monitor, process, and manage incoming transactions.</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
+                </button>
+                <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white text-sm font-medium flex items-center gap-2 btn-primary-glow hover:opacity-90 transition">
+                    <span class="material-symbols-outlined text-[18px]">download</span> Export
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats mini -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Today's Orders</p>
+                <div class="flex items-end justify-between">
+                    <span class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">1,284</span>
+                    <span class="text-[#06b6d4] text-xs font-medium flex items-center">+12.5%</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Revenue Today</p>
+                <div class="flex items-end justify-between">
+                    <span class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">$45,920</span>
+                    <span class="text-[#06b6d4] text-xs font-medium flex items-center">+48.2%</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#d2bbff]/5 to-transparent"></div>
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Pending Processing</p>
+                <div class="flex items-end justify-between relative">
+                    <span class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#d2bbff]">42</span>
+                    <span class="text-[#ffb784] text-[10px] font-medium">Needs attention</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Cancellation Rate</p>
+                <div class="flex items-end justify-between">
+                    <span class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">1.2%</span>
+                    <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stable</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-[#dae2fc]">Recent Transactions</span>
+                    <div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5">
+                        <button class="px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]">All</button>
+                        <button class="px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition">Waiting</button>
+                        <button class="px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition">Paid</button>
+                    </div>
+                </div>
+                <div class="ml-auto relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                    <input type="text" placeholder="Search order ID..."
+                    class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">Order ID</th>
+                            <th class="py-3 px-4 font-semibold">Customer / Game ID</th>
+                            <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item / Amount</th>
+                            <th class="py-3 px-4 font-semibold hidden md:table-cell">Date</th>
+                            <th class="py-3 px-4 font-semibold">Status</th>
+                            <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15">
+                        <!-- diisi JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                <span class="text-xs text-[#ccc3d8] hidden sm:block">Showing <span id="orderShowFrom">1</span> to <span id="orderShowTo">5</span> of <span id="orderTotalItems">0</span> entries</span>
+                <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                    <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                    </button>
+                    <div id="orderPaginationNumbers" class="flex gap-1">
+                        <!-- diisi JS -->
+                    </div>
+                    <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    VIEW: USERS (Placeholder)
+    ============================================================ -->
+    <div id="viewUsers" class="view">
+        <div class="text-center py-16">
+            <span class="material-symbols-outlined text-6xl text-[#4a4455]">group</span>
+            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">User Management</h3>
+            <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    VIEW: SETTINGS
+    ============================================================ -->
+    <div id="viewSettings" class="view">
+        <div class="mb-6">
+            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Settings</h3>
+            <p class="text-sm text-[#ccc3d8]">Manage global configurations, payment gateways, and your admin profile.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- General Settings (2/3) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- General -->
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
+                        <span class="material-symbols-outlined text-[#d2bbff]">build</span>
+                        <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">General Settings</h4>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Site Name</label>
+                            <input id="siteName" type="text" value="LekszyStore"
+                            class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition mt-1" />
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Support Email</label>
+                            <input id="supportEmail" type="email" value="support@lekszystore.com"
+                            class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition mt-1" />
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                            <div>
+                                <h5 class="font-semibold text-sm text-[#dae2fc]">Maintenance Mode</h5>
+                                <p class="text-xs text-[#ccc3d8]">Temporarily disable public access to the storefront.</p>
+                            </div>
+                            <div class="relative inline-block w-12 flex-shrink-0">
+                                <input type="checkbox" id="maintenanceToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" />
+                                <label for="maintenanceToggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                            </div>
+                        </div>
+                        <div class="flex justify-end pt-2">
+                            <button onclick="saveSettings()"
+                            class="px-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Gateways -->
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
+                    <span class="material-symbols-outlined text-[#06b6d4]">account_balance_wallet</span>
+                    <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Payment Gateways</h4>
+                </div>
+                <p class="text-sm text-[#ccc3d8] mb-4">Enable or disable supported payment methods for user top-ups.</p>
+                <div class="space-y-3">
+                    <!-- DANA -->
+                    <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#06b6d4] text-sm">D</div>
+                            <span class="font-medium text-sm text-[#dae2fc]">DANA</span>
+                        </div>
+                        <div class="relative inline-block w-12 flex-shrink-0">
+                            <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-dana" />
+                            <label for="gateway-dana" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                        </div>
+                    </div>
+                    <!-- OVO -->
+                    <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#d2bbff] text-sm">O</div>
+                            <span class="font-medium text-sm text-[#dae2fc]">OVO</span>
+                        </div>
+                        <div class="relative inline-block w-12 flex-shrink-0">
+                            <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-ovo" />
+                            <label for="gateway-ovo" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                        </div>
+                    </div>
+                    <!-- QRIS -->
+                    <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#ffb784] text-sm">Q</div>
+                            <span class="font-medium text-sm text-[#dae2fc]">QRIS</span>
+                        </div>
+                        <div class="relative inline-block w-12 flex-shrink-0">
+                            <input type="checkbox" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-qris" />
+                            <label for="gateway-qris" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                        </div>
+                    </div>
+                    <!-- Virtual Account -->
+                    <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[#ffb0cd] text-[20px]">account_balance</span>
+                            </div>
+                            <span class="font-medium text-sm text-[#dae2fc]">Virtual Acct.</span>
+                        </div>
+                        <div class="relative inline-block w-12 flex-shrink-0">
+                            <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-va" />
+                            <label for="gateway-va" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Profile (1/3) -->
+        <div class="lg:col-span-1">
+            <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center h-full">
+                <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-[#d2bbff] mb-4 relative group cursor-pointer">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
+                    alt="Admin" class="w-full h-full object-cover" />
+                    <div class="absolute inset-0 bg-[#020617]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                        <span class="material-symbols-outlined text-[#dae2fc]">edit</span>
+                    </div>
+                </div>
+                <h4 class="font-semibold text-lg text-[#dae2fc]">System Administrator</h4>
+                <span class="text-[10px] uppercase tracking-[0.12em] bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-full border border-[#d2bbff]/20 mt-1">Super Admin</span>
+
+                <div class="w-full mt-6 text-left space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Username</label>
+                        <input type="text" value="admin_root" disabled
+                        class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" />
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Password</label>
+                        <div class="relative">
+                            <input type="password" value="********" disabled
+                            class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" />
+                            <button class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d2bbff] text-xs font-medium hover:underline">Update</button>
+                        </div>
+                    </div>
+                    <div class="pt-2 border-t border-[#4a4455]/20">
+                        <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Two-Factor Auth</label>
+                        <div class="flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20 mt-1">
+                            <span class="text-sm text-[#dae2fc]">Authenticator App</span>
+                            <span class="flex items-center gap-1 text-[#06b6d4] text-xs font-medium">
+                                <span class="material-symbols-outlined text-[14px]">check_circle</span> Enabled
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+</div>
+</div>
+
+<!-- ================================================================
+MODAL PRODUK
+================================================================ -->
+<div id="productModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="flex items-center justify-between mb-5">
+            <h3 id="modalTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Add Product</h3>
+            <button onclick="closeModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
+        </div>
+        <input type="hidden" id="editId" />
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Product Name</label>
+                <input id="pName" type="text" placeholder="Enter product name"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Price</label>
+                <input id="pPrice" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Cost (Modal)</label>
+                <input id="pCost" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Stock</label>
+                <input id="pStock" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+        </div>
+        <button onclick="saveProduct()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
+            Save Product
+        </button>
+    </div>
+</div>
+
+
+<!-- ================================================================
+JAVASCRIPT – FULL LOGIKA
+================================================================ -->
+<script>
+    // ================================================================
+    // KONFIGURASI & STATE
+    // ================================================================
+    const API_BASE = '/api/admin';
+    let currentToken = localStorage.getItem('adminToken');
+
+    // State untuk pagination produk
+    let allProducts = [];
+    let productPage = 1;
+    const productPerPage = 5;
+
+    // State untuk pagination order
+    let allOrders = [];
+    let orderPage = 1;
+    const orderPerPage = 5;
+
+    // ================================================================
+    // AUTENTIKASI
+    // ================================================================
+    function handleLogin() {
+        const token = document.getElementById('tokenInput').value.trim();
+        if (!token) return alert('Masukkan token admin!');
+        localStorage.setItem('adminToken', token);
+        currentToken = token;
+        verifyToken(token);
+    }
+
+    function verifyToken(token) {
+        fetch(`${API_BASE}?action=list`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(res => {
+                if (res.status === 401) {
+                    document.getElementById('loginError').style.display = 'block';
+                    localStorage.removeItem('adminToken');
+                    return;
+                }
+                if (!res.ok) throw new Error('Gagal koneksi ke server');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'flex';
+                navigateTo('dashboard');
+            })
+            .catch(err => alert('Error: ' + err.message));
+    }
+
+    // Auto-login
+    if (currentToken) verifyToken(currentToken);
+
+    function handleLogout() {
+        localStorage.removeItem('adminToken');
+        location.reload();
+    }
+
+    // ================================================================
+    // NAVIGASI
+    // ================================================================
+    function navigateTo(view) {
+        // Sidebar
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
+        if (activeLink) activeLink.classList.add('active');
+
+        // Title
+        const titles = {
+            dashboard: 'Dashboard',
+            products: 'Products',
+            orders: 'Orders',
+            users: 'Users',
+            settings: 'Settings'
+        };
+        document.getElementById('pageTitle').innerText = titles[view] || view;
+
+        // Views
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const viewId = `view${view.charAt(0).toUpperCase() + view.slice(1)}`;
+        const target = document.getElementById(viewId);
+        if (target) target.classList.add('active');
+
+        // Load data
+        if (view === 'dashboard') loadDashboard();
+        if (view === 'products') loadProducts();
+        if (view === 'orders') loadOrders();
+        if (view === 'settings') loadSettings();
+    }
+
+    // Event listener nav links
+    document.querySelectorAll('.nav-link').forEach(el => {
+        el.addEventListener('click', e => {
+            e.preventDefault();
+            const view = el.dataset.view;
+            if (view) navigateTo(view);
+        });
+    });
+
+    // ================================================================
+    // HELPER FETCH
+    // ================================================================
+    function authFetch(url, options = {}) {
+        return fetch(url, {
+            ...options,
+            headers: {
+                ...options.headers,
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+
+    // ================================================================
+    // DASHBOARD
+    // ================================================================
+    function loadDashboard() {
+        // Stats
+        authFetch(`${API_BASE}?action=stats`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('statRevenue').innerText = '$' + (data.totalRevenue || 0).toLocaleString(
+                'en-US');
+                document.getElementById('statPending').innerText = data.orderCount || 0;
+            })
+            .catch(console.error);
+
+        // Recent Activity
+        authFetch(`${API_BASE}?action=transactions`)
+            .then(res => res.json())
+            .then(orders => {
+                const container = document.getElementById('recentActivityList');
+                container.innerHTML = '';
+                const recent = orders.slice(0, 4);
+                if (recent.length === 0) {
+                    container.innerHTML =
+                        '<div class="text-center text-[#ccc3d8] text-sm py-6">Belum ada aktivitas</div>';
+                    return;
+                }
+                recent.forEach((o, idx) => {
+                    const statusLabel = o.status || 'Pending';
+                    const isPaid = statusLabel === 'paid';
+                    const isCancelled = statusLabel === 'cancelled';
+                    const isWaiting = !isPaid && !isCancelled;
+
+                    const div = document.createElement('div');
+                    div.className =
+                        'flex items-center justify-between p-2.5 rounded-xl hover:bg-[#222a3d]/40 transition cursor-pointer';
+
+                    const iconMap = {
+                        'paid': 'shopping_bag',
+                        'cancelled': 'error',
+                        'pending': 'sync'
+                    };
+                    const icon = iconMap[statusLabel] || 'receipt_long';
+                    const colorMap = {
+                        'paid': '#06b6d4',
+                        'cancelled': '#ffb4ab',
+                        'pending': '#ffb784'
+                    };
+                    const color = colorMap[statusLabel] || '#ccc3d8';
+
+                    const statusDisplay = statusLabel.charAt(0).toUpperCase() + statusLabel.slice(1);
+
+                    div.innerHTML = `
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-full bg-[#222a3d] flex items-center justify-center flex-shrink-0" style="border:1px solid ${color}33;">
+                                    <span class="material-symbols-outlined text-[18px]" style="color:${color};">${icon}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-[#dae2fc] truncate">${o.transactionId || 'Order #' + (idx+1)}</p>
+                                    <p class="text-xs text-[#ccc3d8] truncate">${o.customer?.name || 'Unknown'}</p>
+                                </div>
+                            </div>
+                            <div class="text-right flex-shrink-0 ml-2">
+                                <p class="text-sm font-semibold text-[#dae2fc]">$${(o.total || 0).toFixed(2)}</p>
+                                <span class="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full ${isPaid ? 'badge-paid' : isCancelled ? 'badge-cancelled' : 'badge-waiting'}">${statusDisplay}</span>
+                            </div>
                         `;
-                        tbody.appendChild(tr);
-                    });
-                })
-                .catch(err => alert('Gagal load pesanan: ' + err.message));
+                    container.appendChild(div);
+                });
+            })
+            .catch(console.error);
+    }
+
+    // ================================================================
+    // PRODUK (CRUD + Pagination)
+    // ================================================================
+    function loadProducts() {
+        authFetch(`${API_BASE}?action=list`)
+            .then(res => res.json())
+            .then(products => {
+                allProducts = products || [];
+                document.getElementById('productTotalItems').innerText = allProducts.length;
+                document.getElementById('productCount').innerText = allProducts.length + ' Products';
+                renderProductTable();
+            })
+            .catch(err => alert('Gagal load produk: ' + err.message));
+    }
+
+    function renderProductTable() {
+        const search = document.getElementById('productSearch').value.toLowerCase();
+        let filtered = allProducts.filter(p => p.name?.toLowerCase().includes(search));
+
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / productPerPage) || 1;
+        if (productPage > totalPages) productPage = totalPages;
+
+        const start = (productPage - 1) * productPerPage;
+        const end = Math.min(start + productPerPage, totalItems);
+        const pageItems = filtered.slice(start, end);
+
+        document.getElementById('productShowFrom').innerText = totalItems === 0 ? 0 : start + 1;
+        document.getElementById('productShowTo').innerText = end;
+        document.getElementById('productTotalItems').innerText = totalItems;
+
+        const tbody = document.getElementById('productTableBody');
+        tbody.innerHTML = '';
+
+        if (pageItems.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="5" class="text-center text-[#ccc3d8] py-8">Tidak ada produk ditemukan</td></tr>';
+        } else {
+            pageItems.forEach(p => {
+                const tr = document.createElement('tr');
+                const statusClass = p.stock > 10 ? 'badge-success' : p.stock > 0 ? 'badge-waiting' :
+                'badge-cancelled';
+                const statusText = p.stock > 10 ? 'In Stock' : p.stock > 0 ? 'Low Stock (' + p.stock + ')' :
+                    'Out of Stock';
+
+                tr.innerHTML = `
+                        <td class="py-3 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-[#222a3d] border border-[#4a4455]/30 flex items-center justify-center flex-shrink-0 text-[#d2bbff] font-bold text-xs">
+                                    ${p.name?.charAt(0) || '?'}
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-[#dae2fc] hover:text-[#d2bbff] transition cursor-pointer">${p.name || 'Unnamed'}</p>
+                                    <p class="text-[10px] text-[#ccc3d8]">ID: ${p.id || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 hidden sm:table-cell">
+                            <span class="text-xs bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-full border border-[#4a4455]/20">General</span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-medium text-[#dae2fc]">$${(p.price || 0).toFixed(2)}</td>
+                        <td class="py-3 px-4 text-right hidden md:table-cell">
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="text-xs font-medium ${statusClass} px-2 py-0.5 rounded-full">${statusText}</span>
+                                <div class="w-16 h-1 bg-[#2d3449] rounded-full overflow-hidden">
+                                    <div class="h-full ${p.stock > 10 ? 'bg-[#06b6d4]' : p.stock > 0 ? 'bg-[#ffb784]' : 'bg-[#ffb4ab]'} rounded-full" style="width:${Math.min((p.stock/100)*100, 100)}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g, '&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                tbody.appendChild(tr);
+            });
         }
 
-        function updateOrderStatus(transactionId, newStatus) {
-            if (!confirm(`Ubah status pesanan ${transactionId} menjadi ${newStatus}?`)) return;
-            authFetch(`${API_BASE}?action=updateOrder`, {
+        // Pagination buttons
+        renderProductPagination(totalPages);
+    }
+
+    function renderProductPagination(totalPages) {
+        const container = document.getElementById('productPaginationNumbers');
+        container.innerHTML = '';
+        for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${i === productPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            btn.onclick = () => { productPage = i;
+                renderProductTable(); };
+            container.appendChild(btn);
+        }
+        if (totalPages > 5) {
+            const dots = document.createElement('span');
+            dots.className = 'text-[#ccc3d8] px-1';
+            dots.innerText = '...';
+            container.appendChild(dots);
+            const last = document.createElement('button');
+            last.innerText = totalPages;
+            last.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${totalPages === productPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { productPage = totalPages;
+                renderProductTable(); };
+            container.appendChild(last);
+        }
+        document.getElementById('productPrevPage').disabled = productPage <= 1;
+        document.getElementById('productPrevPage').onclick = () => { if (productPage > 1) { productPage--;
+                renderProductTable(); } };
+        document.getElementById('productNextPage').disabled = productPage >= totalPages;
+        document.getElementById('productNextPage').onclick = () => { if (productPage < totalPages) { productPage++;
+                renderProductTable(); } };
+    }
+
+    // Search listener
+    document.getElementById('productSearch').addEventListener('input', () => {
+        productPage = 1;
+        renderProductTable();
+    });
+
+    // ================================================================
+    // PRODUK MODAL
+    // ================================================================
+    function openProductModal(product = null) {
+        const modal = document.getElementById('productModal');
+        modal.classList.add('show');
+        document.getElementById('editId').value = '';
+        document.getElementById('modalTitle').innerText = 'Add Product';
+        document.getElementById('pName').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pCost').value = '';
+        document.getElementById('pStock').value = '';
+        if (product) {
+            document.getElementById('modalTitle').innerText = 'Edit Product';
+            document.getElementById('editId').value = product.id;
+            document.getElementById('pName').value = product.name || '';
+            document.getElementById('pPrice').value = product.price || '';
+            document.getElementById('pCost').value = product.cost || '';
+            document.getElementById('pStock').value = product.stock || '';
+        }
+    }
+
+    function closeModal() {
+        document.getElementById('productModal').classList.remove('show');
+    }
+
+    function saveProduct() {
+        const id = document.getElementById('editId').value;
+        const product = {
+            name: document.getElementById('pName').value.trim(),
+            price: Number(document.getElementById('pPrice').value),
+            cost: Number(document.getElementById('pCost').value) || 0,
+            stock: Number(document.getElementById('pStock').value) || 0,
+        };
+        if (!product.name) return alert('Nama produk wajib diisi!');
+        if (!product.price || product.price <= 0) return alert('Harga harus lebih dari 0!');
+
+        const action = id ? 'edit' : 'add';
+        const payload = { action, product };
+        if (id) payload.product.id = Number(id);
+
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => {
+                closeModal();
+                loadProducts();
+                loadDashboard();
+            })
+            .catch(err => alert('Gagal simpan: ' + err.message));
+    }
+
+    function deleteProduct(id) {
+        if (!confirm('Yakin hapus produk ini secara permanen?')) return;
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
+            .then(() => { loadProducts();
+                loadDashboard(); })
+            .catch(err => alert('Gagal hapus: ' + err.message));
+    }
+
+    // ================================================================
+    // ORDERS (Dengan Pagination & Aksi)
+    // ================================================================
+    function loadOrders() {
+        authFetch(`${API_BASE}?action=transactions`)
+            .then(res => res.json())
+            .then(orders => {
+                allOrders = orders || [];
+                document.getElementById('orderTotalItems').innerText = allOrders.length;
+                renderOrderTable();
+            })
+            .catch(err => alert('Gagal load pesanan: ' + err.message));
+    }
+
+    function renderOrderTable() {
+        const totalItems = allOrders.length;
+        const totalPages = Math.ceil(totalItems / orderPerPage) || 1;
+        if (orderPage > totalPages) orderPage = totalPages;
+
+        const start = (orderPage - 1) * orderPerPage;
+        const end = Math.min(start + orderPerPage, totalItems);
+        const pageItems = allOrders.slice(start, end);
+
+        document.getElementById('orderShowFrom').innerText = totalItems === 0 ? 0 : start + 1;
+        document.getElementById('orderShowTo').innerText = end;
+        document.getElementById('orderTotalItems').innerText = totalItems;
+
+        const tbody = document.getElementById('orderTableBody');
+        tbody.innerHTML = '';
+
+        if (pageItems.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Belum ada pesanan</td></tr>';
+            return;
+        }
+
+        pageItems.forEach(o => {
+            const status = o.status || 'pending';
+            const isPaid = status === 'paid';
+            const isCancelled = status === 'cancelled';
+            const isWaiting = !isPaid && !isCancelled;
+
+            const statusClass = isPaid ? 'badge-paid' : isCancelled ? 'badge-cancelled' : 'badge-waiting';
+            const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td class="py-3 px-4">
+                        <span class="text-sm font-medium text-[#d2bbff]">${o.transactionId || o._id?.slice(0,8)}</span>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div>
+                            <p class="text-sm font-medium text-[#dae2fc]">${o.customer?.name || 'Unknown'}</p>
+                            <p class="text-[10px] text-[#ccc3d8]">UID: ${o.customer?.uid || 'N/A'}</p>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 hidden sm:table-cell">
+                        <div>
+                            <p class="text-sm text-[#dae2fc]">${o.item || o.product?.name || 'Product'}</p>
+                            <p class="text-xs font-semibold text-[#ffb0cd]">$${(o.total || 0).toFixed(2)}</p>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 hidden md:table-cell">
+                        <div>
+                            <p class="text-sm text-[#dae2fc]">${new Date(o.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}</p>
+                            <p class="text-[10px] text-[#ccc3d8]">${new Date(o.createdAt).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' })}</p>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="inline-block text-[10px] font-medium px-3 py-1 rounded-full ${statusClass}">${statusLabel}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            ${!isPaid && !isCancelled ? `<button onclick="updateOrder('${o.transactionId || o._id}', 'paid')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Process</button>` : ''}
+                            ${!isCancelled ? `<button onclick="updateOrder('${o.transactionId || o._id}', 'cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Cancel</button>` : ''}
+                            <button class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition">
+                                <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+            tbody.appendChild(tr);
+        });
+
+        // Pagination
+        renderOrderPagination(totalPages);
+    }
+
+    function renderOrderPagination(totalPages) {
+        const container = document.getElementById('orderPaginationNumbers');
+        container.innerHTML = '';
+        for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${i === orderPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            btn.onclick = () => { orderPage = i;
+                renderOrderTable(); };
+            container.appendChild(btn);
+        }
+        if (totalPages > 5) {
+            const dots = document.createElement('span');
+            dots.className = 'text-[#ccc3d8] px-1';
+            dots.innerText = '...';
+            container.appendChild(dots);
+            const last = document.createElement('button');
+            last.innerText = totalPages;
+            last.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${totalPages === orderPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { orderPage = totalPages;
+                renderOrderTable(); };
+            container.appendChild(last);
+        }
+        document.getElementById('orderPrevPage').disabled = orderPage <= 1;
+        document.getElementById('orderPrevPage').onclick = () => { if (orderPage > 1) { orderPage--;
+                renderOrderTable(); } };
+        document.getElementById('orderNextPage').disabled = orderPage >= totalPages;
+        document.getElementById('orderNextPage').onclick = () => { if (orderPage < totalPages) { orderPage++;
+                renderOrderTable(); } };
+    }
+
+    // ================================================================
+    // UPDATE ORDER STATUS
+    // ================================================================
+    function updateOrder(transactionId, status) {
+        if (!confirm(`Ubah status pesanan ${transactionId} menjadi ${status}?`)) return;
+        authFetch(API_BASE, {
                 method: 'POST',
-                body: JSON.stringify({ transactionId, status: newStatus })
+                body: JSON.stringify({ action: 'updateOrder', transactionId, status })
             })
             .then(res => res.json())
             .then(data => {
                 loadOrders();
-                loadStats();
+                loadDashboard();
             })
             .catch(err => alert('Gagal update status: ' + err.message));
-        }
+    }
 
-        // ================================================================
-        //  PENGATURAN (load & save)
-        // ================================================================
-        function loadSettings() {
-            authFetch(`${API_BASE}?action=getSettings`)
-                .then(res => res.json())
-                .then(data => {
-                    document.getElementById('siteName').value = data.siteName || 'LekszyStore';
-                    document.getElementById('supportEmail').value = data.supportEmail || 'support@lekszystore.com';
-                    document.getElementById('maintenanceToggle').checked = data.maintenanceMode || false;
-                })
-                .catch(() => {
-                    // fallback default
-                    document.getElementById('siteName').value = 'LekszyStore';
-                    document.getElementById('supportEmail').value = 'support@lekszystore.com';
-                    document.getElementById('maintenanceToggle').checked = false;
-                });
-        }
+    // ================================================================
+    // SETTINGS (load & save)
+    // ================================================================
+    function loadSettings() {
+        authFetch(`${API_BASE}?action=getSettings`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('siteName').value = data.siteName || 'LekszyStore';
+                document.getElementById('supportEmail').value = data.supportEmail || 'support@lekszystore.com';
+                document.getElementById('maintenanceToggle').checked = data.maintenanceMode || false;
+            })
+            .catch(() => {
+                // fallback
+                document.getElementById('siteName').value = 'LekszyStore';
+                document.getElementById('supportEmail').value = 'support@lekszystore.com';
+                document.getElementById('maintenanceToggle').checked = false;
+            });
+    }
 
-        function saveSettings() {
-            const payload = {
-                siteName: document.getElementById('siteName').value.trim(),
-                supportEmail: document.getElementById('supportEmail').value.trim(),
-                maintenanceMode: document.getElementById('maintenanceToggle').checked,
-            };
-            authFetch(`${API_BASE}?action=saveSettings`, {
+    function saveSettings() {
+        const payload = {
+            siteName: document.getElementById('siteName').value.trim(),
+            supportEmail: document.getElementById('supportEmail').value.trim(),
+            maintenanceMode: document.getElementById('maintenanceToggle').checked,
+        };
+        authFetch(`${API_BASE}?action=saveSettings`, {
                 method: 'POST',
                 body: JSON.stringify(payload)
             })
             .then(res => res.json())
             .then(data => {
-                alert('Pengaturan berhasil disimpan!');
+                alert('✅ Pengaturan berhasil disimpan!');
             })
-            .catch(err => alert('Gagal simpan pengaturan: ' + err.message));
-        }
+            .catch(err => alert('❌ Gagal simpan pengaturan: ' + err.message));
+    }
 
-        // ================================================================
-        //  INISIALISASI (bila perlu)
-        // ================================================================
-        // Fungsi untuk mengaktifkan toggle secara visual (tidak perlu, CSS sudah handle)
-        // ================================================================
+    // ================================================================
+    // INISIALISASI
+    // ================================================================
+    console.log('🚀 LekszyStore Admin Panel v2.0 loaded.');
+</script>
 
-        console.log('✅ LekszyStore Admin Panel loaded.');
-    </script>
 </body>
 </html>
