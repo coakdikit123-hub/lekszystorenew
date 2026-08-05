@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     const productsCollection = db.collection('products');
     const transactionsCollection = db.collection('transactions');
     const settingsCollection = db.collection('settings');
-    const usersCollection = db.collection('users');
+    const categoriesCollection = db.collection('categories');
 
     // ===================== GET =====================
     if (req.method === 'GET') {
@@ -55,9 +55,9 @@ export default async function handler(req, res) {
         return res.status(200).json(transactions);
       }
 
-      // UNIQUE CATEGORIES
+      // === KATEGORI (LIST) ===
       if (action === 'categories') {
-        const categories = await productsCollection.distinct('category');
+        const categories = await categoriesCollection.find({}).toArray();
         return res.status(200).json(categories);
       }
 
@@ -67,18 +67,12 @@ export default async function handler(req, res) {
         return res.status(200).json(settings || {});
       }
 
-      // USERS
-      if (action === 'getUsers') {
-        const users = await usersCollection.find({}).toArray();
-        return res.status(200).json(users);
-      }
-
       return res.status(400).json({ error: 'Action GET tidak dikenali' });
     }
 
     // ===================== POST =====================
     if (req.method === 'POST') {
-      const { action, product, transactionId, status } = req.body;
+      const { action, product, transactionId, status, category } = req.body;
 
       // --- TAMBAH PRODUK ---
       if (action === 'add') {
@@ -160,6 +154,59 @@ export default async function handler(req, res) {
         const result = await transactionsCollection.deleteOne({ transactionId: transactionId });
         if (result.deletedCount === 0) {
           return res.status(404).json({ error: 'Pesanan tidak ditemukan' });
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      // --- TAMBAH KATEGORI ---
+      if (action === 'addCategory') {
+        if (!category || !category.name) {
+          return res.status(400).json({ error: 'Nama kategori wajib diisi' });
+        }
+        const existing = await categoriesCollection.findOne({ name: category.name });
+        if (existing) {
+          return res.status(400).json({ error: 'Kategori sudah ada' });
+        }
+        const newCategory = {
+          name: category.name,
+          icon: category.icon || 'category',
+          image: category.image || '',
+          createdAt: new Date().toISOString(),
+        };
+        await categoriesCollection.insertOne(newCategory);
+        return res.status(201).json({ success: true, category: newCategory });
+      }
+
+      // --- EDIT KATEGORI ---
+      if (action === 'editCategory') {
+        if (!category || !category.name) {
+          return res.status(400).json({ error: 'Nama kategori wajib diisi' });
+        }
+        const result = await categoriesCollection.updateOne(
+          { name: category.oldName || category.name },
+          {
+            $set: {
+              name: category.name,
+              icon: category.icon || 'category',
+              image: category.image || '',
+              updatedAt: new Date().toISOString(),
+            }
+          }
+        );
+        if (result.matchedCount === 0) {
+          return res.status(404).json({ error: 'Kategori tidak ditemukan' });
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      // --- HAPUS KATEGORI ---
+      if (action === 'deleteCategory') {
+        if (!category || !category.name) {
+          return res.status(400).json({ error: 'Nama kategori wajib diisi' });
+        }
+        const result = await categoriesCollection.deleteOne({ name: category.name });
+        if (result.deletedCount === 0) {
+          return res.status(404).json({ error: 'Kategori tidak ditemukan' });
         }
         return res.status(200).json({ success: true });
       }
