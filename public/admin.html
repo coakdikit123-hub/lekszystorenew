@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LekszyStore - Orders Management</title>
+    <title>LekszyStore - Manajemen Pesanan</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -117,9 +117,9 @@
         }
 
         /* ================================================================
-           STATUS BADGES
+           STATUS BADGES (Indonesia)
            ================================================================ */
-        .badge-completed {
+        .badge-selesai {
             background: rgba(6, 182, 212, 0.15);
             color: var(--text-electric-cyan);
             border: 1px solid rgba(6, 182, 212, 0.25);
@@ -129,7 +129,7 @@
             color: var(--text-tertiary);
             border: 1px solid rgba(255, 183, 132, 0.25);
         }
-        .badge-cancelled {
+        .badge-dibatalkan {
             background: rgba(255, 180, 171, 0.15);
             color: var(--text-error);
             border: 1px solid rgba(255, 180, 171, 0.25);
@@ -238,6 +238,10 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        /* Format Rupiah */
+        .currency-idr::before {
+            content: 'Rp ';
+        }
     </style>
 </head>
 <body>
@@ -252,7 +256,7 @@
                     <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
                 </div>
                 <h2 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff]">LekszyStore</h2>
-                <p class="text-sm text-[#ccc3d8] mt-1 font-medium">Admin Panel</p>
+                <p class="text-sm text-[#ccc3d8] mt-1 font-medium">Panel Admin</p>
             </div>
             <div class="space-y-4">
                 <div class="relative neon-glow rounded-xl transition-all">
@@ -261,7 +265,7 @@
                 </div>
                 <button onclick="handleLogin()"
                 class="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                Login
+                Masuk
             </button>
             <p id="loginError" class="text-[#ffb4ab] text-sm text-center hidden">Token salah! Coba lagi.</p>
         </div>
@@ -279,29 +283,29 @@ DASHBOARD UTAMA
     <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
         <div class="px-6 mb-8">
             <h1 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff] tracking-tight">LekszyStore</h1>
-            <p class="text-[10px] uppercase tracking-[0.2em] text-[#ccc3d8] mt-1 font-medium">Admin Suite</p>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-[#ccc3d8] mt-1 font-medium">Panel Admin</p>
         </div>
         <nav class="flex-1 px-3 space-y-1">
             <a href="#" data-view="dashboard" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">dashboard</span> Dashboard
             </a>
             <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">inventory_2</span> Products
+                <span class="material-symbols-outlined">inventory_2</span> Produk
             </a>
             <a href="#" data-view="orders" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">shopping_cart</span> Orders
+                <span class="material-symbols-outlined">shopping_cart</span> Pesanan
             </a>
             <a href="#" data-view="users" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">group</span> Users
+                <span class="material-symbols-outlined">group</span> Pengguna
             </a>
             <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">settings</span> Settings
+                <span class="material-symbols-outlined">settings</span> Pengaturan
             </a>
         </nav>
         <div class="px-4 mt-auto pt-4 border-t border-[#4a4455]/20">
             <button onclick="handleLogout()"
             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium">
-            <span class="material-symbols-outlined text-[18px]">logout</span> Logout
+            <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
         </button>
     </div>
 </aside>
@@ -313,11 +317,11 @@ MAIN CONTENT
 
     <!-- TOPBAR -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
-        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Orders</h2>
+        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Pesanan</h2>
         <div class="flex items-center gap-4 ml-auto">
             <div class="relative hidden lg:block">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
-                <input type="text" placeholder="Search orders..."
+                <input type="text" placeholder="Cari pesanan..."
                 class="w-72 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
             </div>
             <button class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative">
@@ -342,15 +346,15 @@ MAIN CONTENT
             <!-- Page Header -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Orders Management</h3>
-                    <p class="text-sm text-[#ccc3d8]">Monitor, process, and manage incoming transactions.</p>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Manajemen Pesanan</h3>
+                    <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
                 </div>
                 <div class="flex gap-3">
                     <button class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
                     </button>
                     <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white text-sm font-medium flex items-center gap-2 btn-primary-glow hover:opacity-90 transition">
-                        <span class="material-symbols-outlined text-[18px]">download</span> Export
+                        <span class="material-symbols-outlined text-[18px]">download</span> Ekspor
                     </button>
                 </div>
             </div>
@@ -358,32 +362,32 @@ MAIN CONTENT
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Today's Orders</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pesanan Hari Ini</p>
                     <div class="flex items-end justify-between">
                         <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
                         <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Revenue Today</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pendapatan Hari Ini</p>
                     <div class="flex items-end justify-between">
-                        <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">$0</span>
+                        <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
                         <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 relative overflow-hidden">
                     <div class="absolute inset-0 bg-gradient-to-r from-[#d2bbff]/5 to-transparent"></div>
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Pending Processing</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Menunggu Proses</p>
                     <div class="flex items-end justify-between relative">
                         <span id="statPending" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#d2bbff]">0</span>
-                        <span class="text-[#ffb784] text-[10px] font-medium">Needs attention</span>
+                        <span class="text-[#ffb784] text-[10px] font-medium">Butuh perhatian</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Cancellation Rate</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Tingkat Pembatalan</p>
                     <div class="flex items-end justify-between">
                         <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
-                        <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stable</span>
+                        <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
                     </div>
                 </div>
             </div>
@@ -392,17 +396,17 @@ MAIN CONTENT
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-[#dae2fc]">Recent Transactions</span>
+                        <span class="text-sm font-semibold text-[#dae2fc]">Transaksi Terbaru</span>
                         <div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5">
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">All</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Pending</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Completed</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Cancelled</button>
+                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">Semua</button>
+                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Menunggu</button>
+                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Selesai</button>
+                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Dibatalkan</button>
                         </div>
                     </div>
                     <div class="ml-auto relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
-                        <input id="orderSearch" type="text" placeholder="Search order ID..."
+                        <input id="orderSearch" type="text" placeholder="Cari ID pesanan..."
                         class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                     </div>
                 </div>
@@ -411,12 +415,12 @@ MAIN CONTENT
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
                             <tr>
-                                <th class="py-3 px-4 font-semibold">Order ID</th>
-                                <th class="py-3 px-4 font-semibold">Customer / Game ID</th>
-                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item / Amount</th>
-                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Date</th>
+                                <th class="py-3 px-4 font-semibold">ID Pesanan</th>
+                                <th class="py-3 px-4 font-semibold">Pelanggan / Game ID</th>
+                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item / Total</th>
+                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th>
                                 <th class="py-3 px-4 font-semibold">Status</th>
-                                <th class="py-3 px-4 font-semibold text-right">Actions</th>
+                                <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15">
@@ -426,7 +430,7 @@ MAIN CONTENT
                 </div>
 
                 <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
-                    <span class="text-xs text-[#ccc3d8] hidden sm:block">Showing <span id="orderShowFrom">1</span> to <span id="orderShowTo">5</span> of <span id="orderTotalItems">0</span> entries</span>
+                    <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
                         <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
                             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
@@ -449,7 +453,7 @@ MAIN CONTENT
             <div class="text-center py-16">
                 <span class="material-symbols-outlined text-6xl text-[#4a4455]">dashboard</span>
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Dashboard</h3>
-                <p class="text-[#ccc3d8] mt-2">Beralih ke tab Orders untuk manajemen pesanan.</p>
+                <p class="text-[#ccc3d8] mt-2">Beralih ke tab Pesanan untuk manajemen pesanan.</p>
             </div>
         </div>
 
@@ -459,7 +463,7 @@ MAIN CONTENT
         <div id="viewProducts" class="view">
             <div class="text-center py-16">
                 <span class="material-symbols-outlined text-6xl text-[#4a4455]">inventory_2</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Products</h3>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Produk</h3>
                 <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
             </div>
         </div>
@@ -470,7 +474,7 @@ MAIN CONTENT
         <div id="viewUsers" class="view">
             <div class="text-center py-16">
                 <span class="material-symbols-outlined text-6xl text-[#4a4455]">group</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Users</h3>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Pengguna</h3>
                 <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
             </div>
         </div>
@@ -481,7 +485,7 @@ MAIN CONTENT
         <div id="viewSettings" class="view">
             <div class="text-center py-16">
                 <span class="material-symbols-outlined text-6xl text-[#4a4455]">settings</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Settings</h3>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Pengaturan</h3>
                 <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
             </div>
         </div>
@@ -496,7 +500,7 @@ MODAL DETAIL PESANAN
 <div id="orderDetailModal" class="modal-overlay">
     <div class="modal-box">
         <div class="flex items-center justify-between mb-5">
-            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Order Details</h3>
+            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Detail Pesanan</h3>
             <button onclick="closeDetailModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
         </div>
         <div id="orderDetailContent" class="space-y-4">
@@ -507,7 +511,7 @@ MODAL DETAIL PESANAN
 
 
 <!-- ================================================================
-JAVASCRIPT – FULL LOGIKA ORDERS
+JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
 ================================================================ -->
 <script>
     // ================================================================
@@ -520,6 +524,13 @@ JAVASCRIPT – FULL LOGIKA ORDERS
     const orderPerPage = 5;
     let currentFilter = 'all';
     let searchQuery = '';
+
+    // ================================================================
+    // FORMAT RUPIAH
+    // ================================================================
+    function formatRupiah(amount) {
+        return 'Rp ' + Number(amount).toLocaleString('id-ID');
+    }
 
     // ================================================================
     // AUTENTIKASI
@@ -549,7 +560,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
                 // default active view orders
                 document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
                 document.querySelector('.nav-link[data-view="orders"]').classList.add('active');
-                document.getElementById('pageTitle').innerText = 'Orders';
+                document.getElementById('pageTitle').innerText = 'Pesanan';
             })
             .catch(err => alert('Error: ' + err.message));
     }
@@ -562,7 +573,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
     }
 
     // ================================================================
-    // NAVIGASI (sederhana untuk switch view)
+    // NAVIGASI
     // ================================================================
     document.querySelectorAll('.nav-link').forEach(el => {
         el.addEventListener('click', function(e) {
@@ -573,7 +584,15 @@ JAVASCRIPT – FULL LOGIKA ORDERS
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             const target = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
             if (target) target.classList.add('active');
-            document.getElementById('pageTitle').innerText = view.charAt(0).toUpperCase() + view.slice(1);
+            // judul dalam bahasa Indonesia
+            const titles = {
+                dashboard: 'Dashboard',
+                products: 'Produk',
+                orders: 'Pesanan',
+                users: 'Pengguna',
+                settings: 'Pengaturan'
+            };
+            document.getElementById('pageTitle').innerText = titles[view] || view;
             if (view === 'orders') loadOrders();
         });
     });
@@ -603,7 +622,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
                 updateStats();
                 applyFiltersAndRender();
             })
-            .catch(err => alert('Gagal load pesanan: ' + err.message));
+            .catch(err => alert('Gagal memuat pesanan: ' + err.message));
     }
 
     // ================================================================
@@ -618,7 +637,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
         const rate = allOrders.length > 0 ? ((cancelled.length / allOrders.length) * 100).toFixed(1) : 0;
 
         document.getElementById('statTodayOrders').innerText = todayOrders.length;
-        document.getElementById('statTodayRevenue').innerText = '$' + todayRevenue.toFixed(2);
+        document.getElementById('statTodayRevenue').innerText = formatRupiah(todayRevenue);
         document.getElementById('statPending').innerText = pending.length;
         document.getElementById('statCancellationRate').innerText = rate + '%';
     }
@@ -667,9 +686,18 @@ JAVASCRIPT – FULL LOGIKA ORDERS
             const isCancelled = status === 'cancelled';
             const isPending = !isCompleted && !isCancelled;
 
-            const statusClass = isCompleted ? 'badge-completed' : isCancelled ? 'badge-cancelled' :
-            'badge-pending';
-            const statusLabel = isCompleted ? 'Completed' : isCancelled ? 'Cancelled' : 'Pending';
+            // Badge & label Indonesia
+            let statusClass, statusLabel;
+            if (isCompleted) {
+                statusClass = 'badge-selesai';
+                statusLabel = 'Selesai';
+            } else if (isCancelled) {
+                statusClass = 'badge-dibatalkan';
+                statusLabel = 'Dibatalkan';
+            } else {
+                statusClass = 'badge-pending';
+                statusLabel = 'Menunggu';
+            }
 
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-[#222a3d]/30 transition cursor-pointer';
@@ -679,20 +707,20 @@ JAVASCRIPT – FULL LOGIKA ORDERS
                     </td>
                     <td class="py-3 px-4" onclick="openDetailModal('${o.transactionId || o._id}')">
                         <div>
-                            <p class="text-sm font-medium text-[#dae2fc]">${o.customer?.name || 'Unknown'}</p>
+                            <p class="text-sm font-medium text-[#dae2fc]">${o.customer?.name || 'Tidak diketahui'}</p>
                             <p class="text-[10px] text-[#ccc3d8]">UID: ${o.customer?.uid || 'N/A'}</p>
                         </div>
                     </td>
                     <td class="py-3 px-4 hidden sm:table-cell" onclick="openDetailModal('${o.transactionId || o._id}')">
                         <div>
-                            <p class="text-sm text-[#dae2fc]">${o.product?.name || 'Product'}</p>
-                            <p class="text-xs font-semibold text-[#ffb0cd]">$${(o.total || 0).toFixed(2)}</p>
+                            <p class="text-sm text-[#dae2fc]">${o.product?.name || 'Produk'}</p>
+                            <p class="text-xs font-semibold text-[#ffb0cd]">${formatRupiah(o.total || 0)}</p>
                         </div>
                     </td>
                     <td class="py-3 px-4 hidden md:table-cell" onclick="openDetailModal('${o.transactionId || o._id}')">
                         <div>
-                            <p class="text-sm text-[#dae2fc]">${new Date(o.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}</p>
-                            <p class="text-[10px] text-[#ccc3d8]">${new Date(o.createdAt).toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' })}</p>
+                            <p class="text-sm text-[#dae2fc]">${new Date(o.createdAt).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })}</p>
+                            <p class="text-[10px] text-[#ccc3d8]">${new Date(o.createdAt).toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })}</p>
                         </div>
                     </td>
                     <td class="py-3 px-4" onclick="openDetailModal('${o.transactionId || o._id}')">
@@ -700,8 +728,8 @@ JAVASCRIPT – FULL LOGIKA ORDERS
                     </td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Process</button>` : ''}
-                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Cancel</button>` : ''}
+                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
+                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
                             <button onclick="event.stopPropagation();openDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition">
                                 <span class="material-symbols-outlined text-[18px]">more_vert</span>
                             </button>
@@ -773,7 +801,8 @@ JAVASCRIPT – FULL LOGIKA ORDERS
     // UPDATE ORDER STATUS
     // ================================================================
     function updateOrderStatus(transactionId, status) {
-        if (!confirm(`Ubah status pesanan ${transactionId} menjadi ${status}?`)) return;
+        if (!confirm(`Ubah status pesanan ${transactionId} menjadi ${status === 'completed' ? 'Selesai' : 'Dibatalkan'}?`))
+            return;
         authFetch(API_BASE, {
                 method: 'POST',
                 body: JSON.stringify({ action: 'updateOrder', transactionId, status })
@@ -786,7 +815,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
     }
 
     // ================================================================
-    // MODAL DETAIL PESANAN
+    // MODAL DETAIL PESANAN (Indonesia + Rupiah)
     // ================================================================
     function openDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
@@ -797,8 +826,11 @@ JAVASCRIPT – FULL LOGIKA ORDERS
         const isCompleted = status === 'completed' || status === 'paid';
         const isCancelled = status === 'cancelled';
         const isPending = !isCompleted && !isCancelled;
-        const statusLabel = isCompleted ? 'Completed' : isCancelled ? 'Cancelled' : 'Pending';
-        const statusClass = isCompleted ? 'badge-completed' : isCancelled ? 'badge-cancelled' : 'badge-pending';
+        let statusLabel, statusClass;
+        if (isCompleted) { statusLabel = 'Selesai';
+            statusClass = 'badge-selesai'; } else if (isCancelled) { statusLabel = 'Dibatalkan';
+            statusClass = 'badge-dibatalkan'; } else { statusLabel = 'Menunggu';
+            statusClass = 'badge-pending'; }
 
         // Hitung keuntungan (profit) jika ada data cost
         const totalCost = (order.items || []).reduce((sum, item) => sum + (item.cost || 0) * (item.quantity || 1), 0);
@@ -807,7 +839,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
         container.innerHTML = `
                 <div class="flex justify-between items-start border-b border-[#4a4455]/20 pb-3">
                     <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Order ID</p>
+                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">ID Pesanan</p>
                         <p class="font-medium text-[#d2bbff]">${order.transactionId || order._id}</p>
                     </div>
                     <span class="inline-block text-xs font-medium px-3 py-1 rounded-full ${statusClass}">${statusLabel}</span>
@@ -815,22 +847,22 @@ JAVASCRIPT – FULL LOGIKA ORDERS
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Customer</p>
-                        <p class="font-medium">${order.customer?.name || 'Unknown'}</p>
+                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Pelanggan</p>
+                        <p class="font-medium">${order.customer?.name || 'Tidak diketahui'}</p>
                         <p class="text-xs text-[#ccc3d8]">UID: ${order.customer?.uid || 'N/A'}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Date</p>
-                        <p class="font-medium">${new Date(order.createdAt).toLocaleString('en-US', { dateStyle:'medium', timeStyle:'short' })}</p>
+                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Tanggal</p>
+                        <p class="font-medium">${new Date(order.createdAt).toLocaleString('id-ID', { dateStyle:'medium', timeStyle:'short' })}</p>
                     </div>
                 </div>
 
                 <div class="border-t border-[#4a4455]/20 pt-3">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] mb-2">Items</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] mb-2">Item</p>
                     ${(order.items || []).map(item => `
                         <div class="flex justify-between py-1.5 border-b border-[#4a4455]/10 last:border-0">
-                            <span class="text-sm">${item.name || 'Product'} × ${item.quantity || 1}</span>
-                            <span class="text-sm font-medium">$${((item.price || 0) * (item.quantity || 1)).toFixed(2)}</span>
+                            <span class="text-sm">${item.name || 'Produk'} × ${item.quantity || 1}</span>
+                            <span class="text-sm font-medium">${formatRupiah((item.price || 0) * (item.quantity || 1))}</span>
                         </div>
                     `).join('')}
                     ${(!order.items || order.items.length === 0) ? `<p class="text-sm text-[#ccc3d8]">Tidak ada item detail</p>` : ''}
@@ -839,24 +871,24 @@ JAVASCRIPT – FULL LOGIKA ORDERS
                 <div class="border-t border-[#4a4455]/20 pt-3 space-y-1">
                     <div class="flex justify-between">
                         <span class="text-[#ccc3d8]">Subtotal</span>
-                        <span>$${(order.total || 0).toFixed(2)}</span>
+                        <span>${formatRupiah(order.total || 0)}</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-[#ccc3d8]">Total Cost</span>
-                        <span>$${totalCost.toFixed(2)}</span>
+                        <span class="text-[#ccc3d8]">Total Biaya</span>
+                        <span>${formatRupiah(totalCost)}</span>
                     </div>
                     <div class="flex justify-between text-lg font-bold text-[#06b6d4]">
-                        <span>Profit</span>
-                        <span>$${profit.toFixed(2)}</span>
+                        <span>Keuntungan</span>
+                        <span>${formatRupiah(profit)}</span>
                     </div>
                 </div>
 
-                ${order.notes ? `<div class="border-t border-[#4a4455]/20 pt-3"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Notes</p><p class="text-sm">${order.notes}</p></div>` : ''}
+                ${order.notes ? `<div class="border-t border-[#4a4455]/20 pt-3"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Catatan</p><p class="text-sm">${order.notes}</p></div>` : ''}
 
                 <div class="flex gap-2 mt-2 pt-3 border-t border-[#4a4455]/20">
-                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeDetailModal();" class="flex-1 py-2 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">Process Order</button>` : ''}
-                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeDetailModal();" class="flex-1 py-2 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">Cancel Order</button>` : ''}
-                    <button onclick="closeDetailModal()" class="flex-1 py-2 rounded-lg bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Close</button>
+                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeDetailModal();" class="flex-1 py-2 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">Proses Pesanan</button>` : ''}
+                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeDetailModal();" class="flex-1 py-2 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">Batalkan Pesanan</button>` : ''}
+                    <button onclick="closeDetailModal()" class="flex-1 py-2 rounded-lg bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Tutup</button>
                 </div>
             `;
 
@@ -875,7 +907,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS
     // ================================================================
     // INISIALISASI
     // ================================================================
-    console.log('🚀 LekszyStore Orders Management loaded.');
+    console.log('🚀 LekszyStore - Manajemen Pesanan dimuat.');
 </script>
 
 </body>
