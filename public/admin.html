@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LekszyStore - Manajemen Pesanan</title>
+    <title>LekszyStore - Panel Admin</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -134,6 +134,16 @@
             color: var(--text-error);
             border: 1px solid rgba(255, 180, 171, 0.25);
         }
+        .badge-aktif {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--text-electric-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        .badge-nonaktif {
+            background: rgba(255, 180, 171, 0.12);
+            color: var(--text-error);
+            border: 1px solid rgba(255, 180, 171, 0.2);
+        }
 
         /* ================================================================
            VIEW SWITCH
@@ -242,6 +252,17 @@
         .currency-idr::before {
             content: 'Rp ';
         }
+        .chart-bar {
+            transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            min-height: 8px;
+        }
+        .chart-bar:hover {
+            filter: brightness(1.25);
+            transform: scaleY(1.02);
+            transform-origin: bottom;
+        }
     </style>
 </head>
 <body>
@@ -286,13 +307,13 @@ DASHBOARD UTAMA
             <p class="text-[10px] uppercase tracking-[0.2em] text-[#ccc3d8] mt-1 font-medium">Panel Admin</p>
         </div>
         <nav class="flex-1 px-3 space-y-1">
-            <a href="#" data-view="dashboard" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+            <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">dashboard</span> Dashboard
             </a>
             <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">inventory_2</span> Produk
             </a>
-            <a href="#" data-view="orders" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+            <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">shopping_cart</span> Pesanan
             </a>
             <a href="#" data-view="users" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
@@ -317,11 +338,11 @@ MAIN CONTENT
 
     <!-- TOPBAR -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
-        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Pesanan</h2>
+        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
         <div class="flex items-center gap-4 ml-auto">
             <div class="relative hidden lg:block">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
-                <input type="text" placeholder="Cari pesanan..."
+                <input type="text" placeholder="Cari..." id="globalSearch"
                 class="w-72 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
             </div>
             <button class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative">
@@ -339,159 +360,500 @@ MAIN CONTENT
     <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
 
         <!-- ============================================================
-        VIEW: ORDERS (aktif)
+        VIEW: DASHBOARD
         ============================================================ -->
-        <div id="viewOrders" class="view active">
-
-            <!-- Page Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Manajemen Pesanan</h3>
-                    <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
-                </div>
-                <div class="flex gap-3">
-                    <button class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
-                    </button>
-                    <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white text-sm font-medium flex items-center gap-2 btn-primary-glow hover:opacity-90 transition">
-                        <span class="material-symbols-outlined text-[18px]">download</span> Ekspor
-                    </button>
-                </div>
-            </div>
+        <div id="viewDashboard" class="view active">
 
             <!-- Stats Grid -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pesanan Hari Ini</p>
-                    <div class="flex items-end justify-between">
-                        <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
-                        <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
+                    <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pendapatan Hari Ini</p>
-                    <div class="flex items-end justify-between">
-                        <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
-                        <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#06b6d4]">receipt_long</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
+                    <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#d2bbff]/5 to-transparent"></div>
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Menunggu Proses</p>
-                    <div class="flex items-end justify-between relative">
-                        <span id="statPending" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#d2bbff]">0</span>
-                        <span class="text-[#ffb784] text-[10px] font-medium">Butuh perhatian</span>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb784]">pending_actions</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Menunggu Proses</p>
+                    <h3 id="dashPending" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#ffb784] to-[#d2bbff] w-[30%] rounded-full shadow-[0_0_12px_rgba(255,183,132,0.3)]"></div>
                     </div>
                 </div>
-                <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Tingkat Pembatalan</p>
-                    <div class="flex items-end justify-between">
-                        <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
-                        <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
+
+                <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb0cd]">inventory_2</span></div>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Produk</p>
+                    <h3 id="dashTotalProducts" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
+                    <div class="mt-3 h-1 w-full bg-[#2d3449] rounded-full overflow-hidden">
+                        <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[85%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Orders Table -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
-                    <div class="flex items-center gap-2">
-                        <span class="text-sm font-semibold text-[#dae2fc]">Transaksi Terbaru</span>
-                        <div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5">
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">Semua</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Menunggu</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Selesai</button>
-                            <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Dibatalkan</button>
+            <!-- Chart + Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Chart -->
+                <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Grafik Penjualan</h3>
+                            <p class="text-xs text-[#ccc3d8] mt-0.5">Performa 30 hari terakhir</p>
+                        </div>
+                        <div class="flex gap-1.5">
+                            <button class="px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition">1M</button>
+                            <button class="px-3 py-1 rounded-lg bg-[#d2bbff]/10 border border-[#d2bbff]/40 text-[#d2bbff] text-xs font-medium">3M</button>
+                            <button class="px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition">6M</button>
                         </div>
                     </div>
-                    <div class="ml-auto relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
-                        <input id="orderSearch" type="text" placeholder="Cari ID pesanan..."
-                        class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                    <div class="relative h-56 md:h-64 pt-2">
+                        <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10 px-1">
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                            <div class="border-t border-[#4a4455]"></div>
+                        </div>
+                        <div class="relative h-full flex items-end justify-between gap-1 md:gap-2">
+                            <div class="chart-bar w-full bg-[#d2bbff]/20 hover:bg-[#d2bbff]/30" style="height:28%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/20 hover:bg-[#d2bbff]/30" style="height:42%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/25 hover:bg-[#d2bbff]/35" style="height:35%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/30 hover:bg-[#d2bbff]/40" style="height:58%;"></div>
+                            <div class="chart-bar w-full bg-[#06b6d4]/25 hover:bg-[#06b6d4]/35" style="height:48%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/35 hover:bg-[#d2bbff]/45" style="height:72%;"></div>
+                            <div class="chart-bar w-full bg-[#06b6d4]/35 hover:bg-[#06b6d4]/45" style="height:82%;box-shadow:0 0 20px rgba(6,182,212,0.15);"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/30 hover:bg-[#d2bbff]/40" style="height:62%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/35 hover:bg-[#d2bbff]/45" style="height:88%;"></div>
+                            <div class="chart-bar w-full bg-[#d2bbff]/50 hover:bg-[#d2bbff]/60" style="height:100%;box-shadow:0 0 24px rgba(210,187,255,0.2);"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-[#ccc3d8]/60 mt-2 px-1 font-medium">
+                            <span>Minggu 1</span>
+                            <span>Minggu 2</span>
+                            <span>Minggu 3</span>
+                            <span>Minggu 4</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
-                            <tr>
-                                <th class="py-3 px-4 font-semibold">ID Pesanan</th>
-                                <th class="py-3 px-4 font-semibold">Pelanggan / Game ID</th>
-                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item / Total</th>
-                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th>
-                                <th class="py-3 px-4 font-semibold">Status</th>
-                                <th class="py-3 px-4 font-semibold text-right">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15">
-                            <!-- diisi JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
-                    <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
-                    <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                        <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                        </button>
-                        <div id="orderPaginationNumbers" class="flex gap-1">
-                            <!-- diisi JS -->
-                        </div>
-                        <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </button>
+                <!-- Recent Activity -->
+                <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Aktivitas Terbaru</h3>
+                        <a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline">Lihat Semua</a>
+                    </div>
+                    <div id="recentActivityList" class="flex-1 space-y-3 overflow-y-auto max-h-[240px] pr-1">
+                        <!-- diisi JS -->
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ============================================================
-        VIEW: DASHBOARD (placeholder)
-        ============================================================ -->
-        <div id="viewDashboard" class="view">
-            <div class="text-center py-16">
-                <span class="material-symbols-outlined text-6xl text-[#4a4455]">dashboard</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Dashboard</h3>
-                <p class="text-[#ccc3d8] mt-2">Beralih ke tab Pesanan untuk manajemen pesanan.</p>
-            </div>
-        </div>
-
-        <!-- ============================================================
-        VIEW: PRODUCTS (placeholder)
+        VIEW: PRODUK
         ============================================================ -->
         <div id="viewProducts" class="view">
-            <div class="text-center py-16">
-                <span class="material-symbols-outlined text-6xl text-[#4a4455]">inventory_2</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Produk</h3>
-                <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Produk</h3>
+                    <p class="text-sm text-[#ccc3d8]">Kelola produk, stok, dan harga.</p>
+                </div>
+                <button onclick="openProductModal()"
+                class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
+                <span class="material-symbols-outlined text-[18px]">add</span> Tambah Produk
+            </button>
+        </div>
+
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+                <div class="flex items-center gap-2">
+                    <span id="productCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Produk</span>
+                    <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Sinkron
+                    </span>
+                </div>
+                <div class="ml-auto relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                    <input type="text" id="productSearch" placeholder="Cari produk..."
+                    class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">ID</th>
+                            <th class="py-3 px-4 font-semibold">Nama Produk</th>
+                            <th class="py-3 px-4 font-semibold hidden sm:table-cell">Kategori</th>
+                            <th class="py-3 px-4 font-semibold text-right">Harga</th>
+                            <th class="py-3 px-4 font-semibold text-right hidden md:table-cell">Stok / Status</th>
+                            <th class="py-3 px-4 font-semibold text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="productShowFrom">1</span>-<span id="productShowTo">5</span> dari <span id="productTotalItems">0</span> produk</span>
+                <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                    <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                    </button>
+                    <div id="productPaginationNumbers" class="flex gap-1"></div>
+                    <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    VIEW: PESANAN
+    ============================================================ -->
+    <div id="viewOrders" class="view">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Pesanan</h3>
+                <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">filter_list</span> Filter
+                </button>
+                <button class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white text-sm font-medium flex items-center gap-2 btn-primary-glow hover:opacity-90 transition">
+                    <span class="material-symbols-outlined text-[18px]">download</span> Ekspor
+                </button>
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: USERS (placeholder)
-        ============================================================ -->
-        <div id="viewUsers" class="view">
-            <div class="text-center py-16">
-                <span class="material-symbols-outlined text-6xl text-[#4a4455]">group</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Pengguna</h3>
-                <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pesanan Hari Ini</p>
+                <div class="flex items-end justify-between">
+                    <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
+                    <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pendapatan Hari Ini</p>
+                <div class="flex items-end justify-between">
+                    <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
+                    <span class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#d2bbff]/5 to-transparent"></div>
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Menunggu Proses</p>
+                <div class="flex items-end justify-between relative">
+                    <span id="statPending" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#d2bbff]">0</span>
+                    <span class="text-[#ffb784] text-[10px] font-medium">Butuh perhatian</span>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-4">
+                <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Tingkat Pembatalan</p>
+                <div class="flex items-end justify-between">
+                    <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
+                    <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
+                </div>
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: SETTINGS (placeholder)
-        ============================================================ -->
-        <div id="viewSettings" class="view">
-            <div class="text-center py-16">
-                <span class="material-symbols-outlined text-6xl text-[#4a4455]">settings</span>
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] mt-4">Pengaturan</h3>
-                <p class="text-[#ccc3d8] mt-2">Fitur ini sedang dalam pengembangan.</p>
+        <div class="glass-card rounded-2xl overflow-hidden">
+            <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-[#dae2fc]">Transaksi Terbaru</span>
+                    <div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5">
+                        <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">Semua</button>
+                        <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Menunggu</button>
+                        <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Selesai</button>
+                        <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Dibatalkan</button>
+                    </div>
+                </div>
+                <div class="ml-auto relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                    <input id="orderSearch" type="text" placeholder="Cari ID pesanan..."
+                    class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                        <tr>
+                            <th class="py-3 px-4 font-semibold">ID Pesanan</th>
+                            <th class="py-3 px-4 font-semibold">Pelanggan / Game ID</th>
+                            <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item / Total</th>
+                            <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th>
+                            <th class="py-3 px-4 font-semibold">Status</th>
+                            <th class="py-3 px-4 font-semibold text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
+                </table>
+            </div>
+            <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
+                <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                    <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
+                        <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                    </button>
+                    <div id="orderPaginationNumbers" class="flex gap-1"></div>
+                    <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
+                        <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                    </button>
+                </div>
             </div>
         </div>
+    </div>
 
-    </main>
+    <!-- ============================================================
+    VIEW: PENGGUNA
+    ============================================================ -->
+    <div id="viewUsers" class="view">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Pengguna</h3>
+                <p class="text-sm text-[#ccc3d8]">Kelola akun pengguna yang terdaftar.</p>
+            </div>
+            <button onclick="alert('Fitur tambah pengguna sedang dalam pengembangan')"
+            class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
+            <span class="material-symbols-outlined text-[18px]">person_add</span> Tambah Pengguna
+        </button>
+    </div>
+
+    <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+            <div class="flex items-center gap-2">
+                <span id="userCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Pengguna</span>
+            </div>
+            <div class="ml-auto relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                <input type="text" id="userSearch" placeholder="Cari pengguna..."
+                class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+            </div>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                    <tr>
+                        <th class="py-3 px-4 font-semibold">ID</th>
+                        <th class="py-3 px-4 font-semibold">Nama</th>
+                        <th class="py-3 px-4 font-semibold hidden sm:table-cell">Email</th>
+                        <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal Daftar</th>
+                        <th class="py-3 px-4 font-semibold">Status</th>
+                        <th class="py-3 px-4 font-semibold text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
+            </table>
+        </div>
+        <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+            <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="userShowFrom">1</span>-<span id="userShowTo">5</span> dari <span id="userTotalItems">0</span> pengguna</span>
+            <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                <button id="userPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
+                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                <div id="userPaginationNumbers" class="flex gap-1"></div>
+                <button id="userNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
+                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- ============================================================
+VIEW: PENGATURAN
+============================================================ -->
+<div id="viewSettings" class="view">
+    <div class="mb-6">
+        <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
+        <p class="text-sm text-[#ccc3d8]">Kelola konfigurasi global, gateway pembayaran, dan profil admin.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- General Settings -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="glass-card rounded-2xl p-6">
+                <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
+                    <span class="material-symbols-outlined text-[#d2bbff]">build</span>
+                    <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Pengaturan Umum</h4>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Toko</label>
+                        <input id="siteName" type="text" value="LekszyStore"
+                        class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition mt-1" />
+                    </div>
+                    <div>
+                        <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Email Dukungan</label>
+                        <input id="supportEmail" type="email" value="support@lekszystore.com"
+                        class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition mt-1" />
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                        <div>
+                            <h5 class="font-semibold text-sm text-[#dae2fc]">Mode Pemeliharaan</h5>
+                            <p class="text-xs text-[#ccc3d8]">Nonaktifkan akses publik ke toko.</p>
+                        </div>
+                        <div class="relative inline-block w-12 flex-shrink-0">
+                            <input type="checkbox" id="maintenanceToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" />
+                            <label for="maintenanceToggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                        </div>
+                    </div>
+                    <div class="flex justify-end pt-2">
+                        <button onclick="saveSettings()"
+                        class="px-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Gateways -->
+        <div class="glass-card rounded-2xl p-6">
+            <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
+                <span class="material-symbols-outlined text-[#06b6d4]">account_balance_wallet</span>
+                <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Gateway Pembayaran</h4>
+            </div>
+            <p class="text-sm text-[#ccc3d8] mb-4">Aktifkan atau nonaktifkan metode pembayaran.</p>
+            <div class="space-y-3">
+                <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#06b6d4] text-sm">D</div>
+                        <span class="font-medium text-sm text-[#dae2fc]">DANA</span>
+                    </div>
+                    <div class="relative inline-block w-12 flex-shrink-0">
+                        <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-dana" />
+                        <label for="gateway-dana" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                    </div>
+                </div>
+                <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#d2bbff] text-sm">O</div>
+                        <span class="font-medium text-sm text-[#dae2fc]">OVO</span>
+                    </div>
+                    <div class="relative inline-block w-12 flex-shrink-0">
+                        <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-ovo" />
+                        <label for="gateway-ovo" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                    </div>
+                </div>
+                <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center font-bold text-[#ffb784] text-sm">Q</div>
+                        <span class="font-medium text-sm text-[#dae2fc]">QRIS</span>
+                    </div>
+                    <div class="relative inline-block w-12 flex-shrink-0">
+                        <input type="checkbox" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-qris" />
+                        <label for="gateway-qris" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                    </div>
+                </div>
+                <div class="gateway-card flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-[#222a3d] flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[#ffb0cd] text-[20px]">account_balance</span>
+                        </div>
+                        <span class="font-medium text-sm text-[#dae2fc]">Virtual Account</span>
+                    </div>
+                    <div class="relative inline-block w-12 flex-shrink-0">
+                        <input type="checkbox" checked class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" id="gateway-va" />
+                        <label for="gateway-va" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Profile -->
+    <div class="lg:col-span-1">
+        <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center h-full">
+            <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-[#d2bbff] mb-4 relative group cursor-pointer">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
+                alt="Admin" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-[#020617]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                    <span class="material-symbols-outlined text-[#dae2fc]">edit</span>
+                </div>
+            </div>
+            <h4 class="font-semibold text-lg text-[#dae2fc]">Administrator</h4>
+            <span class="text-[10px] uppercase tracking-[0.12em] bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-full border border-[#d2bbff]/20 mt-1">Super Admin</span>
+            <div class="w-full mt-6 text-left space-y-4">
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Pengguna</label>
+                    <input type="text" value="admin_root" disabled
+                    class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" />
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Kata Sandi</label>
+                    <div class="relative">
+                        <input type="password" value="********" disabled
+                        class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" />
+                        <button class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d2bbff] text-xs font-medium hover:underline">Ubah</button>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-[#4a4455]/20">
+                    <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Autentikasi Dua Faktor</label>
+                    <div class="flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20 mt-1">
+                        <span class="text-sm text-[#dae2fc]">Aplikasi Authenticator</span>
+                        <span class="flex items-center gap-1 text-[#06b6d4] text-xs font-medium">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+</main>
+</div>
+</div>
+
+<!-- ================================================================
+MODAL PRODUK
+================================================================ -->
+<div id="productModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="flex items-center justify-between mb-5">
+            <h3 id="modalTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Tambah Produk</h3>
+            <button onclick="closeProductModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
+        </div>
+        <input type="hidden" id="editId" />
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Produk</label>
+                <input id="pName" type="text" placeholder="Masukkan nama produk"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Harga Jual (Rp)</label>
+                <input id="pPrice" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Harga Modal (Rp)</label>
+                <input id="pCost" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Stok</label>
+                <input id="pStock" type="number" placeholder="0"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+        </div>
+        <button onclick="saveProduct()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
+            Simpan Produk
+        </button>
+    </div>
 </div>
 
 <!-- ================================================================
@@ -501,17 +863,14 @@ MODAL DETAIL PESANAN
     <div class="modal-box">
         <div class="flex items-center justify-between mb-5">
             <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Detail Pesanan</h3>
-            <button onclick="closeDetailModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
+            <button onclick="closeOrderDetailModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
         </div>
-        <div id="orderDetailContent" class="space-y-4">
-            <!-- diisi JS -->
-        </div>
+        <div id="orderDetailContent" class="space-y-4"></div>
     </div>
 </div>
 
-
 <!-- ================================================================
-JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
+JAVASCRIPT – FULL LOGIKA
 ================================================================ -->
 <script>
     // ================================================================
@@ -520,10 +879,16 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
     const API_BASE = '/api/admin';
     let currentToken = localStorage.getItem('adminToken');
     let allOrders = [];
-    let orderPage = 1;
-    const orderPerPage = 5;
-    let currentFilter = 'all';
-    let searchQuery = '';
+    let allProducts = [];
+    let allUsers = [];
+    let orderPage = 1,
+        productPage = 1,
+        userPage = 1;
+    const perPage = 5;
+    let currentFilter = 'all',
+        orderSearch = '',
+        productSearch = '',
+        userSearch = '';
 
     // ================================================================
     // FORMAT RUPIAH
@@ -544,9 +909,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
     }
 
     function verifyToken(token) {
-        fetch(`${API_BASE}?action=list`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
+        fetch(`${API_BASE}?action=list`, { headers: { 'Authorization': `Bearer ${token}` } })
             .then(res => {
                 if (res.status === 401) {
                     document.getElementById('loginError').style.display = 'block';
@@ -556,11 +919,7 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
                 if (!res.ok) throw new Error('Gagal koneksi ke server');
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'flex';
-                loadOrders();
-                // default active view orders
-                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-                document.querySelector('.nav-link[data-view="orders"]').classList.add('active');
-                document.getElementById('pageTitle').innerText = 'Pesanan';
+                loadAllData();
             })
             .catch(err => alert('Error: ' + err.message));
     }
@@ -575,25 +934,30 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
     // ================================================================
     // NAVIGASI
     // ================================================================
+    function navigateTo(view) {
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
+        if (activeLink) activeLink.classList.add('active');
+
+        const titles = { dashboard: 'Dashboard', products: 'Produk', orders: 'Pesanan', users: 'Pengguna',
+            settings: 'Pengaturan' };
+        document.getElementById('pageTitle').innerText = titles[view] || view;
+
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        const target = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
+        if (target) target.classList.add('active');
+
+        if (view === 'dashboard') loadDashboard();
+        if (view === 'products') loadProducts();
+        if (view === 'orders') loadOrders();
+        if (view === 'users') loadUsers();
+        if (view === 'settings') loadSettings();
+    }
+
     document.querySelectorAll('.nav-link').forEach(el => {
         el.addEventListener('click', function(e) {
             e.preventDefault();
-            const view = this.dataset.view;
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const target = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
-            if (target) target.classList.add('active');
-            // judul dalam bahasa Indonesia
-            const titles = {
-                dashboard: 'Dashboard',
-                products: 'Produk',
-                orders: 'Pesanan',
-                users: 'Pengguna',
-                settings: 'Pengaturan'
-            };
-            document.getElementById('pageTitle').innerText = titles[view] || view;
-            if (view === 'orders') loadOrders();
+            navigateTo(this.dataset.view);
         });
     });
 
@@ -612,40 +976,248 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
     }
 
     // ================================================================
-    // LOAD ORDERS + STATS
+    // LOAD ALL DATA (untuk dashboard)
+    // ================================================================
+    function loadAllData() {
+        Promise.all([
+            authFetch(`${API_BASE}?action=transactions`).then(r => r.json()),
+            authFetch(`${API_BASE}?action=list`).then(r => r.json()),
+            authFetch(`${API_BASE}?action=getUsers`).then(r => r.json()).catch(() => [])
+        ]).then(([orders, products, users]) => {
+            allOrders = orders || [];
+            allProducts = products || [];
+            allUsers = users || [];
+            navigateTo('dashboard');
+        }).catch(err => console.error('Gagal load data:', err));
+    }
+
+    // ================================================================
+    // DASHBOARD
+    // ================================================================
+    function loadDashboard() {
+        const totalRevenue = allOrders.reduce((s, o) => s + (o.total || 0), 0);
+        const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting').length;
+        document.getElementById('dashTotalRevenue').innerText = formatRupiah(totalRevenue);
+        document.getElementById('dashTotalOrders').innerText = allOrders.length;
+        document.getElementById('dashPending').innerText = pending;
+        document.getElementById('dashTotalProducts').innerText = allProducts.length;
+
+        // Recent activity
+        const container = document.getElementById('recentActivityList');
+        container.innerHTML = '';
+        const recent = allOrders.slice(0, 4);
+        if (recent.length === 0) {
+            container.innerHTML =
+            '<div class="text-center text-[#ccc3d8] text-sm py-6">Belum ada aktivitas</div>';
+            return;
+        }
+        recent.forEach(o => {
+            const status = o.status || 'pending';
+            const isCompleted = status === 'completed' || status === 'paid';
+            const isCancelled = status === 'cancelled';
+            const isPending = !isCompleted && !isCancelled;
+            const icon = isCompleted ? 'shopping_bag' : isCancelled ? 'error' : 'sync';
+            const color = isCompleted ? '#06b6d4' : isCancelled ? '#ffb4ab' : '#ffb784';
+            const label = isCompleted ? 'Selesai' : isCancelled ? 'Dibatalkan' : 'Menunggu';
+            const div = document.createElement('div');
+            div.className =
+                'flex items-center justify-between p-2.5 rounded-xl hover:bg-[#222a3d]/40 transition cursor-pointer';
+            div.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-8 h-8 rounded-full bg-[#222a3d] flex items-center justify-center flex-shrink-0" style="border:1px solid ${color}33;">
+                            <span class="material-symbols-outlined text-[18px]" style="color:${color};">${icon}</span>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-[#dae2fc] truncate">${o.transactionId || 'Order'}</p>
+                            <p class="text-xs text-[#ccc3d8] truncate">${o.customer?.name || 'Unknown'}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0 ml-2">
+                        <p class="text-sm font-semibold text-[#dae2fc]">${formatRupiah(o.total || 0)}</p>
+                        <span class="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full ${isCompleted ? 'badge-selesai' : isCancelled ? 'badge-dibatalkan' : 'badge-pending'}">${label}</span>
+                    </div>
+                `;
+            container.appendChild(div);
+        });
+    }
+
+    // ================================================================
+    // PRODUK (CRUD)
+    // ================================================================
+    function loadProducts() {
+        authFetch(`${API_BASE}?action=list`)
+            .then(res => res.json())
+            .then(data => {
+                allProducts = data || [];
+                document.getElementById('productTotalItems').innerText = allProducts.length;
+                document.getElementById('productCount').innerText = allProducts.length + ' Produk';
+                renderProductTable();
+            })
+            .catch(err => alert('Gagal load produk: ' + err.message));
+    }
+
+    function renderProductTable() {
+        const search = document.getElementById('productSearch').value.toLowerCase();
+        let filtered = allProducts.filter(p => (p.name || '').toLowerCase().includes(search));
+        const total = filtered.length,
+            pages = Math.ceil(total / perPage) || 1;
+        if (productPage > pages) productPage = pages;
+        const start = (productPage - 1) * perPage,
+            end = Math.min(start + perPage, total);
+        const pageItems = filtered.slice(start, end);
+
+        document.getElementById('productShowFrom').innerText = total === 0 ? 0 : start + 1;
+        document.getElementById('productShowTo').innerText = end;
+        document.getElementById('productTotalItems').innerText = total;
+
+        const tbody = document.getElementById('productTableBody');
+        tbody.innerHTML = '';
+        if (pageItems.length === 0) {
+            tbody.innerHTML =
+            '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Tidak ada produk</td></tr>';
+            return;
+        }
+        pageItems.forEach(p => {
+            const statusClass = p.stock > 10 ? 'badge-aktif' : p.stock > 0 ? 'badge-pending' : 'badge-nonaktif';
+            const statusText = p.stock > 10 ? 'Tersedia' : p.stock > 0 ? 'Stok Rendah (' + p.stock + ')' :
+                'Habis';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td class="py-3 px-4 text-sm">${p.id}</td>
+                    <td class="py-3 px-4"><span class="font-medium">${p.name || 'Tanpa nama'}</span></td>
+                    <td class="py-3 px-4 hidden sm:table-cell text-xs bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-full border border-[#4a4455]/20 inline-block">Umum</td>
+                    <td class="py-3 px-4 text-right font-medium">${formatRupiah(p.price || 0)}</td>
+                    <td class="py-3 px-4 text-right hidden md:table-cell">
+                        <span class="text-xs font-medium ${statusClass} px-2 py-0.5 rounded-full">${statusText}</span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g,'&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                        <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                    </td>
+                `;
+            tbody.appendChild(tr);
+        });
+        renderProductPagination(pages);
+    }
+
+    function renderProductPagination(pages) {
+        const container = document.getElementById('productPaginationNumbers');
+        container.innerHTML = '';
+        for (let i = 1; i <= Math.min(pages, 5); i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${i === productPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            btn.onclick = () => { productPage = i;
+                renderProductTable(); };
+            container.appendChild(btn);
+        }
+        if (pages > 5) {
+            const dots = document.createElement('span');
+            dots.className = 'text-[#ccc3d8] px-1';
+            dots.innerText = '...';
+            container.appendChild(dots);
+            const last = document.createElement('button');
+            last.innerText = pages;
+            last.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${pages === productPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { productPage = pages;
+                renderProductTable(); };
+            container.appendChild(last);
+        }
+        document.getElementById('productPrevPage').disabled = productPage <= 1;
+        document.getElementById('productPrevPage').onclick = () => { if (productPage > 1) { productPage--;
+                renderProductTable(); } };
+        document.getElementById('productNextPage').disabled = productPage >= pages;
+        document.getElementById('productNextPage').onclick = () => { if (productPage < pages) { productPage++;
+                renderProductTable(); } };
+    }
+
+    document.getElementById('productSearch').addEventListener('input', function() {
+        productPage = 1;
+        renderProductTable();
+    });
+
+    function openProductModal(product = null) {
+        const modal = document.getElementById('productModal');
+        modal.classList.add('show');
+        document.getElementById('editId').value = '';
+        document.getElementById('modalTitle').innerText = 'Tambah Produk';
+        document.getElementById('pName').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pCost').value = '';
+        document.getElementById('pStock').value = '';
+        if (product) {
+            document.getElementById('modalTitle').innerText = 'Edit Produk';
+            document.getElementById('editId').value = product.id;
+            document.getElementById('pName').value = product.name || '';
+            document.getElementById('pPrice').value = product.price || '';
+            document.getElementById('pCost').value = product.cost || '';
+            document.getElementById('pStock').value = product.stock || '';
+        }
+    }
+
+    function closeProductModal() {
+        document.getElementById('productModal').classList.remove('show');
+    }
+
+    function saveProduct() {
+        const id = document.getElementById('editId').value;
+        const product = {
+            name: document.getElementById('pName').value.trim(),
+            price: Number(document.getElementById('pPrice').value),
+            cost: Number(document.getElementById('pCost').value) || 0,
+            stock: Number(document.getElementById('pStock').value) || 0,
+        };
+        if (!product.name) return alert('Nama produk wajib diisi!');
+        if (!product.price || product.price <= 0) return alert('Harga harus lebih dari 0!');
+        const action = id ? 'edit' : 'add';
+        const payload = { action, product };
+        if (id) payload.product.id = Number(id);
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(() => { closeProductModal();
+                loadProducts();
+                loadDashboard(); })
+            .catch(err => alert('Gagal simpan: ' + err.message));
+    }
+
+    function deleteProduct(id) {
+        if (!confirm('Yakin hapus produk ini?')) return;
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
+            .then(() => { loadProducts();
+                loadDashboard(); })
+            .catch(err => alert('Gagal hapus: ' + err.message));
+    }
+
+    // ================================================================
+    // PESANAN
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
             .then(res => res.json())
-            .then(orders => {
-                allOrders = orders || [];
-                updateStats();
-                applyFiltersAndRender();
+            .then(data => {
+                allOrders = data || [];
+                updateOrderStats();
+                applyOrderFilters();
             })
-            .catch(err => alert('Gagal memuat pesanan: ' + err.message));
+            .catch(err => alert('Gagal load pesanan: ' + err.message));
     }
 
-    // ================================================================
-    // STATISTIK
-    // ================================================================
-    function updateStats() {
+    function updateOrderStats() {
         const today = new Date().toDateString();
         const todayOrders = allOrders.filter(o => new Date(o.createdAt).toDateString() === today);
-        const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+        const todayRevenue = todayOrders.reduce((s, o) => s + (o.total || 0), 0);
         const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
         const cancelled = allOrders.filter(o => o.status === 'cancelled');
         const rate = allOrders.length > 0 ? ((cancelled.length / allOrders.length) * 100).toFixed(1) : 0;
-
         document.getElementById('statTodayOrders').innerText = todayOrders.length;
         document.getElementById('statTodayRevenue').innerText = formatRupiah(todayRevenue);
         document.getElementById('statPending').innerText = pending.length;
         document.getElementById('statCancellationRate').innerText = rate + '%';
     }
 
-    // ================================================================
-    // FILTER & PAGINATION
-    // ================================================================
-    function applyFiltersAndRender() {
+    function applyOrderFilters() {
         const search = document.getElementById('orderSearch').value.toLowerCase();
         let filtered = allOrders.filter(o => {
             const matchStatus = currentFilter === 'all' || o.status === currentFilter;
@@ -653,31 +1225,25 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
                 (o.customer?.name || '').toLowerCase().includes(search);
             return matchStatus && matchSearch;
         });
-
-        const totalItems = filtered.length;
-        const totalPages = Math.ceil(totalItems / orderPerPage) || 1;
-        if (orderPage > totalPages) orderPage = totalPages;
-        const start = (orderPage - 1) * orderPerPage;
-        const end = Math.min(start + orderPerPage, totalItems);
+        const total = filtered.length,
+            pages = Math.ceil(total / perPage) || 1;
+        if (orderPage > pages) orderPage = pages;
+        const start = (orderPage - 1) * perPage,
+            end = Math.min(start + perPage, total);
         const pageItems = filtered.slice(start, end);
-
-        document.getElementById('orderShowFrom').innerText = totalItems === 0 ? 0 : start + 1;
+        document.getElementById('orderShowFrom').innerText = total === 0 ? 0 : start + 1;
         document.getElementById('orderShowTo').innerText = end;
-        document.getElementById('orderTotalItems').innerText = totalItems;
-
+        document.getElementById('orderTotalItems').innerText = total;
         renderOrderRows(pageItems);
-        renderPagination(totalPages);
+        renderOrderPagination(pages);
     }
 
-    // ================================================================
-    // RENDER TABLE ROWS
-    // ================================================================
     function renderOrderRows(orders) {
         const tbody = document.getElementById('orderTableBody');
         tbody.innerHTML = '';
         if (orders.length === 0) {
             tbody.innerHTML =
-                '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Tidak ada pesanan ditemukan</td></tr>';
+            '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Tidak ada pesanan</td></tr>';
             return;
         }
         orders.forEach(o => {
@@ -685,54 +1251,30 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
             const isCompleted = status === 'completed' || status === 'paid';
             const isCancelled = status === 'cancelled';
             const isPending = !isCompleted && !isCancelled;
-
-            // Badge & label Indonesia
-            let statusClass, statusLabel;
-            if (isCompleted) {
-                statusClass = 'badge-selesai';
-                statusLabel = 'Selesai';
-            } else if (isCancelled) {
-                statusClass = 'badge-dibatalkan';
-                statusLabel = 'Dibatalkan';
-            } else {
-                statusClass = 'badge-pending';
-                statusLabel = 'Menunggu';
-            }
-
+            let cls, label;
+            if (isCompleted) { cls = 'badge-selesai';
+                label = 'Selesai'; } else if (isCancelled) { cls = 'badge-dibatalkan';
+                label = 'Dibatalkan'; } else { cls = 'badge-pending';
+                label = 'Menunggu'; }
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-[#222a3d]/30 transition cursor-pointer';
             tr.innerHTML = `
-                    <td class="py-3 px-4" onclick="openDetailModal('${o.transactionId || o._id}')">
-                        <span class="text-sm font-medium text-[#d2bbff]">${o.transactionId || o._id?.slice(0,8)}</span>
+                    <td class="py-3 px-4" onclick="openOrderDetailModal('${o.transactionId || o._id}')"><span class="text-sm font-medium text-[#d2bbff]">${o.transactionId || o._id?.slice(0,8)}</span></td>
+                    <td class="py-3 px-4" onclick="openOrderDetailModal('${o.transactionId || o._id}')">
+                        <div><p class="text-sm font-medium text-[#dae2fc]">${o.customer?.name || 'Tidak diketahui'}</p><p class="text-[10px] text-[#ccc3d8]">UID: ${o.customer?.uid || 'N/A'}</p></div>
                     </td>
-                    <td class="py-3 px-4" onclick="openDetailModal('${o.transactionId || o._id}')">
-                        <div>
-                            <p class="text-sm font-medium text-[#dae2fc]">${o.customer?.name || 'Tidak diketahui'}</p>
-                            <p class="text-[10px] text-[#ccc3d8]">UID: ${o.customer?.uid || 'N/A'}</p>
-                        </div>
+                    <td class="py-3 px-4 hidden sm:table-cell" onclick="openOrderDetailModal('${o.transactionId || o._id}')">
+                        <div><p class="text-sm text-[#dae2fc]">${o.product?.name || 'Produk'}</p><p class="text-xs font-semibold text-[#ffb0cd]">${formatRupiah(o.total || 0)}</p></div>
                     </td>
-                    <td class="py-3 px-4 hidden sm:table-cell" onclick="openDetailModal('${o.transactionId || o._id}')">
-                        <div>
-                            <p class="text-sm text-[#dae2fc]">${o.product?.name || 'Produk'}</p>
-                            <p class="text-xs font-semibold text-[#ffb0cd]">${formatRupiah(o.total || 0)}</p>
-                        </div>
+                    <td class="py-3 px-4 hidden md:table-cell" onclick="openOrderDetailModal('${o.transactionId || o._id}')">
+                        <div><p class="text-sm text-[#dae2fc]">${new Date(o.createdAt).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'})}</p><p class="text-[10px] text-[#ccc3d8]">${new Date(o.createdAt).toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}</p></div>
                     </td>
-                    <td class="py-3 px-4 hidden md:table-cell" onclick="openDetailModal('${o.transactionId || o._id}')">
-                        <div>
-                            <p class="text-sm text-[#dae2fc]">${new Date(o.createdAt).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })}</p>
-                            <p class="text-[10px] text-[#ccc3d8]">${new Date(o.createdAt).toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' })}</p>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4" onclick="openDetailModal('${o.transactionId || o._id}')">
-                        <span class="inline-block text-[10px] font-medium px-3 py-1 rounded-full ${statusClass}">${statusLabel}</span>
-                    </td>
+                    <td class="py-3 px-4" onclick="openOrderDetailModal('${o.transactionId || o._id}')"><span class="inline-block text-[10px] font-medium px-3 py-1 rounded-full ${cls}">${label}</span></td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
                             ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
                             ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
-                            <button onclick="event.stopPropagation();openDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition">
-                                <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                            </button>
+                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
                         </div>
                     </td>
                 `;
@@ -740,45 +1282,39 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
         });
     }
 
-    // ================================================================
-    // PAGINATION
-    // ================================================================
-    function renderPagination(totalPages) {
+    function renderOrderPagination(pages) {
         const container = document.getElementById('orderPaginationNumbers');
         container.innerHTML = '';
-        for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+        for (let i = 1; i <= Math.min(pages, 5); i++) {
             const btn = document.createElement('button');
             btn.innerText = i;
             btn.className =
                 `w-8 h-8 rounded-lg text-sm font-medium transition ${i === orderPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
             btn.onclick = () => { orderPage = i;
-                applyFiltersAndRender(); };
+                applyOrderFilters(); };
             container.appendChild(btn);
         }
-        if (totalPages > 5) {
+        if (pages > 5) {
             const dots = document.createElement('span');
             dots.className = 'text-[#ccc3d8] px-1';
             dots.innerText = '...';
             container.appendChild(dots);
             const last = document.createElement('button');
-            last.innerText = totalPages;
+            last.innerText = pages;
             last.className =
-                `w-8 h-8 rounded-lg text-sm font-medium transition ${totalPages === orderPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
-            last.onclick = () => { orderPage = totalPages;
-                applyFiltersAndRender(); };
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${pages === orderPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { orderPage = pages;
+                applyOrderFilters(); };
             container.appendChild(last);
         }
         document.getElementById('orderPrevPage').disabled = orderPage <= 1;
         document.getElementById('orderPrevPage').onclick = () => { if (orderPage > 1) { orderPage--;
-                applyFiltersAndRender(); } };
-        document.getElementById('orderNextPage').disabled = orderPage >= totalPages;
-        document.getElementById('orderNextPage').onclick = () => { if (orderPage < totalPages) { orderPage++;
-                applyFiltersAndRender(); } };
+                applyOrderFilters(); } };
+        document.getElementById('orderNextPage').disabled = orderPage >= pages;
+        document.getElementById('orderNextPage').onclick = () => { if (orderPage < pages) { orderPage++;
+                applyOrderFilters(); } };
     }
 
-    // ================================================================
-    // EVENT LISTENERS (Filter & Search)
-    // ================================================================
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.filter-btn').forEach(b => b.className =
@@ -787,127 +1323,212 @@ JAVASCRIPT – FULL LOGIKA ORDERS (Indonesia + Rupiah)
                 'px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]';
             currentFilter = this.dataset.filter;
             orderPage = 1;
-            applyFiltersAndRender();
+            applyOrderFilters();
         });
     });
-
     document.getElementById('orderSearch').addEventListener('input', function() {
-        searchQuery = this.value;
         orderPage = 1;
-        applyFiltersAndRender();
+        applyOrderFilters();
     });
 
-    // ================================================================
-    // UPDATE ORDER STATUS
-    // ================================================================
     function updateOrderStatus(transactionId, status) {
         if (!confirm(`Ubah status pesanan ${transactionId} menjadi ${status === 'completed' ? 'Selesai' : 'Dibatalkan'}?`))
             return;
-        authFetch(API_BASE, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'updateOrder', transactionId, status })
-            })
-            .then(res => res.json())
-            .then(data => {
-                loadOrders();
-            })
-            .catch(err => alert('Gagal update status: ' + err.message));
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'updateOrder', transactionId,
+                status }) })
+            .then(() => loadOrders())
+            .catch(err => alert('Gagal update: ' + err.message));
     }
 
-    // ================================================================
-    // MODAL DETAIL PESANAN (Indonesia + Rupiah)
-    // ================================================================
-    function openDetailModal(transactionId) {
+    function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
-        if (!order) return alert('Data pesanan tidak ditemukan');
-
-        const container = document.getElementById('orderDetailContent');
+        if (!order) return alert('Data tidak ditemukan');
         const status = order.status || 'pending';
         const isCompleted = status === 'completed' || status === 'paid';
         const isCancelled = status === 'cancelled';
         const isPending = !isCompleted && !isCancelled;
-        let statusLabel, statusClass;
-        if (isCompleted) { statusLabel = 'Selesai';
-            statusClass = 'badge-selesai'; } else if (isCancelled) { statusLabel = 'Dibatalkan';
-            statusClass = 'badge-dibatalkan'; } else { statusLabel = 'Menunggu';
-            statusClass = 'badge-pending'; }
-
-        // Hitung keuntungan (profit) jika ada data cost
-        const totalCost = (order.items || []).reduce((sum, item) => sum + (item.cost || 0) * (item.quantity || 1), 0);
+        let cls, label;
+        if (isCompleted) { cls = 'badge-selesai';
+            label = 'Selesai'; } else if (isCancelled) { cls = 'badge-dibatalkan';
+            label = 'Dibatalkan'; } else { cls = 'badge-pending';
+            label = 'Menunggu'; }
+        const totalCost = (order.items || []).reduce((s, i) => s + (i.cost || 0) * (i.quantity || 1), 0);
         const profit = (order.total || 0) - totalCost;
-
+        const container = document.getElementById('orderDetailContent');
         container.innerHTML = `
                 <div class="flex justify-between items-start border-b border-[#4a4455]/20 pb-3">
-                    <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">ID Pesanan</p>
-                        <p class="font-medium text-[#d2bbff]">${order.transactionId || order._id}</p>
-                    </div>
-                    <span class="inline-block text-xs font-medium px-3 py-1 rounded-full ${statusClass}">${statusLabel}</span>
+                    <div><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">ID Pesanan</p><p class="font-medium text-[#d2bbff]">${order.transactionId || order._id}</p></div>
+                    <span class="inline-block text-xs font-medium px-3 py-1 rounded-full ${cls}">${label}</span>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Pelanggan</p>
-                        <p class="font-medium">${order.customer?.name || 'Tidak diketahui'}</p>
-                        <p class="text-xs text-[#ccc3d8]">UID: ${order.customer?.uid || 'N/A'}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Tanggal</p>
-                        <p class="font-medium">${new Date(order.createdAt).toLocaleString('id-ID', { dateStyle:'medium', timeStyle:'short' })}</p>
-                    </div>
+                    <div><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Pelanggan</p><p class="font-medium">${order.customer?.name || 'Tidak diketahui'}</p><p class="text-xs text-[#ccc3d8]">UID: ${order.customer?.uid || 'N/A'}</p></div>
+                    <div><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Tanggal</p><p class="font-medium">${new Date(order.createdAt).toLocaleString('id-ID', {dateStyle:'medium',timeStyle:'short'})}</p></div>
                 </div>
-
                 <div class="border-t border-[#4a4455]/20 pt-3">
                     <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] mb-2">Item</p>
-                    ${(order.items || []).map(item => `
-                        <div class="flex justify-between py-1.5 border-b border-[#4a4455]/10 last:border-0">
-                            <span class="text-sm">${item.name || 'Produk'} × ${item.quantity || 1}</span>
-                            <span class="text-sm font-medium">${formatRupiah((item.price || 0) * (item.quantity || 1))}</span>
-                        </div>
-                    `).join('')}
-                    ${(!order.items || order.items.length === 0) ? `<p class="text-sm text-[#ccc3d8]">Tidak ada item detail</p>` : ''}
+                    ${(order.items || []).map(i => `<div class="flex justify-between py-1.5 border-b border-[#4a4455]/10 last:border-0"><span class="text-sm">${i.name || 'Produk'} × ${i.quantity || 1}</span><span class="text-sm font-medium">${formatRupiah((i.price || 0) * (i.quantity || 1))}</span></div>`).join('')}
+                    ${(!order.items || order.items.length === 0) ? '<p class="text-sm text-[#ccc3d8]">Tidak ada item detail</p>' : ''}
                 </div>
-
                 <div class="border-t border-[#4a4455]/20 pt-3 space-y-1">
-                    <div class="flex justify-between">
-                        <span class="text-[#ccc3d8]">Subtotal</span>
-                        <span>${formatRupiah(order.total || 0)}</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-[#ccc3d8]">Total Biaya</span>
-                        <span>${formatRupiah(totalCost)}</span>
-                    </div>
-                    <div class="flex justify-between text-lg font-bold text-[#06b6d4]">
-                        <span>Keuntungan</span>
-                        <span>${formatRupiah(profit)}</span>
-                    </div>
+                    <div class="flex justify-between"><span class="text-[#ccc3d8]">Subtotal</span><span>${formatRupiah(order.total || 0)}</span></div>
+                    <div class="flex justify-between"><span class="text-[#ccc3d8]">Total Biaya</span><span>${formatRupiah(totalCost)}</span></div>
+                    <div class="flex justify-between text-lg font-bold text-[#06b6d4]"><span>Keuntungan</span><span>${formatRupiah(profit)}</span></div>
                 </div>
-
                 ${order.notes ? `<div class="border-t border-[#4a4455]/20 pt-3"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Catatan</p><p class="text-sm">${order.notes}</p></div>` : ''}
-
                 <div class="flex gap-2 mt-2 pt-3 border-t border-[#4a4455]/20">
-                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeDetailModal();" class="flex-1 py-2 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">Proses Pesanan</button>` : ''}
-                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeDetailModal();" class="flex-1 py-2 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">Batalkan Pesanan</button>` : ''}
-                    <button onclick="closeDetailModal()" class="flex-1 py-2 rounded-lg bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Tutup</button>
+                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeOrderDetailModal();" class="flex-1 py-2 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">Proses Pesanan</button>` : ''}
+                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeOrderDetailModal();" class="flex-1 py-2 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">Batalkan Pesanan</button>` : ''}
+                    <button onclick="closeOrderDetailModal()" class="flex-1 py-2 rounded-lg bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Tutup</button>
                 </div>
             `;
-
         document.getElementById('orderDetailModal').classList.add('show');
     }
 
-    function closeDetailModal() {
+    function closeOrderDetailModal() {
         document.getElementById('orderDetailModal').classList.remove('show');
     }
-
-    // Tutup modal dengan klik di luar
     document.getElementById('orderDetailModal').addEventListener('click', function(e) {
-        if (e.target === this) closeDetailModal();
+        if (e.target === this) closeOrderDetailModal();
     });
+
+    // ================================================================
+    // PENGGUNA
+    // ================================================================
+    function loadUsers() {
+        authFetch(`${API_BASE}?action=getUsers`)
+            .then(res => res.json())
+            .then(data => {
+                allUsers = data || [];
+                document.getElementById('userTotalItems').innerText = allUsers.length;
+                document.getElementById('userCount').innerText = allUsers.length + ' Pengguna';
+                renderUserTable();
+            })
+            .catch(() => {
+                // fallback contoh data jika endpoint belum ada
+                allUsers = [
+                    { id: 1, name: 'Admin', email: 'admin@lekszystore.com', createdAt: new Date().toISOString(),
+                        status: 'aktif' },
+                    { id: 2, name: 'User Test', email: 'user@test.com', createdAt: new Date().toISOString(),
+                        status: 'aktif' }
+                ];
+                document.getElementById('userTotalItems').innerText = allUsers.length;
+                document.getElementById('userCount').innerText = allUsers.length + ' Pengguna';
+                renderUserTable();
+            });
+    }
+
+    function renderUserTable() {
+        const search = document.getElementById('userSearch').value.toLowerCase();
+        let filtered = allUsers.filter(u => (u.name || '').toLowerCase().includes(search) || (u.email || '').toLowerCase()
+            .includes(search));
+        const total = filtered.length,
+            pages = Math.ceil(total / perPage) || 1;
+        if (userPage > pages) userPage = pages;
+        const start = (userPage - 1) * perPage,
+            end = Math.min(start + perPage, total);
+        const pageItems = filtered.slice(start, end);
+        document.getElementById('userShowFrom').innerText = total === 0 ? 0 : start + 1;
+        document.getElementById('userShowTo').innerText = end;
+        document.getElementById('userTotalItems').innerText = total;
+
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = '';
+        if (pageItems.length === 0) {
+            tbody.innerHTML =
+            '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Tidak ada pengguna</td></tr>';
+            return;
+        }
+        pageItems.forEach(u => {
+            const statusClass = u.status === 'aktif' ? 'badge-aktif' : 'badge-nonaktif';
+            const statusLabel = u.status === 'aktif' ? 'Aktif' : 'Nonaktif';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td class="py-3 px-4 text-sm">${u.id}</td>
+                    <td class="py-3 px-4 font-medium">${u.name || 'Tanpa nama'}</td>
+                    <td class="py-3 px-4 hidden sm:table-cell text-sm">${u.email || '-'}</td>
+                    <td class="py-3 px-4 hidden md:table-cell text-sm">${u.createdAt ? new Date(u.createdAt).toLocaleDateString('id-ID') : '-'}</td>
+                    <td class="py-3 px-4"><span class="text-xs font-medium ${statusClass} px-2 py-0.5 rounded-full">${statusLabel}</span></td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="alert('Edit pengguna ${u.id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                        <button onclick="if(confirm('Hapus pengguna ${u.name}?')){alert('Hapus pengguna ${u.id}')}" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                    </td>
+                `;
+            tbody.appendChild(tr);
+        });
+        renderUserPagination(pages);
+    }
+
+    function renderUserPagination(pages) {
+        const container = document.getElementById('userPaginationNumbers');
+        container.innerHTML = '';
+        for (let i = 1; i <= Math.min(pages, 5); i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${i === userPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            btn.onclick = () => { userPage = i;
+                renderUserTable(); };
+            container.appendChild(btn);
+        }
+        if (pages > 5) {
+            const dots = document.createElement('span');
+            dots.className = 'text-[#ccc3d8] px-1';
+            dots.innerText = '...';
+            container.appendChild(dots);
+            const last = document.createElement('button');
+            last.innerText = pages;
+            last.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${pages === userPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { userPage = pages;
+                renderUserTable(); };
+            container.appendChild(last);
+        }
+        document.getElementById('userPrevPage').disabled = userPage <= 1;
+        document.getElementById('userPrevPage').onclick = () => { if (userPage > 1) { userPage--;
+                renderUserTable(); } };
+        document.getElementById('userNextPage').disabled = userPage >= pages;
+        document.getElementById('userNextPage').onclick = () => { if (userPage < pages) { userPage++;
+                renderUserTable(); } };
+    }
+    document.getElementById('userSearch').addEventListener('input', function() {
+        userPage = 1;
+        renderUserTable();
+    });
+
+    // ================================================================
+    // PENGATURAN
+    // ================================================================
+    function loadSettings() {
+        authFetch(`${API_BASE}?action=getSettings`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('siteName').value = data.siteName || 'LekszyStore';
+                document.getElementById('supportEmail').value = data.supportEmail || 'support@lekszystore.com';
+                document.getElementById('maintenanceToggle').checked = data.maintenanceMode || false;
+            })
+            .catch(() => {
+                document.getElementById('siteName').value = 'LekszyStore';
+                document.getElementById('supportEmail').value = 'support@lekszystore.com';
+                document.getElementById('maintenanceToggle').checked = false;
+            });
+    }
+
+    function saveSettings() {
+        const payload = {
+            siteName: document.getElementById('siteName').value.trim(),
+            supportEmail: document.getElementById('supportEmail').value.trim(),
+            maintenanceMode: document.getElementById('maintenanceToggle').checked,
+        };
+        authFetch(`${API_BASE}?action=saveSettings`, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(() => alert('✅ Pengaturan berhasil disimpan!'))
+            .catch(err => alert('❌ Gagal simpan: ' + err.message));
+    }
 
     // ================================================================
     // INISIALISASI
     // ================================================================
-    console.log('🚀 LekszyStore - Manajemen Pesanan dimuat.');
+    console.log('🚀 LekszyStore Admin Panel loaded.');
 </script>
 
 </body>
