@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LekszyStore - Panel Admin Pro</title>
 
-    <!-- ===== FAVICON ===== -->
-    <link rel="icon" type="image/png" href="/gambar/favicon.ico" />
-    <link rel="apple-touch-icon" href="/gambar/logo.png" />
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
@@ -61,7 +57,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== LOGO STYLES ===== */
         .logo-img {
             width: 40px;
             height: 40px;
@@ -145,7 +140,6 @@
             50% { opacity: 0.5; box-shadow: 0 0 8px rgba(210, 187, 255, 0.2); }
         }
 
-        /* Badge Styles */
         .badge-selesai { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.25); }
         .badge-pending { background: rgba(255, 183, 132, 0.15); color: #ffb784; border: 1px solid rgba(255, 183, 132, 0.25); }
         .badge-dibatalkan { background: rgba(255, 180, 171, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.25); }
@@ -306,12 +300,11 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <!-- ================================================================
-    LOGIN SCREEN (Dengan Logo)
+    LOGIN SCREEN
     ================================================================ -->
     <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-[9999]">
         <div class="bg-[#0b1326] p-8 rounded-2xl border border-[#4a4455]/30 max-w-sm w-full mx-4 shadow-2xl">
             <div class="text-center mb-8">
-                <!-- ===== LOGO DI LOGIN ===== -->
                 <div class="flex justify-center mb-4">
                     <img src="/gambar/logo.png" 
                          alt="LekszyStore Logo" 
@@ -343,9 +336,8 @@ DASHBOARD UTAMA
 ================================================================ -->
 <div id="dashboard" style="display:none;" class="flex w-full min-h-screen">
 
-    <!-- ===== SIDEBAR (Dengan Logo) ===== -->
+    <!-- SIDEBAR -->
     <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
-        <!-- Brand dengan Logo -->
         <div class="px-6 mb-8 flex items-center gap-3">
             <img src="/gambar/logo.png" 
                  alt="LekszyStore" 
@@ -395,13 +387,12 @@ DASHBOARD UTAMA
 </div>
 </aside>
 
-<!-- ===== MAIN CONTENT ===== -->
+<!-- MAIN CONTENT -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
-    <!-- ===== TOPBAR (Dengan Logo Kecil) ===== -->
+    <!-- TOPBAR -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
         <div class="flex items-center gap-3">
-            <!-- Logo kecil di topbar -->
             <img src="/gambar/logo.png" 
                  alt="LekszyStore" 
                  class="logo-img-sm md:hidden"
@@ -429,7 +420,7 @@ DASHBOARD UTAMA
         </div>
     </header>
 
-    <!-- ===== MAIN CANVAS ===== -->
+    <!-- MAIN CANVAS -->
     <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
 
         <!-- VIEW: DASHBOARD -->
@@ -718,12 +709,15 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: KATEGORI -->
+        <!-- ================================================================
+        VIEW: KATEGORI (Sinkron dengan Produk)
+        ================================================================ -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Kategori</h3>
                     <p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p>
+                    <p class="text-xs text-[#06b6d4] mt-1">📌 Kategori otomatis diambil dari produk yang ada</p>
                 </div>
                 <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
                     <span class="material-symbols-outlined text-[18px]">add</span> Tambah Kategori
@@ -734,6 +728,9 @@ DASHBOARD UTAMA
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
                         <span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span>
+                        <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Live
+                        </span>
                     </div>
                     <div class="ml-auto relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
@@ -748,7 +745,8 @@ DASHBOARD UTAMA
                             <tr>
                                 <th class="py-3 px-4 font-semibold">Icon</th>
                                 <th class="py-3 px-4 font-semibold">Nama Kategori</th>
-                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Gambar</th>
+                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Jumlah Produk</th>
+                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Gambar</th>
                                 <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -1188,10 +1186,24 @@ JAVASCRIPT – FULL LOGIKA
         Promise.all([
             authFetch(`${API_BASE}?action=transactions`).then(r => r.json()),
             authFetch(`${API_BASE}?action=list`).then(r => r.json()),
+            // Ambil kategori dari database categories, fallback dari produk
             authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
         ]).then(([orders, products, categories]) => {
             allOrders = orders || [];
             allProducts = products || [];
+            
+            // Jika tidak ada kategori di database, buat dari produk yang ada
+            if (!categories || categories.length === 0) {
+                // Ekstrak kategori unik dari produk
+                const uniqueCategories = [...new Set(allProducts.map(p => p.category || 'lainnya').filter(Boolean))];
+                categories = uniqueCategories.map(name => ({
+                    name: name,
+                    icon: 'category',
+                    image: '',
+                    createdAt: new Date().toISOString()
+                }));
+                // Simpan ke database (opsional, bisa via API nanti)
+            }
             allCategories = categories || [];
 
             document.getElementById('productBadge').innerText = allProducts.length;
@@ -1553,6 +1565,8 @@ JAVASCRIPT – FULL LOGIKA
                 closeProductModal();
                 loadProducts();
                 loadDashboard();
+                // Refresh kategori setelah produk berubah
+                loadCategories();
                 showToast(id ? 'Produk berhasil diupdate' : 'Produk berhasil ditambahkan', 'success');
             })
             .catch(err => showToast('Gagal simpan: ' + err.message, 'error'));
@@ -1561,9 +1575,12 @@ JAVASCRIPT – FULL LOGIKA
     function deleteProduct(id) {
         if (!confirm('Yakin hapus produk ini?')) return;
         authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
-            .then(() => { loadProducts();
+            .then(() => {
+                loadProducts();
                 loadDashboard();
-                showToast('Produk berhasil dihapus', 'success'); })
+                loadCategories();
+                showToast('Produk berhasil dihapus', 'success');
+            })
             .catch(err => showToast('Gagal hapus: ' + err.message, 'error'));
     }
 
@@ -1760,9 +1777,6 @@ JAVASCRIPT – FULL LOGIKA
             .catch(err => showToast('Gagal update: ' + err.message, 'error'));
     }
 
-    // ================================================================
-    // HAPUS PESANAN
-    // ================================================================
     function deleteOrder(transactionId) {
         if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
         authFetch(API_BASE, {
@@ -1812,9 +1826,6 @@ JAVASCRIPT – FULL LOGIKA
         showToast('Export pesanan berhasil', 'success');
     }
 
-    // ================================================================
-    // DETAIL ORDER
-    // ================================================================
     function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
         if (!order) return showToast('Data tidak ditemukan', 'error');
@@ -1884,22 +1895,56 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // KATEGORI
+    // KATEGORI (Sinkron dengan Produk)
     // ================================================================
     function loadCategories() {
+        // Ambil kategori dari produk yang ada
+        const categoryNames = [...new Set(allProducts.map(p => p.category || 'lainnya').filter(Boolean))];
+        
+        // Buat objek kategori dari nama yang ada
+        const categoriesFromProducts = categoryNames.map(name => ({
+            name: name,
+            icon: 'category',
+            image: '',
+            productCount: allProducts.filter(p => (p.category || 'lainnya') === name).length
+        }));
+
+        // Gabungkan dengan kategori yang sudah ada di database (jika ada)
+        // Prioritaskan data dari database jika ada
         authFetch(`${API_BASE}?action=categories`)
             .then(res => res.json())
-            .then(data => {
-                allCategories = data || [];
+            .then(dbCategories => {
+                if (dbCategories && dbCategories.length > 0) {
+                    // Merge: kategori dari database memiliki prioritas, tapi tambahkan produkCount
+                    allCategories = dbCategories.map(cat => {
+                        const count = allProducts.filter(p => (p.category || 'lainnya') === cat.name).length;
+                        return { ...cat, productCount: count };
+                    });
+                    // Tambahkan kategori yang ada di produk tapi tidak di database
+                    const dbNames = new Set(dbCategories.map(c => c.name));
+                    categoriesFromProducts.forEach(cat => {
+                        if (!dbNames.has(cat.name)) {
+                            allCategories.push(cat);
+                        }
+                    });
+                } else {
+                    allCategories = categoriesFromProducts;
+                }
+                
                 document.getElementById('categoryTotalItems').innerText = allCategories.length;
                 document.getElementById('categoryCount').innerText = allCategories.length + ' Kategori';
                 document.getElementById('categoryBadge').innerText = allCategories.length;
                 renderCategoryTable();
                 updateCategoryDropdowns();
             })
-            .catch(err => {
-                console.error('Gagal load kategori:', err);
-                showToast('Gagal load kategori: ' + err.message, 'error');
+            .catch(() => {
+                // Jika gagal fetch, pakai dari produk
+                allCategories = categoriesFromProducts;
+                document.getElementById('categoryTotalItems').innerText = allCategories.length;
+                document.getElementById('categoryCount').innerText = allCategories.length + ' Kategori';
+                document.getElementById('categoryBadge').innerText = allCategories.length;
+                renderCategoryTable();
+                updateCategoryDropdowns();
             });
     }
 
@@ -1921,12 +1966,13 @@ JAVASCRIPT – FULL LOGIKA
         tbody.innerHTML = '';
         if (pageItems.length === 0) {
             tbody.innerHTML =
-                '<tr><td colspan="4" class="text-center text-[#ccc3d8] py-8">Tidak ada kategori</td></tr>';
+                '<tr><td colspan="5" class="text-center text-[#ccc3d8] py-8">Tidak ada kategori</td></tr>';
             return;
         }
         pageItems.forEach(c => {
             const iconName = c.icon || 'category';
             const imageUrl = c.image || '';
+            const productCount = c.productCount || allProducts.filter(p => (p.category || 'lainnya') === c.name).length;
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-[#222a3d]/30 transition';
             tr.innerHTML = `
@@ -1935,8 +1981,11 @@ JAVASCRIPT – FULL LOGIKA
                             ${imageUrl ? `<img src="${imageUrl}" alt="${c.name}" onerror="this.parentElement.innerHTML='<span class=material-symbols-outlined>${iconName}</span>'">` : `<span class="material-symbols-outlined">${iconName}</span>`}
                         </div>
                     </td>
-                    <td class="py-3 px-4"><span class="font-medium">${c.name}</span></td>
-                    <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
+                    <td class="py-3 px-4"><span class="font-medium">${c.name.charAt(0).toUpperCase() + c.name.slice(1)}</span></td>
+                    <td class="py-3 px-4 hidden sm:table-cell">
+                        <span class="text-xs bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">${productCount} produk</span>
+                    </td>
+                    <td class="py-3 px-4 hidden md:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
                             <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
