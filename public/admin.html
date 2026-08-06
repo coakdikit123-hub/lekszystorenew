@@ -631,7 +631,9 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PESANAN -->
+        <!-- ============================================================
+        VIEW: PESANAN (DENGAN TOMBOL HAPUS MASSAL DI TOOLBAR)
+        ============================================================ -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -639,6 +641,10 @@ DASHBOARD UTAMA
                     <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
                 </div>
                 <div class="flex gap-3 flex-wrap">
+                    <!-- ===== TOMBOL HAPUS MASSAL (BARU) ===== -->
+                    <button onclick="bulkDeleteOrders()" class="px-4 py-2 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">delete</span> Hapus
+                    </button>
                     <button onclick="exportOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">download</span> Export
                     </button>
@@ -1897,6 +1903,7 @@ JAVASCRIPT – FULL LOGIKA
             .catch(err => showToast('Gagal update: ' + err.message, 'error'));
     }
 
+    // ===== HAPUS PESANAN SATU PER SATU =====
     function deleteOrder(transactionId) {
         if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
         authFetch(API_BASE, {
@@ -1914,6 +1921,53 @@ JAVASCRIPT – FULL LOGIKA
             }
         })
         .catch(err => showToast('❌ Gagal hapus: ' + err.message, 'error'));
+    }
+
+    // ===== HAPUS PESANAN MASSAL (BULK DELETE) =====
+    function bulkDeleteOrders() {
+        const checked = document.querySelectorAll('.order-checkbox:checked');
+        if (checked.length === 0) {
+            showToast('Pilih minimal satu pesanan untuk dihapus', 'warning');
+            return;
+        }
+        if (!confirm(`⚠️ Yakin ingin menghapus ${checked.length} pesanan secara permanen? Tindakan ini tidak dapat dibatalkan!`)) {
+            return;
+        }
+
+        const promises = [];
+        checked.forEach(cb => {
+            const transactionId = cb.dataset.id;
+            if (transactionId) {
+                promises.push(
+                    authFetch(API_BASE, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'deleteOrder', transactionId })
+                    })
+                );
+            }
+        });
+
+        if (promises.length === 0) {
+            showToast('Tidak ada pesanan yang valid untuk dihapus', 'error');
+            return;
+        }
+
+        showToast(`⏳ Menghapus ${promises.length} pesanan...`, 'info');
+
+        Promise.all(promises)
+            .then(responses => {
+                const failed = responses.filter(r => !r.ok);
+                if (failed.length > 0) {
+                    showToast(`⚠️ ${failed.length} pesanan gagal dihapus`, 'error');
+                } else {
+                    showToast(`✅ ${responses.length} pesanan berhasil dihapus`, 'success');
+                }
+                loadOrders();
+                loadDashboard();
+            })
+            .catch(err => {
+                showToast('❌ Gagal menghapus pesanan: ' + err.message, 'error');
+            });
     }
 
     function bulkUpdateOrders() {
