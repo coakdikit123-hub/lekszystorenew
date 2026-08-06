@@ -1683,7 +1683,7 @@
             }
             announcementDiv.innerHTML = `
                 <div class="announcement-title"><i class="fas fa-megaphone"></i> ${escapeHtml(announcement.title || 'Pengumuman')}</div>
-                <div class="announcement-message">${escapeHtml(announcement.content || announcement.message || '')}</div>
+                <div class="announcement-message">${formatMultilineText(announcement.content || announcement.message || '')}</div>
                 ${imgHtml}
             `;
             announcementDiv.style.display = 'block';
