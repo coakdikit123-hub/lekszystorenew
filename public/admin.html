@@ -2948,11 +2948,11 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         const profGrowth = prevProfit > 0 ? ((totalProfit - prevProfit) / prevProfit * 100).toFixed(1) : 0;
 
         document.getElementById('reportRevenueGrowth').innerText =
-            `${revGrowth > 0 ? '+' : ''}${revGrowth}%`;
+            `${revGrowth > 0 ? '+' : ''}${revGrowth}`;
         document.getElementById('reportRevenueGrowth').className =
             `text-xs font-medium ${revGrowth > 0 ? 'growth-positive' : revGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
         document.getElementById('reportProfitGrowth').innerText =
-            `${profGrowth > 0 ? '+' : ''}${profGrowth}%`;
+            `${profGrowth > 0 ? '+' : ''}${profGrowth}`;
         document.getElementById('reportProfitGrowth').className =
             `text-xs font-medium ${profGrowth > 0 ? 'growth-positive' : profGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
 
