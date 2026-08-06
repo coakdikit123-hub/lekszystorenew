@@ -298,10 +298,12 @@ module.exports = async (req, res) => {
             if (!title || !content) {
                 return res.status(400).json({ error: 'Judul dan konten wajib diisi' });
             }
+            const activeValue = isActive === true;
             const result = await db.collection('announcements').insertOne({
                 title: title.trim(),
                 content: content.trim(),
-                isActive: isActive === true,
+                isActive: activeValue,
+                active: activeValue,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             });
@@ -323,7 +325,11 @@ module.exports = async (req, res) => {
             };
             if (title !== undefined) updateData.title = title.trim();
             if (content !== undefined) updateData.content = content.trim();
-            if (isActive !== undefined) updateData.isActive = isActive === true;
+            if (isActive !== undefined) {
+                const activeValue = isActive === true;
+                updateData.isActive = activeValue;
+                updateData.active = activeValue;
+            }
 
             const result = await db.collection('announcements').updateOne(
                 { _id: objectId },
