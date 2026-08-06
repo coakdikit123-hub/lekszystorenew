@@ -390,7 +390,7 @@ DASHBOARD UTAMA
                 <span class="material-symbols-outlined">category</span> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
-            <!-- ===== LAPORAN (NEW) ===== -->
+            <!-- LAPORAN -->
             <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">assessment</span> Laporan
                 <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
@@ -413,9 +413,7 @@ DASHBOARD UTAMA
 </div>
 </aside>
 
-<!-- ============================================================
-MAIN CONTENT
-================================================================ -->
+<!-- MAIN CONTENT -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
     <!-- TOPBAR -->
@@ -448,16 +446,11 @@ MAIN CONTENT
         </div>
     </header>
 
-    <!-- ============================================================
-    MAIN CANVAS
-    ============================================================ -->
+    <!-- MAIN CANVAS -->
     <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
 
-        <!-- ============================================================
-        VIEW: DASHBOARD
-        ============================================================ -->
+        <!-- VIEW: DASHBOARD -->
         <div id="viewDashboard" class="view active">
-            <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
@@ -509,7 +502,6 @@ MAIN CONTENT
                 </div>
             </div>
 
-            <!-- Chart Row -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -565,9 +557,7 @@ MAIN CONTENT
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PRODUK
-        ============================================================ -->
+        <!-- VIEW: PRODUK -->
         <div id="viewProducts" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -638,9 +628,7 @@ MAIN CONTENT
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PESANAN
-        ============================================================ -->
+        <!-- VIEW: PESANAN -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -745,9 +733,7 @@ MAIN CONTENT
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: KATEGORI
-        ============================================================ -->
+        <!-- VIEW: KATEGORI -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -800,9 +786,7 @@ MAIN CONTENT
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: LAPORAN BULANAN (NEW)
-        ============================================================ -->
+        <!-- VIEW: LAPORAN BULANAN -->
         <div id="viewReports" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -827,7 +811,6 @@ MAIN CONTENT
                 </div>
             </div>
 
-            <!-- Summary Cards -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4 report-stat">
                     <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
@@ -859,7 +842,6 @@ MAIN CONTENT
                 </div>
             </div>
 
-            <!-- Chart -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -895,7 +877,6 @@ MAIN CONTENT
                 </div>
             </div>
 
-            <!-- Tabel Bulanan -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40">
                     <div>
@@ -918,9 +899,7 @@ MAIN CONTENT
                                 <th class="py-3 px-4 font-semibold text-right">Pertumbuhan</th>
                             </tr>
                         </thead>
-                        <tbody id="reportTableBody" class="divide-y divide-[#4a4455]/15">
-                            <!-- diisi JS -->
-                        </tbody>
+                        <tbody id="reportTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
                     </table>
                 </div>
                 <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
@@ -929,15 +908,12 @@ MAIN CONTENT
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PENGATURAN
-        ============================================================ -->
+        <!-- VIEW: PENGATURAN -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
                 <p class="text-sm text-[#ccc3d8]">Kelola konfigurasi global, bot Telegram, dan backup data.</p>
             </div>
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-card rounded-2xl p-6">
@@ -973,7 +949,6 @@ MAIN CONTENT
                             </div>
                         </div>
                     </div>
-
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
                             <span class="material-symbols-outlined text-[#06b6d4]">telegram</span>
@@ -1008,7 +983,6 @@ MAIN CONTENT
                         </div>
                     </div>
                 </div>
-
                 <div class="space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
@@ -1023,7 +997,6 @@ MAIN CONTENT
                             <span class="material-symbols-outlined text-[18px]">upload</span> Restore Backup
                         </button>
                     </div>
-
                     <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center">
                         <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-[#d2bbff] mb-4 relative group cursor-pointer">
                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
@@ -1970,6 +1943,9 @@ JAVASCRIPT – FULL LOGIKA
         showToast('Export pesanan berhasil', 'success');
     }
 
+    // ================================================================
+    // DETAIL ORDER
+    // ================================================================
     function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
         if (!order) return showToast('Data tidak ditemukan', 'error');
@@ -2213,29 +2189,21 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // LAPORAN BULANAN (NEW)
+    // LAPORAN BULANAN
     // ================================================================
     function loadMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
 
-        // Filter orders by year
         const yearOrders = allOrders.filter(o => {
             const d = new Date(o.createdAt);
             return d.getFullYear() === parseInt(year);
         });
 
-        // Group by month
         const monthlyData = {};
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 
-        // Initialize all months
         for (let i = 0; i < 12; i++) {
-            monthlyData[i] = {
-                orders: 0,
-                revenue: 0,
-                profit: 0,
-                count: 0
-            };
+            monthlyData[i] = { orders: 0, revenue: 0, profit: 0, count: 0 };
         }
 
         yearOrders.forEach(o => {
@@ -2247,24 +2215,17 @@ JAVASCRIPT – FULL LOGIKA
             monthlyData[month].count += 1;
         });
 
-        // Build report data
         monthlyReportData = [];
-        let cumulativeRevenue = 0;
-        let cumulativeProfit = 0;
-
         for (let i = 0; i < 12; i++) {
             const data = monthlyData[i];
             const avgOrder = data.count > 0 ? data.revenue / data.count : 0;
             const margin = data.revenue > 0 ? (data.profit / data.revenue) * 100 : 0;
-
-            // Growth calculation (vs previous month)
-            let growth = 0;
-            let growthType = 'neutral';
+            let growth = 0,
+                growthType = 'neutral';
             if (i > 0 && monthlyData[i - 1].revenue > 0) {
                 growth = ((data.revenue - monthlyData[i - 1].revenue) / monthlyData[i - 1].revenue) * 100;
                 growthType = growth > 0 ? 'positive' : growth < 0 ? 'negative' : 'neutral';
             }
-
             monthlyReportData.push({
                 month: i,
                 monthName: monthNames[i],
@@ -2277,12 +2238,8 @@ JAVASCRIPT – FULL LOGIKA
                 growthType: growthType,
                 hasData: data.count > 0
             });
-
-            cumulativeRevenue += data.revenue;
-            cumulativeProfit += data.profit;
         }
 
-        // Update summary stats
         const totalRevenue = monthlyReportData.reduce((s, d) => s + d.revenue, 0);
         const totalProfit = monthlyReportData.reduce((s, d) => s + d.profit, 0);
         const totalOrders = monthlyReportData.reduce((s, d) => s + d.orders, 0);
@@ -2293,7 +2250,6 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('reportTotalOrders').innerText = totalOrders;
         document.getElementById('reportAvgOrder').innerText = formatRupiah(avgOrder);
 
-        // Growth vs previous year (sederhana)
         const prevYear = parseInt(year) - 1;
         const prevYearOrders = allOrders.filter(o => {
             const d = new Date(o.createdAt);
@@ -2314,7 +2270,6 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('reportProfitGrowth').className =
             `text-xs font-medium ${profGrowth > 0 ? 'growth-positive' : profGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
 
-        // Best month
         const bestMonth = monthlyReportData.reduce((a, b) => a.revenue > b.revenue ? a : b);
         const highestRevenue = Math.max(...monthlyReportData.map(d => d.revenue));
         const highestProfit = Math.max(...monthlyReportData.map(d => d.profit));
@@ -2324,11 +2279,8 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('highestProfit').innerText = formatRupiah(highestProfit);
         document.getElementById('totalOrdersYear').innerText = totalOrders;
 
-        // Update table
         document.getElementById('reportTableYear').innerText = 'Tahun ' + year;
         renderReportTable();
-
-        // Update chart
         renderMonthlyChart();
     }
 
@@ -2372,7 +2324,6 @@ JAVASCRIPT – FULL LOGIKA
             tbody.appendChild(tr);
         });
 
-        // Show from-to
         document.getElementById('reportShowFrom').innerText = '1';
         document.getElementById('reportShowTo').innerText = '12';
     }
@@ -2416,43 +2367,27 @@ JAVASCRIPT – FULL LOGIKA
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        labels: {
-                            color: '#ccc3d8',
-                            font: { size: 11, family: 'Inter' },
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
+                        labels: { color: '#ccc3d8', font: { size: 11, family: 'Inter' }, usePointStyle: true,
+                            pointStyle: 'circle' }
                     }
                 },
                 scales: {
-                    x: {
-                        grid: { color: 'rgba(74, 68, 85, 0.2)', display: false },
-                        ticks: { color: '#ccc3d8', font: { size: 10 } }
-                    },
-                    y: {
-                        grid: { color: 'rgba(74, 68, 85, 0.2)' },
-                        ticks: {
-                            color: '#ccc3d8',
-                            font: { size: 10 },
-                            callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; }
-                        }
-                    }
+                    x: { grid: { color: 'rgba(74, 68, 85, 0.2)', display: false }, ticks: { color: '#ccc3d8',
+                            font: { size: 10 } } },
+                    y: { grid: { color: 'rgba(74, 68, 85, 0.2)' }, ticks: { color: '#ccc3d8', font: { size: 10 },
+                            callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; } } }
                 },
-                interaction: {
-                    intersect: false,
-                    mode: 'index'
-                }
+                interaction: { intersect: false, mode: 'index' }
             }
         });
     }
 
-    // Year change listener
     document.getElementById('reportYear').addEventListener('change', function() {
         loadMonthlyReport();
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT TO EXCEL
+    // EXPORT MONTHLY REPORT TO EXCEL (RAPI)
     // ================================================================
     function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2462,81 +2397,115 @@ JAVASCRIPT – FULL LOGIKA
             return;
         }
 
-        // Build HTML table for Excel
-        let html = `
-            <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-                  xmlns:x="urn:schemas-microsoft-com:office:excel" 
-                  xmlns="http://www.w3.org/TR/REC-html40">
-            <head>
-                <meta charset="utf-8">
-                <title>Laporan Keuangan Bulanan ${year}</title>
-                <!--[if gte mso 9]>
-                <xml>
-                    <x:ExcelWorkbook>
-                        <x:ExcelWorksheets>
-                            <x:ExcelWorksheet>
-                                <x:Name>Laporan Bulanan</x:Name>
-                                <x:WorksheetOptions>
-                                    <x:DisplayGridlines/>
-                                </x:WorksheetOptions>
-                            </x:ExcelWorksheet>
-                        </x:ExcelWorksheets>
-                    </x:ExcelWorkbook>
-                </xml>
-                <![endif]-->
-                <style>
-                    body { font-family: Arial, sans-serif; }
-                    .header { background: #7c3aed; color: white; padding: 10px; text-align: center; font-size: 18pt; font-weight: bold; }
-                    .sub-header { background: #1e293b; color: #dae2fc; padding: 8px; text-align: center; font-size: 12pt; }
-                    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-                    th { background: #2d3449; color: #dae2fc; font-weight: bold; padding: 10px; border: 1px solid #4a4455; text-align: center; }
-                    td { padding: 8px 10px; border: 1px solid #4a4455; text-align: right; }
-                    td:first-child { text-align: left; font-weight: bold; }
-                    .total-row { background: #1e293b; font-weight: bold; }
-                    .total-row td { color: #d2bbff; }
-                    .profit-col { color: #4ade80; }
-                    .growth-positive { color: #4ade80; }
-                    .growth-negative { color: #ffb4ab; }
-                    .footer { text-align: center; color: #94a3b8; font-size: 9pt; margin-top: 20px; padding-top: 10px; border-top: 1px solid #4a4455; }
-                </style>
-            </head>
-            <body>
-                <div class="header">📊 LAPORAN KEUANGAN BULANAN</div>
-                <div class="sub-header">LekszyStore - Tahun ${year}</div>
-                <br>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bulan</th>
-                            <th>Jumlah Pesanan</th>
-                            <th>Pendapatan</th>
-                            <th>Keuntungan</th>
-                            <th>Margin</th>
-                            <th>Pertumbuhan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
+        const dataWithData = monthlyReportData.filter(d => d.hasData);
+        if (dataWithData.length === 0) {
+            showToast('Tidak ada data untuk diekspor', 'warning');
+            return;
+        }
 
         let totalOrders = 0,
             totalRevenue = 0,
             totalProfit = 0;
-
-        monthlyReportData.forEach(d => {
-            if (!d.hasData) return;
+        dataWithData.forEach(d => {
             totalOrders += d.orders;
             totalRevenue += d.revenue;
             totalProfit += d.profit;
+        });
+        const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+        const overallMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
-            const growthDisplay = d.growth > 0 ? `+${d.growth.toFixed(1)}%` : d.growth < 0 ? `${d.growth.toFixed(1)}%` :
-                '0%';
-            const growthClass = d.growth > 0 ? 'growth-positive' : d.growth < 0 ? 'growth-negative' : '';
+        let html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+              xmlns:x="urn:schemas-microsoft-com:office:excel" 
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+            <meta charset="utf-8">
+            <title>Laporan Keuangan Bulanan ${year}</title>
+            <!--[if gte mso 9]>
+            <xml>
+                <x:ExcelWorkbook>
+                    <x:ExcelWorksheets>
+                        <x:ExcelWorksheet>
+                            <x:Name>Laporan Bulanan</x:Name>
+                            <x:WorksheetOptions>
+                                <x:DisplayGridlines/>
+                            </x:WorksheetOptions>
+                        </x:ExcelWorksheet>
+                    </x:ExcelWorksheets>
+                </x:ExcelWorkbook>
+            </xml>
+            <![endif]-->
+            <style>
+                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #ffffff; }
+                .header-main { background: #1a1a2e; color: #ffffff; padding: 20px 25px; border-radius: 8px 8px 0 0; margin-bottom: 0; }
+                .header-main h1 { font-size: 22pt; font-weight: 700; margin: 0; letter-spacing: 1px; }
+                .header-main .sub { font-size: 11pt; color: #a8b2d1; margin-top: 4px; font-weight: 400; }
+                .info-box { background: #f0f4ff; padding: 15px 25px; border-left: 4px solid #7c3aed; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; border-radius: 0 0 8px 8px; }
+                .info-box .item { font-size: 11pt; color: #1a1a2e; }
+                .info-box .item strong { color: #7c3aed; }
+                .info-box .item .label { color: #64748b; font-weight: 400; }
+                table { border-collapse: collapse; width: 100%; margin-top: 15px; font-size: 11pt; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+                th { background: #1e293b; color: #ffffff; font-weight: 600; padding: 12px 14px; border: 1px solid #334155; text-align: center; font-size: 10pt; text-transform: uppercase; letter-spacing: 0.5px; }
+                td { padding: 10px 14px; border: 1px solid #e2e8f0; text-align: right; }
+                td:first-child { text-align: left; font-weight: 600; color: #1a1a2e; }
+                td:nth-child(2) { text-align: center; }
+                tr:nth-child(even) td { background: #f8fafc; }
+                tr:hover td { background: #eef2ff; }
+                .profit-col { color: #22c55e; font-weight: 600; }
+                .revenue-col { color: #7c3aed; font-weight: 600; }
+                .growth-positive { color: #22c55e; font-weight: 600; }
+                .growth-negative { color: #ef4444; font-weight: 600; }
+                .growth-neutral { color: #f59e0b; font-weight: 600; }
+                .total-row td { background: #1e293b !important; color: #ffffff !important; font-weight: 700; font-size: 12pt; border-color: #334155; }
+                .total-row td:first-child { color: #ffffff !important; }
+                .footer { margin-top: 25px; padding-top: 15px; border-top: 2px solid #e2e8f0; display: flex; justify-content: space-between; font-size: 9.5pt; color: #94a3b8; }
+                .summary-box { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0 10px 0; padding: 15px 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+                .summary-box .sum-item { flex: 1; min-width: 120px; text-align: center; padding: 5px 10px; }
+                .summary-box .sum-item .number { font-size: 16pt; font-weight: 700; display: block; }
+                .summary-box .sum-item .lbl { font-size: 9pt; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
+                .summary-box .sum-item .number.green { color: #22c55e; }
+                .summary-box .sum-item .number.purple { color: #7c3aed; }
+                .summary-box .sum-item .number.blue { color: #3b82f6; }
+                .summary-box .sum-item .number.gold { color: #f59e0b; }
+                @media print { body { margin: 0; padding: 10px; } }
+            </style>
+        </head>
+        <body>
+            <div class="header-main">
+                <h1>📊 LAPORAN KEUANGAN BULANAN</h1>
+                <div class="sub">LekszyStore — Periode Tahun ${year}</div>
+            </div>
+            <div class="info-box">
+                <div class="item"><span class="label">📅 Tahun</span> <strong>${year}</strong></div>
+                <div class="item"><span class="label">📦 Total Bulan Aktif</span> <strong>${dataWithData.length}</strong></div>
+                <div class="item"><span class="label">📊 Total Transaksi</span> <strong>${totalOrders}</strong></div>
+                <div class="item"><span class="label">🕒 Diekspor</span> <strong>${new Date().toLocaleDateString('id-ID')}</strong></div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align:left;padding-left:20px;">Bulan</th>
+                        <th>Pesanan</th>
+                        <th>Pendapatan</th>
+                        <th>Keuntungan</th>
+                        <th>Margin</th>
+                        <th>Pertumbuhan</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+        dataWithData.forEach((d) => {
+            const growthDisplay = d.growth > 0 ? `+${d.growth.toFixed(1)}%` : d.growth < 0 ? `${d.growth.toFixed(1)}%` : '0%';
+            let growthClass = 'growth-neutral';
+            if (d.growth > 0) growthClass = 'growth-positive';
+            else if (d.growth < 0) growthClass = 'growth-negative';
 
             html += `
                         <tr>
-                            <td>${d.monthName}</td>
+                            <td style="padding-left:20px;">${d.monthName}</td>
                             <td>${d.orders}</td>
-                            <td>Rp ${d.revenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                            <td class="revenue-col">Rp ${d.revenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
                             <td class="profit-col">Rp ${d.profit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
                             <td>${d.margin.toFixed(1)}%</td>
                             <td class="${growthClass}">${growthDisplay}</td>
@@ -2545,41 +2514,40 @@ JAVASCRIPT – FULL LOGIKA
         });
 
         html += `
-                        <tr class="total-row">
-                            <td><strong>TOTAL</strong></td>
-                            <td><strong>${totalOrders}</strong></td>
-                            <td><strong>Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong></td>
-                            <td><strong>Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong></td>
-                            <td>${totalRevenue > 0 ? ((totalProfit/totalRevenue)*100).toFixed(1) : 0}%</td>
-                            <td>—</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <br>
-                <div style="display:flex; justify-content:space-between; padding:0 10px;">
-                    <div><strong>📈 Total Pesanan:</strong> ${totalOrders}</div>
-                    <div><strong>💰 Total Pendapatan:</strong> Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</div>
-                    <div><strong>💎 Total Keuntungan:</strong> Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</div>
-                    <div><strong>📊 Rata-rata per Order:</strong> Rp ${totalOrders > 0 ? (totalRevenue/totalOrders).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0}</div>
-                </div>
-                <div class="footer">
-                    Dihasilkan pada: ${new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })}<br>
-                    LekszyStore - Panel Admin
-                </div>
-            </body>
-            </html>
+                    <tr class="total-row">
+                        <td style="padding-left:20px;">📌 TOTAL</td>
+                        <td>${totalOrders}</td>
+                        <td>Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                        <td>Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                        <td>${overallMargin.toFixed(1)}%</td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="summary-box">
+                <div class="sum-item"><span class="lbl">📦 Total Pesanan</span><span class="number blue">${totalOrders}</span></div>
+                <div class="sum-item"><span class="lbl">💰 Total Pendapatan</span><span class="number purple">Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
+                <div class="sum-item"><span class="lbl">💎 Total Keuntungan</span><span class="number green">Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
+                <div class="sum-item"><span class="lbl">📊 Rata-rata per Order</span><span class="number gold">Rp ${avgOrder.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
+                <div class="sum-item"><span class="lbl">📈 Margin Keuntungan</span><span class="number green">${overallMargin.toFixed(1)}%</span></div>
+            </div>
+
+            <div class="footer">
+                <div class="left"><strong>LekszyStore</strong> — Panel Admin<br><span style="font-size:8.5pt;">Dihasilkan secara otomatis oleh sistem</span></div>
+                <div class="right">Dicetak: ${new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })}</div>
+            </div>
+            <div style="text-align:center;font-size:8pt;color:#cbd5e1;margin-top:12px;">© ${year} LekszyStore — Laporan Keuangan Bulanan</div>
+        </body>
+        </html>
         `;
 
-        const blob = new Blob([html], {
-            type: 'application/vnd.ms-excel;charset=utf-8'
-        });
-
+        const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xls`;
         link.click();
         URL.revokeObjectURL(link.href);
-
         showToast('✅ Laporan Excel berhasil diunduh!', 'success');
     }
 
