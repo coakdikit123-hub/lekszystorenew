@@ -177,26 +177,35 @@
             color: #d2bbff;
             font-size: 18px;
         }
-        .announcement-banner .content {
-            flex: 1;
+        .announcement-banner .header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
         }
-        .announcement-banner .content h4 {
+        .announcement-banner .content {
+            display: grid;
+            gap: 12px;
+        }
+        .announcement-banner .header-text h4 {
             font-weight: 700;
             color: #f3f4f6;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            margin-bottom: 4px;
         }
-        .announcement-banner .content p {
+        .announcement-banner .header-text p,
+        .announcement-banner .announcement-item p {
             color: #ccc3d8;
             font-size: 0.85rem;
             line-height: 1.5;
-            margin-top: 2px;
+            margin-top: 0;
         }
-        .announcement-banner .content .announcement-item {
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .announcement-banner .content .announcement-item:last-child {
-            border-bottom: none;
+        .announcement-banner .announcement-item {
+            padding: 14px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
         /* ===== TOMBOL BELI ===== */
@@ -1326,11 +1335,16 @@
 
         let html = `
             <div class="announcement-banner">
-                <div class="flex items-start gap-3">
+                <div class="header">
                     <div class="icon-wrap">
                         <i class="fas fa-bullhorn"></i>
                     </div>
-                    <div class="content">
+                    <div class="header-text">
+                        <h4>Pengumuman</h4>
+                        <p>Informasi terbaru dari toko ditampilkan di bawah.</p>
+                    </div>
+                </div>
+                <div class="content">
         `;
 
         announcements.forEach((a, index) => {
@@ -1343,16 +1357,6 @@
         });
 
         html += `
-                    </div>
-                </div>
-            </div>
-        `;
-
-        area.innerHTML = html;
-    }
-
-    // ===== RENDER PRODUK =====
-    function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if (!products.length) {
             grid.innerHTML = `<div class="empty-state"><i class="fas fa-store-slash"></i><h3>Oops, toko masih kosong</h3><p>Belum ada produk yang tersedia. Silakan cek kembali nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
