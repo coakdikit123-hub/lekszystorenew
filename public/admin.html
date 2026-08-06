@@ -588,6 +588,7 @@ DASHBOARD UTAMA
                     <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
+                        <span id="revenueTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
@@ -599,6 +600,7 @@ DASHBOARD UTAMA
                     <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
                     <div class="flex items-center gap-2 mt-1">
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
+                        <span id="orderTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
@@ -610,6 +612,7 @@ DASHBOARD UTAMA
                     <h3 id="dashTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#4ade80] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
+                        <span id="profitTrend" class="text-[#4ade80] text-xs font-medium flex items-center">+0%</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#4ade80] to-[#22c55e] w-[70%] rounded-full shadow-[0_0_12px_rgba(74,222,128,0.3)]"></div>
@@ -621,6 +624,7 @@ DASHBOARD UTAMA
                     <h3 id="dashAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
+                        <span id="avgOrderTrend" class="text-[#ffb0cd] text-xs font-medium flex items-center">+0%</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[80%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
@@ -1647,13 +1651,27 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
     // HELPER FETCH
     // ================================================================
     function authFetch(url, options = {}) {
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        };
+        if (options.body) {
+            headers['Content-Type'] = 'application/json';
+        }
+
         return fetch(url, {
             ...options,
-            headers: {
-                ...options.headers,
-                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`,
-                'Content-Type': 'application/json'
+            headers
+        }).then(async res => {
+            if (!res.ok) {
+                let errorText = res.statusText || 'Request failed';
+                try {
+                    const data = await res.json();
+                    errorText = data.error || data.message || errorText;
+                } catch (_) {}
+                throw new Error(`${res.status} ${errorText}`);
             }
+            return res;
         });
     }
 
@@ -1717,7 +1735,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
             updateConnectionStatus(true);
         }).catch(err => {
             console.error('Gagal load data:', err);
-            showToast('Gagal memuat data', 'error');
+            showToast('Gagal memuat data: ' + err.message, 'error');
             updateConnectionStatus(false);
         });
     }
@@ -1777,10 +1795,15 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         document.getElementById('dashTotalProfit').innerText = formatRupiah(totalProfit);
         document.getElementById('dashAvgOrder').innerText = formatRupiah(avgOrder);
 
-        document.getElementById('revenueTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
-        document.getElementById('orderTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
-        document.getElementById('profitTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
-        document.getElementById('avgOrderTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        const revTrendEl = document.getElementById('revenueTrend');
+        const orderTrendEl = document.getElementById('orderTrend');
+        const profitTrendEl = document.getElementById('profitTrend');
+        const avgOrderTrendEl = document.getElementById('avgOrderTrend');
+
+        if (revTrendEl) revTrendEl.innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        if (orderTrendEl) orderTrendEl.innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        if (profitTrendEl) profitTrendEl.innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        if (avgOrderTrendEl) avgOrderTrendEl.innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
 
         const today = new Date().toDateString();
         const todayOrders = allOrders.filter(o => new Date(o.createdAt).toDateString() === today);
