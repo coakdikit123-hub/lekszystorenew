@@ -14,7 +14,7 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <!-- ===== FLATICON Uicons ===== -->
+    <!-- Flaticon Uicons -->
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" />
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css" />
 
@@ -256,23 +256,37 @@
         .toast-warning { border-left: 4px solid #fbbf24; }
         .toast-info { border-left: 4px solid #06b6d4; }
 
-        [data-tooltip] { position: relative; }
+        /* ================================================================
+           TOOLTIP - DIPERBAIKI
+           ================================================================ */
+        [data-tooltip] {
+            position: relative;
+        }
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: calc(100% + 8px);
+            bottom: calc(100% + 10px);
             left: 50%;
             transform: translateX(-50%);
-            background: var(--bg-surface-high);
-            color: var(--text-on-surface);
-            padding: 4px 12px;
+            background: #1a1a2e;
+            color: #dae2fc;
+            padding: 5px 14px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
-            border: 1px solid var(--border-outline-variant);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            z-index: 100;
+            border: 1px solid #4a4455;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+        /* Untuk tooltip di tombol yang ada di tabel, agar tidak terpotong */
+        .order-actions [data-tooltip]:hover::after {
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .category-icon {
@@ -329,14 +343,6 @@
         .growth-positive { color: #4ade80; }
         .growth-negative { color: #ffb4ab; }
         .growth-neutral { color: #fbbf24; }
-
-        /* Flaticon icon colors */
-        .fi-purple { color: #7c3aed; }
-        .fi-green { color: #4ade80; }
-        .fi-blue { color: #06b6d4; }
-        .fi-gold { color: #fbbf24; }
-        .fi-pink { color: #ffb0cd; }
-        .fi-red { color: #ffb4ab; }
 
         @media (max-width: 768px) {
             .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -664,7 +670,9 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PESANAN -->
+        <!-- ============================================================
+        VIEW: PESANAN (DENGAN TOOLTIP YANG DIPERBAIKI)
+        ============================================================ -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -1175,7 +1183,7 @@ MODAL DETAIL PESANAN
 </div>
 
 <!-- ================================================================
-JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
+JAVASCRIPT – FULL LOGIKA
 ================================================================ -->
 <script>
     // ================================================================
@@ -1756,7 +1764,7 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
     }
 
     // ================================================================
-    // PESANAN
+    // PESANAN (dengan tooltip yang diperbaiki)
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
@@ -1824,6 +1832,9 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         renderOrderPagination(pages);
     }
 
+    // ================================================================
+    // RENDER ORDER ROWS (dengan tooltip)
+    // ================================================================
     function renderOrderRows(orders) {
         const tbody = document.getElementById('orderTableBody');
         tbody.innerHTML = '';
@@ -1858,11 +1869,17 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
                     </td>
                     <td class="py-3 px-4" onclick="openOrderDetailModal('${o.transactionId || o._id}')"><span class="inline-block text-[10px] font-medium px-3 py-1 rounded-full ${cls}">${label}</span></td>
                     <td class="py-3 px-4 text-right">
-                        <div class="flex items-center justify-end gap-1.5">
-                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
-                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
-                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition" data-tooltip="Detail"><span class="fi fi-more-vertical"></span></button>
-                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan"><span class="fi fi-trash"></span></button>
+                        <div class="flex items-center justify-end gap-1.5 order-actions">
+                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium flex items-center gap-1" data-tooltip="Proses pesanan"><span class="fi fi-check-circle text-xs"></span> Proses</button>` : ''}
+                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium flex items-center gap-1" data-tooltip="Batalkan pesanan"><span class="fi fi-times-circle text-xs"></span> Batalkan</button>` : ''}
+                            <!-- Tombol Detail dengan tooltip -->
+                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Detail Pesanan">
+                                <span class="fi fi-more-vertical"></span>
+                            </button>
+                            <!-- Tombol Hapus dengan tooltip -->
+                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan">
+                                <span class="fi fi-trash"></span>
+                            </button>
                         </div>
                     </td>
                 `;
@@ -1936,6 +1953,7 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             .catch(err => showToast('Gagal update: ' + err.message, 'error'));
     }
 
+    // ===== HAPUS PESANAN SATU PER SATU =====
     function deleteOrder(transactionId) {
         if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
         authFetch(API_BASE, {
@@ -2429,7 +2447,7 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT TO EXCEL (Menggunakan ExcelJS)
+    // EXPORT MONTHLY REPORT TO EXCEL
     // ================================================================
     async function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2445,7 +2463,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             return;
         }
 
-        // Hitung total
         let totalOrders = 0, totalRevenue = 0, totalProfit = 0;
         dataWithData.forEach(d => {
             totalOrders += d.orders;
@@ -2455,7 +2472,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
         const overallMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
-        // ===== BUAT WORKBOOK =====
         const workbook = new ExcelJS.Workbook();
         workbook.creator = 'LekszyStore';
         workbook.created = new Date();
@@ -2464,7 +2480,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             pageSetup: { orientation: 'landscape', fitToPage: true }
         });
 
-        // ===== AMBIL LOGO =====
         let logoImageId = null;
         try {
             const response = await fetch('/gambar/logo.png');
@@ -2483,7 +2498,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             console.warn('Logo tidak ditemukan, lanjutkan tanpa logo');
         }
 
-        // ===== SET KOLOM =====
         worksheet.columns = [
             { header: 'Bulan', key: 'month', width: 22 },
             { header: 'Pesanan', key: 'orders', width: 12 },
@@ -2493,7 +2507,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             { header: 'Pertumbuhan', key: 'growth', width: 16 }
         ];
 
-        // ===== TAMBAHKAN LOGO =====
         if (logoImageId) {
             worksheet.addImage(logoImageId, {
                 tl: { col: 0, row: 0 },
@@ -2501,7 +2514,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             });
         }
 
-        // ===== HEADER UTAMA =====
         const titleRow = worksheet.getRow(1);
         worksheet.mergeCells(`A1:F1`);
         const titleCell = titleRow.getCell(1);
@@ -2511,7 +2523,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1A1A2E' } };
         titleRow.height = 40;
 
-        // ===== SUB HEADER =====
         const subRow = worksheet.getRow(2);
         worksheet.mergeCells(`A2:F2`);
         const subCell = subRow.getCell(1);
@@ -2521,7 +2532,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '2D3449' } };
         subRow.height = 30;
 
-        // ===== INFO BOX =====
         const infoStartRow = 4;
         const infoData = [
             ['📅 Tahun', year],
@@ -2544,10 +2554,7 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             });
         });
 
-        // ===== TABEL DATA =====
         const tableStartRow = infoStartRow + infoData.length + 1;
-
-        // Header tabel
         const headerRow = worksheet.getRow(tableStartRow);
         const headers = ['Bulan', 'Pesanan', 'Pendapatan', 'Keuntungan', 'Margin', 'Pertumbuhan'];
         headers.forEach((h, i) => {
@@ -2565,7 +2572,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         });
         headerRow.height = 28;
 
-        // Data rows
         let currentRow = tableStartRow + 1;
         dataWithData.forEach((d) => {
             const row = worksheet.getRow(currentRow);
@@ -2617,7 +2623,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             currentRow++;
         });
 
-        // TOTAL ROW
         const totalRow = worksheet.getRow(currentRow);
         totalRow.getCell(1).value = 'TOTAL';
         totalRow.getCell(1).font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
@@ -2662,7 +2667,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         });
         totalRow.height = 30;
 
-        // ===== SUMMARY =====
         const summaryStartRow = currentRow + 3;
         worksheet.mergeCells(`A${summaryStartRow}:F${summaryStartRow}`);
         const summaryTitle = worksheet.getRow(summaryStartRow).getCell(1);
@@ -2695,7 +2699,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
             });
         });
 
-        // ===== FOOTER =====
         const footerRow1 = summaryStartRow + summaryData.length + 2;
         const footerRow2 = footerRow1 + 1;
 
@@ -2711,7 +2714,6 @@ JAVASCRIPT – FULL LOGIKA (Sama seperti sebelumnya, dengan Flaticon)
         footerCell2.font = { name: 'Arial', size: 8, italic: true, color: { argb: 'CBD5E1' } };
         footerCell2.alignment = { horizontal: 'center', vertical: 'middle' };
 
-        // ===== GENERATE FILE =====
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xlsx`);
