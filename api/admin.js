@@ -57,8 +57,62 @@ export default async function handler(req, res) {
 
       // === KATEGORI (LIST) ===
       if (action === 'categories') {
-        const categories = await categoriesCollection.find({}).toArray();
+        // Ambil kategori dari koleksi categories
+        let categories = await categoriesCollection.find({}).toArray();
+        
+        // Jika belum ada data di koleksi categories, ambil dari produk
+        if (categories.length === 0) {
+          const productCategories = await productsCollection.distinct('category');
+          // Buat entri kategori dari produk yang ada
+          for (const catName of productCategories) {
+            if (catName && catName.trim()) {
+              await categoriesCollection.insertOne({
+                name: catName,
+                icon: 'category',
+                image: '',
+                createdAt: new Date().toISOString()
+              });
+            }
+          }
+          categories = await categoriesCollection.find({}).toArray();
+        }
+        
         return res.status(200).json(categories);
+      }
+
+      // === SYNC KATEGORI DARI PRODUK ===
+      if (action === 'syncCategories') {
+        // Ambil semua kategori unik dari produk
+        const productCategories = await productsCollection.distinct('category');
+        const existingCategories = await categoriesCollection.find({}).toArray();
+        const existingNames = existingCategories.map(c => c.name);
+        
+        // Tambahkan kategori baru yang belum ada
+        let added = 0;
+        for (const catName of productCategories) {
+          if (catName && catName.trim() && !existingNames.includes(catName)) {
+            await categoriesCollection.insertOne({
+              name: catName,
+              icon: 'category',
+              image: '',
+              createdAt: new Date().toISOString()
+            });
+            added++;
+          }
+        }
+        
+        // Hapus kategori yang tidak ada di produk
+        const deleted = await categoriesCollection.deleteMany({
+          name: { $nin: productCategories.filter(c => c && c.trim()) }
+        });
+        
+        const categories = await categoriesCollection.find({}).toArray();
+        return res.status(200).json({ 
+          success: true, 
+          categories, 
+          added, 
+          deleted: deleted.deletedCount 
+        });
       }
 
       // SETTINGS
@@ -94,6 +148,19 @@ export default async function handler(req, res) {
           createdAt: new Date().toISOString(),
         };
         await productsCollection.insertOne(newProduct);
+
+        // === Sinkronisasi kategori ===
+        // Cek apakah kategori ada di koleksi categories, jika tidak tambahkan
+        const existingCat = await categoriesCollection.findOne({ name: newProduct.category });
+        if (!existingCat) {
+          await categoriesCollection.insertOne({
+            name: newProduct.category,
+            icon: 'category',
+            image: '',
+            createdAt: new Date().toISOString()
+          });
+        }
+
         return res.status(201).json({ success: true, id: nextId });
       }
 
@@ -102,9 +169,26 @@ export default async function handler(req, res) {
         const { id, ...updateData } = product;
         if (!id) return res.status(400).json({ error: 'ID produk wajib diisi' });
 
+        // Cek produk lama untuk mengetahui perubahan kategori
+        const oldProduct = await productsCollection.findOne({ id: Number(id) });
+        
         const updateFields = {};
         if (updateData.name) updateFields.name = updateData.name;
-        if (updateData.category) updateFields.category = updateData.category;
+        if (updateData.category) {
+          updateFields.category = updateData.category;
+          // Sinkronisasi kategori baru jika ada perubahan
+          if (oldProduct && oldProduct.category !== updateData.category) {
+            const existingCat = await categoriesCollection.findOne({ name: updateData.category });
+            if (!existingCat) {
+              await categoriesCollection.insertOne({
+                name: updateData.category,
+                icon: 'category',
+                image: '',
+                createdAt: new Date().toISOString()
+              });
+            }
+          }
+        }
         if (updateData.image !== undefined) updateFields.image = updateData.image;
         if (updateData.price !== undefined) updateFields.price = Number(updateData.price);
         if (updateData.cost !== undefined) updateFields.cost = Number(updateData.cost);
@@ -174,7 +258,7 @@ export default async function handler(req, res) {
           createdAt: new Date().toISOString(),
         };
         await categoriesCollection.insertOne(newCategory);
-        return res.status(201).json({ success: true, category: newCategory });
+        return res.status(201).json({ success: true });
       }
 
       // --- EDIT KATEGORI ---
@@ -182,8 +266,9 @@ export default async function handler(req, res) {
         if (!category || !category.name) {
           return res.status(400).json({ error: 'Nama kategori wajib diisi' });
         }
+        const oldName = category.oldName || category.name;
         const result = await categoriesCollection.updateOne(
-          { name: category.oldName || category.name },
+          { name: oldName },
           {
             $set: {
               name: category.name,
@@ -196,6 +281,11 @@ export default async function handler(req, res) {
         if (result.matchedCount === 0) {
           return res.status(404).json({ error: 'Kategori tidak ditemukan' });
         }
+        // Update kategori di produk yang menggunakan nama lama
+        await productsCollection.updateMany(
+          { category: oldName },
+          { $set: { category: category.name, updatedAt: new Date().toISOString() } }
+        );
         return res.status(200).json({ success: true });
       }
 
@@ -208,6 +298,11 @@ export default async function handler(req, res) {
         if (result.deletedCount === 0) {
           return res.status(404).json({ error: 'Kategori tidak ditemukan' });
         }
+        // Hapus kategori dari produk (set ke 'lainnya')
+        await productsCollection.updateMany(
+          { category: category.name },
+          { $set: { category: 'lainnya', updatedAt: new Date().toISOString() } }
+        );
         return res.status(200).json({ success: true });
       }
 
