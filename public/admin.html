@@ -587,7 +587,6 @@ DASHBOARD UTAMA
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
                     <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -599,7 +598,6 @@ DASHBOARD UTAMA
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
                     <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -611,7 +609,6 @@ DASHBOARD UTAMA
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
                     <h3 id="dashTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#4ade80] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -623,7 +620,6 @@ DASHBOARD UTAMA
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
                     <h3 id="dashAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="avgOrderTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -2947,12 +2943,12 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         const revGrowth = prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue * 100).toFixed(1) : 0;
         const profGrowth = prevProfit > 0 ? ((totalProfit - prevProfit) / prevProfit * 100).toFixed(1) : 0;
 
-        document.getElementById('reportRevenueGrowth').innerText =
-            `${revGrowth > 0 ? '+' : ''}${revGrowth}`;
+        document.getElementById('reportRevenueGrowth').innerHTML =
+            `${revGrowth > 0 ? '📈' : revGrowth < 0 ? '📉' : '➡️'} ${revGrowth}%`;
         document.getElementById('reportRevenueGrowth').className =
             `text-xs font-medium ${revGrowth > 0 ? 'growth-positive' : revGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
-        document.getElementById('reportProfitGrowth').innerText =
-            `${profGrowth > 0 ? '+' : ''}${profGrowth}`;
+        document.getElementById('reportProfitGrowth').innerHTML =
+            `${profGrowth > 0 ? '📈' : profGrowth < 0 ? '📉' : '➡️'} ${profGrowth}%`;
         document.getElementById('reportProfitGrowth').className =
             `text-xs font-medium ${profGrowth > 0 ? 'growth-positive' : profGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
 
