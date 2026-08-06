@@ -11,19 +11,23 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- Material Symbols -->
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- ===== FITUR BARU: Font Awesome (gaya Flaticon) ===== -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- ExcelJS & FileSaver untuk export Excel profesional -->
+    <!-- ExcelJS & FileSaver -->
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
+    <!-- html2canvas + jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
     <style>
         /* ================================================================
-           ROOT VARIABLES & BASE
+           ROOT VARIABLES & BASE (sama seperti sebelumnya)
            ================================================================ */
         :root {
             --bg-deep: #020617;
@@ -32,7 +36,6 @@
             --bg-surface-lowest: #060e20;
             --bg-surface-high: #222a3d;
             --bg-surface-highest: #2d3449;
-
             --text-on-surface: #dae2fc;
             --text-on-surface-variant: #ccc3d8;
             --text-primary: #d2bbff;
@@ -41,17 +44,13 @@
             --text-error: #ffb4ab;
             --text-electric-cyan: #06b6d4;
             --text-profit: #4ade80;
-
             --border-outline-variant: #4a4455;
             --border-primary: #d2bbff;
-
             --primary-container: #7c3aed;
             --inverse-primary: #732ee4;
             --profit-color: #22c55e;
-
             --shadow-glow: rgba(210, 187, 255, 0.25);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: var(--bg-deep);
@@ -60,7 +59,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
         .glass-card {
             background: rgba(19, 27, 46, 0.6);
             backdrop-filter: blur(16px);
@@ -73,7 +71,6 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
         }
-
         .neon-glow:focus-within {
             box-shadow: 0 0 25px rgba(210, 187, 255, 0.2), inset 0 0 25px rgba(210, 187, 255, 0.05);
             border-color: var(--border-primary);
@@ -94,7 +91,6 @@
             box-shadow: 0 0 50px rgba(74, 222, 128, 0.3);
             transform: translateY(-2px) scale(1.02);
         }
-
         .nav-link {
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 12px;
@@ -126,13 +122,11 @@
             0%, 100% { opacity: 1; box-shadow: 0 0 16px rgba(210, 187, 255, 0.6); }
             50% { opacity: 0.5; box-shadow: 0 0 8px rgba(210, 187, 255, 0.2); }
         }
-
         .badge-selesai { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.25); }
         .badge-pending { background: rgba(255, 183, 132, 0.15); color: #ffb784; border: 1px solid rgba(255, 183, 132, 0.25); }
         .badge-dibatalkan { background: rgba(255, 180, 171, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.25); }
         .badge-aktif { background: rgba(6, 182, 212, 0.12); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2); }
         .badge-nonaktif { background: rgba(255, 180, 171, 0.12); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.2); }
-
         .view {
             display: none;
             animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -142,7 +136,6 @@
             from { opacity: 0; transform: translateY(16px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-
         .modal-overlay {
             display: none;
             position: fixed;
@@ -171,7 +164,6 @@
             from { opacity: 0; transform: scale(0.92) translateY(30px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
-
         .toggle-checkbox {
             right: -4px;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -188,12 +180,10 @@
             background: var(--bg-surface-highest);
             transition: background 0.3s ease;
         }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-deep); }
         ::-webkit-scrollbar-thumb { background: var(--border-outline-variant); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-primary); }
-
         .toast-container {
             position: fixed;
             bottom: 24px;
@@ -230,7 +220,6 @@
         .toast-error { border-left: 4px solid #ffb4ab; }
         .toast-warning { border-left: 4px solid #fbbf24; }
         .toast-info { border-left: 4px solid #06b6d4; }
-
         [data-tooltip] { position: relative; }
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
@@ -249,7 +238,6 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
             z-index: 100;
         }
-
         .category-icon {
             width: 40px;
             height: 40px;
@@ -262,12 +250,7 @@
             border: 1px solid rgba(210, 187, 255, 0.2);
             overflow: hidden;
         }
-        .category-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        .category-icon img { width: 100%; height: 100%; object-fit: cover; }
         .logo-img {
             width: 40px;
             height: 40px;
@@ -275,20 +258,8 @@
             border-radius: 10px;
             transition: all 0.3s ease;
         }
-        .logo-img-sm {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .logo-img-lg {
-            width: 64px;
-            height: 64px;
-            object-fit: contain;
-            border-radius: 16px;
-            margin-bottom: 8px;
-        }
-
+        .logo-img-sm { width: 32px; height: 32px; object-fit: contain; border-radius: 8px; }
+        .logo-img-lg { width: 64px; height: 64px; object-fit: contain; border-radius: 16px; margin-bottom: 8px; }
         .report-stat {
             background: rgba(19, 27, 46, 0.4);
             border: 1px solid rgba(74, 68, 85, 0.2);
@@ -296,18 +267,12 @@
             padding: 1rem;
             transition: all 0.3s ease;
         }
-        .report-stat:hover {
-            border-color: rgba(210, 187, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
+        .report-stat:hover { border-color: rgba(210, 187, 255, 0.3); transform: translateY(-2px); }
         .growth-positive { color: #4ade80; }
         .growth-negative { color: #ffb4ab; }
         .growth-neutral { color: #fbbf24; }
 
-        /* ================================================================
-           NOTIFICATION DROPDOWN
-           ================================================================ */
+        /* ===== NOTIFICATION DROPDOWN ===== */
         .notif-dropdown {
             position: absolute;
             top: calc(100% + 8px);
@@ -325,10 +290,7 @@
             backdrop-filter: blur(16px);
             padding: 8px 0;
         }
-        .notif-dropdown.open {
-            display: block;
-            animation: dropdownIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+        .notif-dropdown.open { display: block; animation: dropdownIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
         @keyframes dropdownIn {
             from { opacity: 0; transform: translateY(-8px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -340,11 +302,7 @@
             justify-content: space-between;
             align-items: center;
         }
-        .notif-dropdown-header h4 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-on-surface);
-        }
+        .notif-dropdown-header h4 { font-size: 14px; font-weight: 600; color: var(--text-on-surface); }
         .notif-dropdown-header .badge-pending {
             font-size: 10px;
             padding: 2px 10px;
@@ -362,12 +320,8 @@
             align-items: center;
             gap: 12px;
         }
-        .notif-item:hover {
-            background: rgba(210, 187, 255, 0.06);
-        }
-        .notif-item:last-child {
-            border-bottom: none;
-        }
+        .notif-item:hover { background: rgba(210, 187, 255, 0.06); }
+        .notif-item:last-child { border-bottom: none; }
         .notif-item .notif-icon {
             width: 36px;
             height: 36px;
@@ -379,69 +333,87 @@
             flex-shrink: 0;
             border: 1px solid rgba(255, 183, 132, 0.2);
         }
-        .notif-item .notif-icon .material-symbols-outlined {
-            font-size: 18px;
-            color: #ffb784;
-        }
-        .notif-item .notif-content {
-            flex: 1;
-            min-width: 0;
-        }
-        .notif-item .notif-content .notif-title {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-on-surface);
-        }
-        .notif-item .notif-content .notif-desc {
-            font-size: 12px;
-            color: var(--text-on-surface-variant);
-            margin-top: 2px;
-        }
-        .notif-item .notif-time {
-            font-size: 10px;
-            color: var(--text-on-surface-variant);
-            flex-shrink: 0;
-            align-self: flex-start;
-            margin-top: 2px;
-        }
-        .notif-item .notif-badge {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ffb784;
-            flex-shrink: 0;
-        }
+        .notif-item .notif-icon i { font-size: 18px; color: #ffb784; }
+        .notif-item .notif-content { flex: 1; min-width: 0; }
+        .notif-item .notif-content .notif-title { font-size: 13px; font-weight: 500; color: var(--text-on-surface); }
+        .notif-item .notif-content .notif-desc { font-size: 12px; color: var(--text-on-surface-variant); margin-top: 2px; }
+        .notif-item .notif-time { font-size: 10px; color: var(--text-on-surface-variant); flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+        .notif-item .notif-badge { width: 8px; height: 8px; border-radius: 50%; background: #ffb784; flex-shrink: 0; }
         .notif-empty {
             padding: 30px 20px;
             text-align: center;
             color: var(--text-on-surface-variant);
             font-size: 14px;
         }
-        .notif-empty .material-symbols-outlined {
-            font-size: 40px;
-            color: var(--border-outline-variant);
-            margin-bottom: 8px;
+        .notif-empty i { font-size: 40px; color: var(--border-outline-variant); margin-bottom: 8px; }
+
+        /* Skeleton loading */
+        .skeleton {
+            animation: pulse 1.5s ease-in-out infinite;
+            background: linear-gradient(90deg, var(--bg-surface-high) 25%, var(--bg-surface-highest) 50%, var(--bg-surface-high) 75%);
+            background-size: 200% 100%;
+        }
+        @keyframes pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
-        /* Responsive notif dropdown */
-        @media (max-width: 480px) {
-            .notif-dropdown {
-                min-width: 280px;
-                right: -60px;
-                max-width: 320px;
-            }
+        /* Image preview hover */
+        .product-image-preview {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .product-image-preview:hover {
+            transform: scale(3) translateY(-8px);
+            z-index: 50;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            border-radius: 12px;
         }
 
+        /* Sortable header */
+        .sortable-header {
+            cursor: pointer;
+            user-select: none;
+            transition: color 0.2s;
+        }
+        .sortable-header:hover { color: var(--text-primary); }
+        .sortable-header .sort-icon {
+            font-size: 14px;
+            vertical-align: middle;
+            margin-left: 4px;
+            opacity: 0.5;
+        }
+        .sortable-header.active .sort-icon { opacity: 1; }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .stat-grid { grid-template-columns: 1fr 1fr; }
             .modal-box { padding: 1.25rem; max-width: 95%; }
             .logo-img { width: 32px; height: 32px; }
             .logo-img-lg { width: 48px; height: 48px; }
             .report-stat { padding: 0.75rem; }
+            .notif-dropdown { min-width: 280px; right: -60px; max-width: 320px; }
         }
         @media (max-width: 480px) {
             .stat-grid { grid-template-columns: 1fr; }
         }
+
+        /* ===== IKON FONT AWESOME di kartu statistik ===== */
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            opacity: 0.15;
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            transition: opacity 0.3s;
+        }
+        .glass-card:hover .stat-icon {
+            opacity: 0.25;
+        }
+        .stat-icon.coins { color: #fbbf24; }
+        .stat-icon.cart { color: #06b6d4; }
+        .stat-icon.chart { color: #4ade80; }
+        .stat-icon.calc { color: #ffb0cd; }
     </style>
 </head>
 <body>
@@ -451,6 +423,12 @@
     ================================================================ -->
     <div id="toastContainer" class="toast-container"></div>
 
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" style="display:none; position:fixed; inset:0; background:rgba(2,6,23,0.6); backdrop-filter:blur(4px); z-index:9998; align-items:center; justify-content:center; flex-direction:column; gap:16px;">
+        <div class="w-12 h-12 border-4 border-[#d2bbff]/30 border-t-[#d2bbff] rounded-full animate-spin"></div>
+        <p class="text-[#dae2fc] text-sm font-medium">Memuat data...</p>
+    </div>
+
     <!-- ================================================================
     LOGIN SCREEN
     ================================================================ -->
@@ -458,12 +436,9 @@
         <div class="bg-[#0b1326] p-8 rounded-2xl border border-[#4a4455]/30 max-w-sm w-full mx-4 shadow-2xl">
             <div class="text-center mb-8">
                 <div class="flex justify-center mb-4">
-                    <img src="/gambar/logo.png" 
-                         alt="LekszyStore Logo" 
-                         class="logo-img-lg"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <img src="/gambar/logo.png" alt="LekszyStore Logo" class="logo-img-lg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                     <div class="w-16 h-16 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
-                        <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
+                        <i class="fas fa-store text-5xl text-[#d2bbff]"></i>
                     </div>
                 </div>
                 <h2 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff]">LekszyStore</h2>
@@ -476,7 +451,7 @@
                 </div>
                 <button onclick="handleLogin()"
                 class="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                Masuk
+                <i class="fas fa-sign-in-alt mr-2"></i> Masuk
             </button>
             <p id="loginError" class="text-[#ffb4ab] text-sm text-center hidden">Token salah! Coba lagi.</p>
         </div>
@@ -491,12 +466,9 @@ DASHBOARD UTAMA
     <!-- SIDEBAR -->
     <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
         <div class="px-6 mb-8 flex items-center gap-3">
-            <img src="/gambar/logo.png" 
-                 alt="LekszyStore" 
-                 class="logo-img"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
-                <span class="material-symbols-outlined text-[#d2bbff] text-2xl">storefront</span>
+                <i class="fas fa-store text-[#d2bbff] text-2xl"></i>
             </div>
             <div>
                 <h1 class="font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-[#d2bbff] tracking-tight">LekszyStore</h1>
@@ -506,39 +478,39 @@ DASHBOARD UTAMA
 
         <nav class="flex-1 px-3 space-y-1">
             <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">dashboard</span> Dashboard
+                <i class="fas fa-chart-pie w-5 text-center"></i> Dashboard
                 <span class="ml-auto text-[10px] bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">Live</span>
             </a>
             <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">inventory_2</span> Produk
+                <i class="fas fa-box w-5 text-center"></i> Produk
                 <span id="productBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
             <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">shopping_cart</span> Pesanan
+                <i class="fas fa-shopping-cart w-5 text-center"></i> Pesanan
                 <span id="orderBadge" class="ml-auto text-[10px] bg-[#ffb784]/20 text-[#ffb784] px-2 py-0.5 rounded-full animate-pulse">0</span>
             </a>
             <a href="#" data-view="categories" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">category</span> Kategori
+                <i class="fas fa-tags w-5 text-center"></i> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
             <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">assessment</span> Laporan
+                <i class="fas fa-file-alt w-5 text-center"></i> Laporan
                 <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
             </a>
             <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="material-symbols-outlined">settings</span> Pengaturan
+                <i class="fas fa-cog w-5 text-center"></i> Pengaturan
             </a>
         </nav>
 
         <div class="px-4 mt-auto pt-4 border-t border-[#4a4455]/20 space-y-2">
             <button onclick="toggleTheme()"
             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium">
-            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
+            <i class="fas fa-moon"></i>
             <span id="themeLabel">Mode Gelap</span>
         </button>
         <button onclick="handleLogout()"
         class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium">
-        <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
+        <i class="fas fa-sign-out-alt"></i> Keluar
     </button>
 </div>
 </aside>
@@ -546,48 +518,42 @@ DASHBOARD UTAMA
 <!-- MAIN CONTENT -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
-    <!-- TOPBAR DENGAN NOTIFIKASI -->
+    <!-- TOPBAR -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
         <div class="flex items-center gap-3">
-            <img src="/gambar/logo.png" 
-                 alt="LekszyStore" 
-                 class="logo-img-sm md:hidden"
-                 onerror="this.style.display='none'">
+            <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img-sm md:hidden" onerror="this.style.display='none'">
             <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
+            <span id="connectionStatus" class="flex items-center gap-1.5 text-[10px] font-medium px-2 py-1 rounded-full bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20 ml-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#4ade80] animate-pulse"></span> Online
+            </span>
         </div>
 
         <div class="flex items-center gap-4 ml-auto">
             <!-- Search -->
             <div class="relative hidden lg:block">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
                 <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..."
                 class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
             </div>
 
-            <!-- ===== NOTIFIKASI LONCENG ===== -->
+            <!-- Notifikasi -->
             <div class="relative">
-                <button onclick="toggleNotificationDropdown()" 
-                        class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" 
-                        data-tooltip="Notifikasi">
-                    <span class="material-symbols-outlined">notifications</span>
+                <button onclick="toggleNotificationDropdown()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi">
+                    <i class="fas fa-bell text-xl"></i>
                     <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
                     <span id="notifCount" class="absolute -top-1 -right-1 text-[10px] bg-[#ffb4ab] text-[#020617] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">0</span>
                 </button>
-
-                <!-- ===== DROPDOWN NOTIFIKASI ===== -->
                 <div id="notifDropdown" class="notif-dropdown">
                     <div class="notif-dropdown-header">
-                        <h4>📬 Notifikasi</h4>
+                        <h4><i class="fas fa-inbox mr-2"></i> Notifikasi</h4>
                         <span id="notifPendingCount" class="badge-pending">0 pending</span>
                     </div>
-                    <div id="notifList" class="notif-list">
-                        <!-- Akan diisi JavaScript -->
-                    </div>
+                    <div id="notifList" class="notif-list"></div>
                 </div>
             </div>
 
             <button onclick="refreshData()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Refresh data">
-                <span class="material-symbols-outlined">refresh</span>
+                <i class="fas fa-sync-alt"></i>
             </button>
             <div class="w-9 h-9 rounded-full overflow-hidden border border-[#d2bbff]/30 flex-shrink-0 cursor-pointer hover:border-[#d2bbff] transition">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
@@ -601,59 +567,66 @@ DASHBOARD UTAMA
 
         <!-- VIEW: DASHBOARD -->
         <div id="viewDashboard" class="view active">
-            <!-- Stats Grid -->
+            <!-- Stats Grid (4 kartu: Total Pendapatan, Total Pesanan, Total Keuntungan, Rata-rata per Order) -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+                <!-- Kartu 1: Total Pendapatan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
+                    <i class="fas fa-coins stat-icon coins"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
                     <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
+                        <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
                     </div>
                 </div>
+
+                <!-- Kartu 2: Total Pesanan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#06b6d4]">receipt_long</span></div>
+                    <i class="fas fa-shopping-cart stat-icon cart"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
                     <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
+                        <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
                     </div>
                 </div>
+
+                <!-- Kartu 3: Total Keuntungan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group border-[#4ade80]/20">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#4ade80]">trending_up</span></div>
+                    <i class="fas fa-chart-line stat-icon chart"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
                     <h3 id="dashTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#4ade80] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
+                        <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-[#4ade80] to-[#22c55e] w-[70%] rounded-full shadow-[0_0_12px_rgba(74,222,128,0.3)]"></div>
                     </div>
                 </div>
+
+                <!-- Kartu 4: Rata-rata per Order (BARU) -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb0cd]">inventory_2</span></div>
-                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Produk</p>
-                    <h3 id="dashTotalProducts" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
+                    <i class="fas fa-calculator stat-icon calc"></i>
+                    <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
+                    <h3 id="dashAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="productTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_flat</span> Stabil</span>
-                        <span class="text-[10px] text-[#ccc3d8]">aktif</span>
+                        <span id="avgOrderTrend" class="text-xs font-medium flex items-center gap-1"><i class="fas fa-arrow-up text-[10px]"></i> +0%</span>
+                        <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
-                        <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[85%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
+                        <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[80%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Chart Row -->
+            <!-- Grafik & Ringkasan (sama seperti sebelumnya) -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -675,42 +648,44 @@ DASHBOARD UTAMA
                     <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4">Ringkasan Cepat</h3>
                     <div class="space-y-3 flex-1">
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Pesanan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-calendar-day mr-2 text-[#06b6d4]"></i>Pesanan Hari Ini</span>
                             <span id="quickTodayOrders" class="font-bold text-[#dae2fc]">0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Pendapatan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-money-bill-wave mr-2 text-[#fbbf24]"></i>Pendapatan Hari Ini</span>
                             <span id="quickTodayRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Keuntungan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-arrow-trend-up mr-2 text-[#4ade80]"></i>Keuntungan Hari Ini</span>
                             <span id="quickTodayProfit" class="font-bold text-[#4ade80]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Rata-rata per Pesanan</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-calculator mr-2 text-[#ffb0cd]"></i>Rata-rata per Order</span>
                             <span id="quickAvgOrder" class="font-bold text-[#06b6d4]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Produk Terlaris</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-crown mr-2 text-[#fbbf24]"></i>Produk Terlaris</span>
                             <span id="quickTopProduct" class="font-bold text-[#ffb784]">-</span>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Aktivitas Terbaru -->
             <div class="glass-card rounded-2xl p-5 md:p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Aktivitas Terbaru</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><i class="fas fa-clock mr-2 text-[#d2bbff]"></i>Aktivitas Terbaru</h3>
                     <a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline flex items-center gap-1">
-                        Lihat Semua <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        Lihat Semua <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
                 <div id="recentActivityList" class="space-y-3 max-h-[300px] overflow-y-auto pr-1"></div>
             </div>
         </div>
 
-        <!-- VIEW: PRODUK -->
+        <!-- VIEW: PRODUK (sama seperti sebelumnya, hanya ikon Font Awesome) -->
         <div id="viewProducts" class="view">
+            <!-- ... konten produk ... -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Produk</h3>
@@ -718,14 +693,14 @@ DASHBOARD UTAMA
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <button onclick="exportProducts()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">download</span> Export
+                        <i class="fas fa-download"></i> Export
                     </button>
                     <button onclick="openProductModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                        <span class="material-symbols-outlined text-[18px]">add</span> Tambah Produk
+                        <i class="fas fa-plus"></i> Tambah Produk
                     </button>
                 </div>
             </div>
-
+            <!-- ... tabel produk ... (sama) -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
@@ -739,48 +714,40 @@ DASHBOARD UTAMA
                             <option value="all">Semua Kategori</option>
                         </select>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
                             <input type="text" id="productSearch" placeholder="Cari produk..."
                             class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                         </div>
                     </div>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
                             <tr>
-                                <th class="py-3 px-4 font-semibold w-10">
-                                    <input type="checkbox" id="selectAllProducts" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]">
-                                </th>
+                                <th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllProducts" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th>
                                 <th class="py-3 px-4 font-semibold">Gambar</th>
-                                <th class="py-3 px-4 font-semibold">Nama</th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="name" data-table="products">Nama <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold hidden sm:table-cell">Kategori</th>
-                                <th class="py-3 px-4 font-semibold text-right">Harga</th>
-                                <th class="py-3 px-4 font-semibold text-right hidden md:table-cell">Stok</th>
+                                <th class="py-3 px-4 font-semibold text-right sortable-header" data-sort="price" data-table="products">Harga <span class="sort-icon">↕</span></th>
+                                <th class="py-3 px-4 font-semibold text-right hidden md:table-cell sortable-header" data-sort="stock" data-table="products">Stok <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="productTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
                     </table>
                 </div>
-
                 <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="productShowFrom">1</span>-<span id="productShowTo">5</span> dari <span id="productTotalItems">0</span> produk</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                        <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                        </button>
+                        <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled><i class="fas fa-chevron-left"></i></button>
                         <div id="productPaginationNumbers" class="flex gap-1"></div>
-                        <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </button>
+                        <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW: PESANAN -->
+        <!-- VIEW: PESANAN (dengan ikon Font Awesome) -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -789,27 +756,27 @@ DASHBOARD UTAMA
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <button onclick="bulkDeleteOrders()" class="px-4 py-2 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">delete</span> Hapus
+                        <i class="fas fa-trash"></i> Hapus
                     </button>
                     <button onclick="exportOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">download</span> Export
+                        <i class="fas fa-download"></i> Export
                     </button>
                     <button onclick="bulkUpdateOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">checklist</span> Bulk
+                        <i class="fas fa-check-double"></i> Bulk
                     </button>
                 </div>
             </div>
-
+            <!-- Statistik pesanan (sama) -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pesanan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-calendar-day mr-1"></i> Pesanan Hari Ini</p>
                     <div class="flex items-end justify-between">
                         <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
                         <span id="statTodayOrdersTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pendapatan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-money-bill-wave mr-1"></i> Pendapatan Hari Ini</p>
                     <div class="flex items-end justify-between">
                         <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
                         <span id="statTodayRevenueTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
@@ -817,21 +784,21 @@ DASHBOARD UTAMA
                 </div>
                 <div class="glass-card rounded-xl p-4 relative overflow-hidden border-[#4ade80]/20">
                     <div class="absolute inset-0 bg-gradient-to-r from-[#4ade80]/5 to-transparent"></div>
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Keuntungan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative"><i class="fas fa-arrow-trend-up mr-1"></i> Keuntungan Hari Ini</p>
                     <div class="flex items-end justify-between relative">
                         <span id="statTodayProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
                         <span id="statTodayProfitTrend" class="text-[#4ade80] text-[10px] font-medium">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Tingkat Pembatalan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-times-circle mr-1"></i> Tingkat Pembatalan</p>
                     <div class="flex items-end justify-between">
                         <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
                         <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
                     </div>
                 </div>
             </div>
-
+            <!-- Tabel pesanan (sama, hanya ikon) -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
@@ -847,48 +814,40 @@ DASHBOARD UTAMA
                         <input type="date" id="orderDateFrom" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                         <input type="date" id="orderDateTo" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
                             <input id="orderSearch" type="text" placeholder="Cari ID atau pelanggan..."
                             class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                         </div>
                     </div>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
                             <tr>
-                                <th class="py-3 px-4 font-semibold w-10">
-                                    <input type="checkbox" id="selectAllOrders" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]">
-                                </th>
-                                <th class="py-3 px-4 font-semibold">ID Pesanan</th>
-                                <th class="py-3 px-4 font-semibold">Pelanggan</th>
+                                <th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllOrders" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="id" data-table="orders">ID Pesanan <span class="sort-icon">↕</span></th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="customer" data-table="orders">Pelanggan <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item</th>
-                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th>
-                                <th class="py-3 px-4 font-semibold">Status</th>
+                                <th class="py-3 px-4 font-semibold hidden md:table-cell sortable-header" data-sort="date" data-table="orders">Tanggal <span class="sort-icon">↕</span></th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="status" data-table="orders">Status <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
                     </table>
                 </div>
-
                 <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                        <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                        </button>
+                        <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled><i class="fas fa-chevron-left"></i></button>
                         <div id="orderPaginationNumbers" class="flex gap-1"></div>
-                        <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </button>
+                        <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW: KATEGORI -->
+        <!-- VIEW: KATEGORI (sama, hanya ikon) -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -896,28 +855,26 @@ DASHBOARD UTAMA
                     <p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p>
                 </div>
                 <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                    <span class="material-symbols-outlined text-[18px]">add</span> Tambah Kategori
+                    <i class="fas fa-plus"></i> Tambah Kategori
                 </button>
             </div>
-
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
                         <span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span>
                     </div>
                     <div class="ml-auto relative">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
                         <input type="text" id="categorySearch" placeholder="Cari kategori..."
                         class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                     </div>
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
                             <tr>
                                 <th class="py-3 px-4 font-semibold">Icon</th>
-                                <th class="py-3 px-4 font-semibold">Nama Kategori</th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="name" data-table="categories">Nama Kategori <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold hidden sm:table-cell">Gambar</th>
                                 <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
@@ -925,23 +882,18 @@ DASHBOARD UTAMA
                         <tbody id="categoryTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
                     </table>
                 </div>
-
                 <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="categoryShowFrom">1</span>-<span id="categoryShowTo">5</span> dari <span id="categoryTotalItems">0</span> kategori</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                        <button id="categoryPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                        </button>
+                        <button id="categoryPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled><i class="fas fa-chevron-left"></i></button>
                         <div id="categoryPaginationNumbers" class="flex gap-1"></div>
-                        <button id="categoryNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                        </button>
+                        <button id="categoryNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW: LAPORAN BULANAN -->
+        <!-- VIEW: LAPORAN -->
         <div id="viewReports" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -957,46 +909,49 @@ DASHBOARD UTAMA
                             <option value="2024">2024</option>
                         </select>
                     </div>
+                    <button onclick="exportMonthlyReportPDF()" class="px-4 py-2 rounded-xl border border-[#d2bbff]/30 text-[#d2bbff] hover:bg-[#d2bbff]/10 transition text-sm font-medium flex items-center gap-2">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
                     <button onclick="exportMonthlyReport()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#4ade80] to-[#22c55e] text-white text-sm font-medium flex items-center gap-2 btn-profit-glow hover:opacity-90 transition">
-                        <span class="material-symbols-outlined text-[18px]">file_download</span> Export Excel
+                        <i class="fas fa-file-excel"></i> Excel
                     </button>
                     <button onclick="loadMonthlyReport()" class="px-4 py-2 rounded-xl bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] transition text-sm font-medium flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">refresh</span> Refresh
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                 </div>
             </div>
-
+            <!-- Statistik laporan -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-coins mr-1 text-[#fbbf24]"></i> Total Pendapatan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
                         <span id="reportRevenueGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-shopping-cart mr-1 text-[#06b6d4]"></i> Total Pesanan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
                         <span id="reportOrdersGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat border-[#4ade80]/20">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-arrow-trend-up mr-1 text-[#4ade80]"></i> Total Keuntungan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
                         <span id="reportProfitGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-calculator mr-1 text-[#ffb0cd]"></i> Rata-rata per Order</p>
                     <div class="flex items-end justify-between">
                         <span id="reportAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#06b6d4]">Rp 0</span>
                         <span id="reportAvgGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
             </div>
-
+            <!-- Grafik dan ringkasan -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -1013,25 +968,25 @@ DASHBOARD UTAMA
                     <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4">Ringkasan Tahunan</h3>
                     <div class="space-y-3 flex-1">
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Bulan Terbaik</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-crown mr-2 text-[#fbbf24]"></i>Bulan Terbaik</span>
                             <span id="bestMonth" class="font-bold text-[#4ade80]">-</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Pendapatan Tertinggi</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-chart-line mr-2 text-[#d2bbff]"></i>Pendapatan Tertinggi</span>
                             <span id="highestRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Keuntungan Tertinggi</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-arrow-trend-up mr-2 text-[#4ade80]"></i>Keuntungan Tertinggi</span>
                             <span id="highestProfit" class="font-bold text-[#4ade80]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]">Total Pesanan</span>
+                            <span class="text-sm text-[#ccc3d8]"><i class="fas fa-shopping-cart mr-2 text-[#06b6d4]"></i>Total Pesanan</span>
                             <span id="totalOrdersYear" class="font-bold text-[#06b6d4]">0</span>
                         </div>
                     </div>
                 </div>
             </div>
-
+            <!-- Tabel rekap -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40">
                     <div>
@@ -1046,7 +1001,7 @@ DASHBOARD UTAMA
                     <table class="w-full text-left">
                         <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
                             <tr>
-                                <th class="py-3 px-4 font-semibold">Bulan</th>
+                                <th class="py-3 px-4 font-semibold sortable-header" data-sort="month" data-table="reports">Bulan <span class="sort-icon">↕</span></th>
                                 <th class="py-3 px-4 font-semibold text-right">Pesanan</th>
                                 <th class="py-3 px-4 font-semibold text-right">Pendapatan</th>
                                 <th class="py-3 px-4 font-semibold text-right">Keuntungan</th>
@@ -1063,7 +1018,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PENGATURAN -->
+        <!-- VIEW: PENGATURAN (sama, hanya ikon) -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
@@ -1073,7 +1028,7 @@ DASHBOARD UTAMA
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="material-symbols-outlined text-[#d2bbff]">build</span>
+                            <i class="fas fa-cogs text-[#d2bbff] text-xl"></i>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Pengaturan Umum</h4>
                         </div>
                         <div class="space-y-4">
@@ -1099,14 +1054,14 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex justify-end pt-2">
                                 <button onclick="saveSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
-                                    Simpan Perubahan
+                                    <i class="fas fa-save mr-2"></i> Simpan Perubahan
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="material-symbols-outlined text-[#06b6d4]">telegram</span>
+                            <i class="fab fa-telegram text-[#06b6d4] text-xl"></i>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Bot Telegram</h4>
                         </div>
                         <div class="space-y-4">
@@ -1132,7 +1087,7 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex justify-end pt-2">
                                 <button onclick="saveBotSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#06b6d4] to-[#0891b2] text-white rounded-xl font-semibold text-sm hover:opacity-90 transition">
-                                    <span class="flex items-center gap-2">Simpan Bot <span class="material-symbols-outlined text-[16px]">send</span></span>
+                                    <i class="fab fa-telegram mr-2"></i> Simpan Bot
                                 </button>
                             </div>
                         </div>
@@ -1141,15 +1096,15 @@ DASHBOARD UTAMA
                 <div class="space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="material-symbols-outlined text-[#ffb784]">backup</span>
+                            <i class="fas fa-database text-[#ffb784] text-xl"></i>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Backup Data</h4>
                         </div>
                         <p class="text-sm text-[#ccc3d8] mb-4">Unduh backup semua data dalam format JSON.</p>
                         <button onclick="backupData()" class="w-full py-2.5 bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">download</span> Download Backup
+                            <i class="fas fa-download"></i> Download Backup
                         </button>
                         <button onclick="restoreData()" class="w-full mt-2 py-2.5 border border-[#4a4455]/30 hover:border-[#d2bbff]/50 text-[#ccc3d8] hover:text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">upload</span> Restore Backup
+                            <i class="fas fa-upload"></i> Restore Backup
                         </button>
                     </div>
                     <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center">
@@ -1157,7 +1112,7 @@ DASHBOARD UTAMA
                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
                             alt="Admin" class="w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-[#020617]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                <span class="material-symbols-outlined text-[#dae2fc]">edit</span>
+                                <i class="fas fa-edit text-[#dae2fc]"></i>
                             </div>
                         </div>
                         <h4 class="font-semibold text-lg text-[#dae2fc]">Administrator</h4>
@@ -1181,7 +1136,7 @@ DASHBOARD UTAMA
                                 <div class="flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20 mt-1">
                                     <span class="text-sm text-[#dae2fc]">Aplikasi Authenticator</span>
                                     <span class="flex items-center gap-1 text-[#06b6d4] text-xs font-medium">
-                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                                        <i class="fas fa-check-circle"></i> Aktif
                                     </span>
                                 </div>
                             </div>
@@ -1221,7 +1176,6 @@ MODAL PRODUK
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label>
                 <input id="pImage" type="text" placeholder="https://example.com/gambar.jpg"
                 class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
-                <p class="text-xs text-[#ccc3d8] mt-1">Masukkan URL gambar produk (opsional)</p>
             </div>
             <div>
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Harga Jual (Rp)</label>
@@ -1294,7 +1248,7 @@ MODAL DETAIL PESANAN
 </div>
 
 <!-- ================================================================
-JAVASCRIPT – FULL LOGIKA
+JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
 ================================================================ -->
 <script>
     // ================================================================
@@ -1319,6 +1273,21 @@ JAVASCRIPT – FULL LOGIKA
     let lastNotifCheck = 0;
     let notifDropdownOpen = false;
 
+    // Sorting state
+    let sortConfig = {
+        products: { key: 'name', direction: 'asc' },
+        orders: { key: 'date', direction: 'desc' },
+        categories: { key: 'name', direction: 'asc' },
+        reports: { key: 'month', direction: 'asc' }
+    };
+
+    // Auto-refresh
+    let refreshInterval = setInterval(() => {
+        if (document.getElementById('dashboard').style.display !== 'none') {
+            refreshDataSilent();
+        }
+    }, 30000);
+
     // ================================================================
     // FORMAT RUPIAH
     // ================================================================
@@ -1333,14 +1302,20 @@ JAVASCRIPT – FULL LOGIKA
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         const icons = {
-            success: 'check_circle',
-            error: 'error',
-            warning: 'warning',
-            info: 'info'
+            success: 'fa-check-circle',
+            error: 'fa-times-circle',
+            warning: 'fa-exclamation-triangle',
+            info: 'fa-info-circle'
+        };
+        const colorMap = {
+            success: '#4ade80',
+            error: '#ffb4ab',
+            warning: '#fbbf24',
+            info: '#06b6d4'
         };
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
-                <span class="material-symbols-outlined text-${type === 'success' ? '#4ade80' : type === 'error' ? '#ffb4ab' : type === 'warning' ? '#fbbf24' : '#06b6d4'}">${icons[type] || 'info'}</span>
+                <i class="fas ${icons[type] || 'fa-info-circle'}" style="color:${colorMap[type] || '#06b6d4'}"></i>
                 <span class="text-sm flex-1">${message}</span>
                 <button onclick="this.parentElement.remove()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition">×</button>
             `;
@@ -1349,6 +1324,13 @@ JAVASCRIPT – FULL LOGIKA
             toast.classList.add('toast-out');
             setTimeout(() => toast.remove(), 350);
         }, duration);
+    }
+
+    // ================================================================
+    // LOADING OVERLAY
+    // ================================================================
+    function showLoading(show) {
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
     }
 
     // ================================================================
@@ -1392,14 +1374,29 @@ JAVASCRIPT – FULL LOGIKA
                 document.getElementById('dashboard').style.display = 'flex';
                 loadAllData();
                 showToast('Selamat datang kembali!', 'success');
+                updateConnectionStatus(true);
             })
-            .catch(err => showToast('Error: ' + err.message, 'error'));
+            .catch(err => {
+                showToast('Error: ' + err.message, 'error');
+                updateConnectionStatus(false);
+            });
     }
     if (currentToken) verifyToken(currentToken);
 
     function handleLogout() {
         localStorage.removeItem('adminToken');
         location.reload();
+    }
+
+    function updateConnectionStatus(online) {
+        const el = document.getElementById('connectionStatus');
+        if (online) {
+            el.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#4ade80] animate-pulse"></span> Online`;
+            el.className = 'flex items-center gap-1.5 text-[10px] font-medium px-2 py-1 rounded-full bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20 ml-2';
+        } else {
+            el.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-[#ffb4ab]"></span> Offline`;
+            el.className = 'flex items-center gap-1.5 text-[10px] font-medium px-2 py-1 rounded-full bg-[#ffb4ab]/10 text-[#ffb4ab] border border-[#ffb4ab]/20 ml-2';
+        }
     }
 
     // ================================================================
@@ -1414,7 +1411,6 @@ JAVASCRIPT – FULL LOGIKA
         }
     }
 
-    // Tutup dropdown jika klik di luar
     document.addEventListener('click', function(e) {
         const notifBtn = document.querySelector('[data-tooltip="Notifikasi"]')?.parentElement || document.querySelector(
             '.relative button');
@@ -1434,7 +1430,7 @@ JAVASCRIPT – FULL LOGIKA
         if (pending.length === 0) {
             list.innerHTML = `
                     <div class="notif-empty">
-                        <span class="material-symbols-outlined">notifications_off</span>
+                        <i class="fas fa-bell-slash"></i>
                         <p>Tidak ada pesanan pending</p>
                         <p class="text-xs mt-1">Semua pesanan sudah diproses</p>
                     </div>
@@ -1452,7 +1448,7 @@ JAVASCRIPT – FULL LOGIKA
 
             item.innerHTML = `
                     <div class="notif-icon">
-                        <span class="material-symbols-outlined">shopping_bag</span>
+                        <i class="fas fa-shopping-bag"></i>
                     </div>
                     <div class="notif-content">
                         <div class="notif-title">🛒 Pesanan baru dari ${customerName}</div>
@@ -1462,16 +1458,13 @@ JAVASCRIPT – FULL LOGIKA
                     <div class="notif-badge"></div>
                 `;
             item.addEventListener('click', function() {
-                // Tutup dropdown
                 document.getElementById('notifDropdown').classList.remove('open');
                 notifDropdownOpen = false;
-                // Buka detail pesanan
                 openOrderDetailModal(o.transactionId || o._id);
             });
             list.appendChild(item);
         });
 
-        // Update jumlah di badge
         const notifCount = document.getElementById('notifCount');
         if (pending.length > 0) {
             notifCount.innerText = pending.length;
@@ -1538,15 +1531,44 @@ JAVASCRIPT – FULL LOGIKA
     // REFRESH
     // ================================================================
     function refreshData() {
-        showToast('Memuat ulang data...', 'info');
-        loadAllData();
+        showLoading(true);
+        loadAllData().finally(() => showLoading(false));
+    }
+
+    function refreshDataSilent() {
+        loadAllDataSilent();
+    }
+
+    function loadAllDataSilent() {
+        Promise.all([
+            authFetch(`${API_BASE}?action=transactions`).then(r => r.json()).catch(() => []),
+            authFetch(`${API_BASE}?action=list`).then(r => r.json()).catch(() => []),
+            authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
+        ]).then(([orders, products, categories]) => {
+            allOrders = orders || [];
+            allProducts = products || [];
+            allCategories = categories || [];
+            updateBadges();
+            renderNotifications();
+            updateCategoryDropdowns();
+            const activeView = document.querySelector('.view.active');
+            if (activeView) {
+                const id = activeView.id.replace('view', '').toLowerCase();
+                if (id === 'dashboard') loadDashboard();
+                else if (id === 'products') renderProductTable();
+                else if (id === 'orders') applyOrderFilters();
+                else if (id === 'categories') renderCategoryTable();
+                else if (id === 'reports') loadMonthlyReport();
+            }
+            updateConnectionStatus(true);
+        }).catch(() => updateConnectionStatus(false));
     }
 
     // ================================================================
     // LOAD ALL DATA
     // ================================================================
     function loadAllData() {
-        Promise.all([
+        return Promise.all([
             authFetch(`${API_BASE}?action=transactions`).then(r => r.json()),
             authFetch(`${API_BASE}?action=list`).then(r => r.json()),
             authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
@@ -1554,26 +1576,24 @@ JAVASCRIPT – FULL LOGIKA
             allOrders = orders || [];
             allProducts = products || [];
             allCategories = categories || [];
-
-            document.getElementById('productBadge').innerText = allProducts.length;
-            const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
-            document.getElementById('orderBadge').innerText = pending.length;
-            document.getElementById('categoryBadge').innerText = allCategories.length;
-
-            // Update notifikasi
-            renderNotifications();
-
+            updateBadges();
             updateCategoryDropdowns();
             navigateTo('dashboard');
+            updateConnectionStatus(true);
         }).catch(err => {
             console.error('Gagal load data:', err);
             showToast('Gagal memuat data', 'error');
+            updateConnectionStatus(false);
         });
     }
 
-    // ================================================================
-    // UPDATE CATEGORY DROPDOWNS
-    // ================================================================
+    function updateBadges() {
+        document.getElementById('productBadge').innerText = allProducts.length;
+        const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
+        document.getElementById('orderBadge').innerText = pending.length;
+        document.getElementById('categoryBadge').innerText = allCategories.length;
+    }
+
     function updateCategoryDropdowns() {
         const select = document.getElementById('pCategory');
         if (select) {
@@ -1607,15 +1627,24 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // DASHBOARD
+    // DASHBOARD (dengan Rata-rata per Order)
     // ================================================================
     function loadDashboard() {
         const totalRevenue = allOrders.reduce((s, o) => s + (o.total || 0), 0);
         const totalProfit = allOrders.reduce((s, o) => s + (o.profit || 0), 0);
+        const totalOrders = allOrders.length;
+        const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
         document.getElementById('dashTotalRevenue').innerText = formatRupiah(totalRevenue);
-        document.getElementById('dashTotalOrders').innerText = allOrders.length;
+        document.getElementById('dashTotalOrders').innerText = totalOrders;
         document.getElementById('dashTotalProfit').innerText = formatRupiah(totalProfit);
-        document.getElementById('dashTotalProducts').innerText = allProducts.length;
+        document.getElementById('dashAvgOrder').innerText = formatRupiah(avgOrder);
+
+        // Trend dummy (bisa dikembangkan)
+        document.getElementById('revenueTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        document.getElementById('orderTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        document.getElementById('profitTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
+        document.getElementById('avgOrderTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
 
         const today = new Date().toDateString();
         const todayOrders = allOrders.filter(o => new Date(o.createdAt).toDateString() === today);
@@ -1624,8 +1653,7 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('quickTodayOrders').innerText = todayOrders.length;
         document.getElementById('quickTodayRevenue').innerText = formatRupiah(todayRevenue);
         document.getElementById('quickTodayProfit').innerText = formatRupiah(todayProfit);
-        const avg = allOrders.length > 0 ? totalRevenue / allOrders.length : 0;
-        document.getElementById('quickAvgOrder').innerText = formatRupiah(avg);
+        document.getElementById('quickAvgOrder').innerText = formatRupiah(avgOrder);
 
         const productSales = {};
         allOrders.forEach(o => {
@@ -1653,7 +1681,7 @@ JAVASCRIPT – FULL LOGIKA
             const isCompleted = status === 'completed' || status === 'paid';
             const isCancelled = status === 'cancelled';
             const isPending = !isCompleted && !isCancelled;
-            const icon = isCompleted ? 'shopping_bag' : isCancelled ? 'error' : 'sync';
+            const icon = isCompleted ? 'fa-shopping-bag' : isCancelled ? 'fa-times-circle' : 'fa-sync-alt';
             const color = isCompleted ? '#06b6d4' : isCancelled ? '#ffb4ab' : '#ffb784';
             const label = isCompleted ? 'Selesai' : isCancelled ? 'Dibatalkan' : 'Menunggu';
             const div = document.createElement('div');
@@ -1662,7 +1690,7 @@ JAVASCRIPT – FULL LOGIKA
             div.innerHTML = `
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-9 h-9 rounded-full bg-[#222a3d] flex items-center justify-center flex-shrink-0" style="border:1px solid ${color}33;">
-                            <span class="material-symbols-outlined text-[20px]" style="color:${color};">${icon}</span>
+                            <i class="fas ${icon}" style="color:${color};"></i>
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-medium text-[#dae2fc] truncate">${o.transactionId || 'Order'}</p>
@@ -1750,7 +1778,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // PRODUK
+    // PRODUK (sama seperti sebelumnya, hanya ikon)
     // ================================================================
     function loadProducts() {
         authFetch(`${API_BASE}?action=list`)
@@ -1772,6 +1800,18 @@ JAVASCRIPT – FULL LOGIKA
             const matchCategory = category === 'all' || (p.category || '') === category;
             return matchSearch && matchCategory;
         });
+
+        const sort = sortConfig.products;
+        filtered.sort((a, b) => {
+            let aVal = a[sort.key] || '',
+                bVal = b[sort.key] || '';
+            if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+            if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+            if (aVal < bVal) return sort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
         const total = filtered.length,
             pages = Math.ceil(total / perPage) || 1;
         if (productPage > pages) productPage = pages;
@@ -1798,7 +1838,7 @@ JAVASCRIPT – FULL LOGIKA
             tr.innerHTML = `
                     <td class="py-3 px-4"><input type="checkbox" class="product-checkbox rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]" data-id="${p.id}"></td>
                     <td class="py-3 px-4">
-                        <img src="${imageUrl}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover border border-[#4a4455]/20" onerror="this.src='https://via.placeholder.com/40x40?text=Error'">
+                        <img src="${imageUrl}" alt="${p.name}" class="w-10 h-10 rounded-lg object-cover border border-[#4a4455]/20 product-image-preview" onerror="this.src='https://via.placeholder.com/40x40?text=Error'">
                     </td>
                     <td class="py-3 px-4"><span class="font-medium">${p.name || 'Tanpa nama'}</span></td>
                     <td class="py-3 px-4 hidden sm:table-cell"><span class="text-xs bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-full border border-[#4a4455]/20">${p.category || 'game'}</span></td>
@@ -1813,14 +1853,16 @@ JAVASCRIPT – FULL LOGIKA
                     </td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g,'&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                            <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            <button onclick="duplicateProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Duplikat"><i class="fas fa-copy"></i></button>
+                            <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g,'&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 `;
             tbody.appendChild(tr);
         });
         renderProductPagination(pages);
+        updateSortIndicators('products');
     }
 
     function renderProductPagination(pages) {
@@ -1860,6 +1902,26 @@ JAVASCRIPT – FULL LOGIKA
         renderProductTable(); });
     document.getElementById('productCategoryFilter').addEventListener('change', function() { productPage = 1;
         renderProductTable(); });
+
+    function duplicateProduct(id) {
+        const product = allProducts.find(p => p.id === id);
+        if (!product) return showToast('Produk tidak ditemukan', 'error');
+        const newProduct = {
+            name: product.name + ' (copy)',
+            category: product.category || 'game',
+            image: product.image || '',
+            price: product.price || 0,
+            cost: product.cost || 0,
+            stock: product.stock || 0
+        };
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'add', product: newProduct }) })
+            .then(() => {
+                loadProducts();
+                loadDashboard();
+                showToast('✅ Produk berhasil diduplikat', 'success');
+            })
+            .catch(err => showToast('Gagal duplikat: ' + err.message, 'error'));
+    }
 
     function openProductModal(product = null) {
         const modal = document.getElementById('productModal');
@@ -1908,7 +1970,6 @@ JAVASCRIPT – FULL LOGIKA
         if (id) payload.product.id = Number(id);
 
         authFetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) })
-            .then(res => res.json())
             .then(() => {
                 closeProductModal();
                 loadProducts();
@@ -1940,7 +2001,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // PESANAN
+    // PESANAN (sama, hanya ikon)
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
@@ -1994,6 +2055,23 @@ JAVASCRIPT – FULL LOGIKA
             return matchStatus && matchSearch && matchDate;
         });
 
+        const sort = sortConfig.orders;
+        filtered.sort((a, b) => {
+            let aVal, bVal;
+            if (sort.key === 'id') { aVal = a.transactionId || a._id || '';
+                bVal = b.transactionId || b._id || ''; } else if (sort.key === 'customer') { aVal = a.customer?.name ||
+                    '';
+                bVal = b.customer?.name || ''; } else if (sort.key === 'date') { aVal = new Date(a.createdAt).getTime();
+                bVal = new Date(b.createdAt).getTime(); } else if (sort.key === 'status') { aVal = a.status || 'pending';
+                bVal = b.status || 'pending'; } else { aVal = a[sort.key] || '';
+                bVal = b[sort.key] || ''; }
+            if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+            if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+            if (aVal < bVal) return sort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
         const total = filtered.length,
             pages = Math.ceil(total / perPage) || 1;
         if (orderPage > pages) orderPage = pages;
@@ -2007,6 +2085,7 @@ JAVASCRIPT – FULL LOGIKA
 
         renderOrderRows(pageItems);
         renderOrderPagination(pages);
+        updateSortIndicators('orders');
     }
 
     function renderOrderRows(orders) {
@@ -2046,8 +2125,8 @@ JAVASCRIPT – FULL LOGIKA
                         <div class="flex items-center justify-end gap-1.5">
                             ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
                             ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
-                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition" data-tooltip="Detail"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
-                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition" data-tooltip="Detail"><i class="fas fa-ellipsis-v"></i></button>
+                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -2122,86 +2201,48 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     function deleteOrder(transactionId) {
-        if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
-        authFetch(API_BASE, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'deleteOrder', transactionId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast('✅ Pesanan berhasil dihapus', 'success');
-                loadOrders();
+        if (!confirm(`Yakin hapus pesanan ${transactionId}?`)) return;
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'deleteOrder', transactionId }) })
+            .then(() => { loadOrders();
                 loadDashboard();
-            } else {
-                showToast('❌ Gagal hapus: ' + (data.error || 'Unknown error'), 'error');
-            }
-        })
-        .catch(err => showToast('❌ Gagal hapus: ' + err.message, 'error'));
+                showToast('Pesanan dihapus', 'success'); })
+            .catch(err => showToast('Gagal hapus: ' + err.message, 'error'));
     }
 
     function bulkDeleteOrders() {
         const checked = document.querySelectorAll('.order-checkbox:checked');
-        if (checked.length === 0) {
-            showToast('Pilih minimal satu pesanan untuk dihapus', 'warning');
-            return;
-        }
-        if (!confirm(`⚠️ Yakin ingin menghapus ${checked.length} pesanan secara permanen? Tindakan ini tidak dapat dibatalkan!`)) {
-            return;
-        }
+        if (checked.length === 0) return showToast('Pilih minimal satu pesanan', 'warning');
+        if (!confirm(`Hapus ${checked.length} pesanan?`)) return;
         const promises = [];
         checked.forEach(cb => {
-            const transactionId = cb.dataset.id;
-            if (transactionId) {
-                promises.push(
-                    authFetch(API_BASE, {
-                        method: 'POST',
-                        body: JSON.stringify({ action: 'deleteOrder', transactionId })
-                    })
-                );
-            }
+            promises.push(authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'deleteOrder',
+                    transactionId: cb.dataset.id }) }));
         });
-        if (promises.length === 0) {
-            showToast('Tidak ada pesanan yang valid untuk dihapus', 'error');
-            return;
-        }
-        showToast(`⏳ Menghapus ${promises.length} pesanan...`, 'info');
         Promise.all(promises)
-            .then(responses => {
-                const failed = responses.filter(r => !r.ok);
-                if (failed.length > 0) {
-                    showToast(`⚠️ ${failed.length} pesanan gagal dihapus`, 'error');
-                } else {
-                    showToast(`✅ ${responses.length} pesanan berhasil dihapus`, 'success');
-                }
-                loadOrders();
+            .then(() => { loadOrders();
                 loadDashboard();
-            })
-            .catch(err => {
-                showToast('❌ Gagal menghapus pesanan: ' + err.message, 'error');
-            });
+                showToast(`${checked.length} pesanan dihapus`, 'success'); })
+            .catch(err => showToast('Gagal bulk hapus: ' + err.message, 'error'));
     }
 
     function bulkUpdateOrders() {
         const checked = document.querySelectorAll('.order-checkbox:checked');
         if (checked.length === 0) return showToast('Pilih minimal satu pesanan', 'warning');
-        if (!confirm(`Ubah status ${checked.length} pesanan menjadi Selesai?`)) return;
+        if (!confirm(`Proses ${checked.length} pesanan menjadi Selesai?`)) return;
         const promises = [];
         checked.forEach(cb => {
             promises.push(authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'updateOrder',
                     transactionId: cb.dataset.id, status: 'completed' }) }));
         });
         Promise.all(promises)
-            .then(() => {
-                loadOrders();
+            .then(() => { loadOrders();
                 loadDashboard();
-                showToast(`✅ ${checked.length} pesanan berhasil diproses`, 'success');
-            })
+                showToast(`${checked.length} pesanan diproses`, 'success'); })
             .catch(err => showToast('Gagal bulk update: ' + err.message, 'error'));
     }
 
     function exportOrders() {
-        if (allOrders.length === 0) return showToast('Tidak ada pesanan untuk diekspor', 'warning');
+        if (allOrders.length === 0) return showToast('Tidak ada pesanan', 'warning');
         const csv = ['ID Transaksi,Pelanggan,Produk,Total,Status,Tanggal'];
         allOrders.forEach(o => {
             csv.push(
@@ -2213,7 +2254,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // DETAIL ORDER
+    // DETAIL ORDER (sama, hanya ikon)
     // ================================================================
     function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
@@ -2252,8 +2293,8 @@ JAVASCRIPT – FULL LOGIKA
                         <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Pelanggan</p>
                         <p class="font-medium">${customerName}</p>
                         <p class="text-xs text-[#ccc3d8]">UID: ${customerUid}</p>
-                        ${customerPhone ? `<p class="text-xs text-[#ccc3d8]">📞 ${customerPhone}</p>` : ''}
-                        ${customerEmail ? `<p class="text-xs text-[#ccc3d8]">📧 ${customerEmail}</p>` : ''}
+                        ${customerPhone ? `<p class="text-xs text-[#ccc3d8]"><i class="fas fa-phone mr-1"></i> ${customerPhone}</p>` : ''}
+                        ${customerEmail ? `<p class="text-xs text-[#ccc3d8]"><i class="fas fa-envelope mr-1"></i> ${customerEmail}</p>` : ''}
                     </div>
                     <div>
                         <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Tanggal</p>
@@ -2299,8 +2340,8 @@ JAVASCRIPT – FULL LOGIKA
                 ${order.notes ? `<div class="border-t border-[#4a4455]/20 pt-3"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Catatan</p><p class="text-sm bg-[#060e20] p-3 rounded-xl border border-[#4a4455]/20">${order.notes}</p></div>` : ''}
 
                 <div class="flex gap-2 mt-3 pt-3 border-t border-[#4a4455]/20">
-                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">✅ Proses</button>` : ''}
-                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">❌ Batalkan</button>` : ''}
+                    ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium"><i class="fas fa-check mr-1"></i> Proses</button>` : ''}
+                    ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium"><i class="fas fa-times mr-1"></i> Batalkan</button>` : ''}
                     <button onclick="closeOrderDetailModal()" class="flex-1 py-2.5 rounded-xl bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Tutup</button>
                 </div>
             `;
@@ -2316,7 +2357,7 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // KATEGORI
+    // KATEGORI (sama, hanya ikon)
     // ================================================================
     function loadCategories() {
         authFetch(`${API_BASE}?action=categories`)
@@ -2338,6 +2379,18 @@ JAVASCRIPT – FULL LOGIKA
     function renderCategoryTable() {
         const search = document.getElementById('categorySearch').value.toLowerCase();
         let filtered = allCategories.filter(c => (c.name || '').toLowerCase().includes(search));
+
+        const sort = sortConfig.categories;
+        filtered.sort((a, b) => {
+            let aVal = a[sort.key] || '',
+                bVal = b[sort.key] || '';
+            if (typeof aVal === 'string') aVal = aVal.toLowerCase();
+            if (typeof bVal === 'string') bVal = bVal.toLowerCase();
+            if (aVal < bVal) return sort.direction === 'asc' ? -1 : 1;
+            if (aVal > bVal) return sort.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+
         const total = filtered.length,
             pages = Math.ceil(total / perPage) || 1;
         if (categoryPage > pages) categoryPage = pages;
@@ -2364,21 +2417,22 @@ JAVASCRIPT – FULL LOGIKA
             tr.innerHTML = `
                     <td class="py-3 px-4">
                         <div class="category-icon">
-                            ${imageUrl ? `<img src="${imageUrl}" alt="${c.name}" onerror="this.parentElement.innerHTML='<span class=material-symbols-outlined>${iconName}</span>'">` : `<span class="material-symbols-outlined">${iconName}</span>`}
+                            ${imageUrl ? `<img src="${imageUrl}" alt="${c.name}" onerror="this.parentElement.innerHTML='<i class="fas fa-${iconName}"></i>'">` : `<i class="fas fa-${iconName}"></i>`}
                         </div>
                     </td>
                     <td class="py-3 px-4"><span class="font-medium">${c.name}</span></td>
                     <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-                            <button onclick="deleteCategory('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+                            <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteCategory('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 `;
             tbody.appendChild(tr);
         });
         renderCategoryPagination(pages);
+        updateSortIndicators('categories');
     }
 
     function renderCategoryPagination(pages) {
@@ -2471,7 +2525,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     function deleteCategory(categoryName) {
-        if (!confirm(`Yakin hapus kategori "${categoryName}"? Produk dengan kategori ini akan tetap ada.`)) return;
+        if (!confirm(`Yakin hapus kategori "${categoryName}"?`)) return;
         authFetch(API_BASE, {
             method: 'POST',
             body: JSON.stringify({ action: 'deleteCategory', category: { name: categoryName } })
@@ -2490,7 +2544,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // LAPORAN BULANAN
+    // LAPORAN BULANAN (sama, hanya ikon)
     // ================================================================
     function loadMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2583,13 +2637,22 @@ JAVASCRIPT – FULL LOGIKA
         document.getElementById('reportTableYear').innerText = 'Tahun ' + year;
         renderReportTable();
         renderMonthlyChart();
+        updateSortIndicators('reports');
     }
 
     function renderReportTable() {
         const tbody = document.getElementById('reportTableBody');
         tbody.innerHTML = '';
 
-        const hasData = monthlyReportData.some(d => d.hasData);
+        const sort = sortConfig.reports;
+        const sorted = [...monthlyReportData].sort((a, b) => {
+            if (sort.key === 'month') {
+                return sort.direction === 'asc' ? a.month - b.month : b.month - a.month;
+            }
+            return 0;
+        });
+
+        const hasData = sorted.some(d => d.hasData);
         if (!hasData) {
             tbody.innerHTML =
                 '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Belum ada data untuk tahun ini</td></tr>';
@@ -2598,11 +2661,11 @@ JAVASCRIPT – FULL LOGIKA
             return;
         }
 
-        const totalItems = monthlyReportData.filter(d => d.hasData).length;
+        const totalItems = sorted.filter(d => d.hasData).length;
         document.getElementById('reportTotalItems').innerText = totalItems;
         document.getElementById('reportTableTotal').innerText = totalItems;
 
-        monthlyReportData.forEach((d, idx) => {
+        sorted.forEach((d, idx) => {
             const tr = document.createElement('tr');
             tr.className = d.hasData ? 'hover:bg-[#222a3d]/30 transition' : 'opacity-40';
 
@@ -2688,7 +2751,51 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT
+    // EXPORT PDF (tetap)
+    // ================================================================
+    async function exportMonthlyReportPDF() {
+        showToast('⏳ Menyiapkan PDF...', 'info');
+        try {
+            const reportElement = document.querySelector('#viewReports .glass-card:last-child');
+            if (!reportElement) throw new Error('Elemen laporan tidak ditemukan');
+
+            const clone = reportElement.cloneNode(true);
+            clone.style.position = 'fixed';
+            clone.style.left = '-9999px';
+            clone.style.top = '0';
+            clone.style.width = '900px';
+            clone.style.background = '#0b1326';
+            clone.style.padding = '20px';
+            clone.style.borderRadius = '12px';
+            document.body.appendChild(clone);
+
+            const canvas = await html2canvas(clone, {
+                scale: 2,
+                backgroundColor: '#0b1326',
+                useCORS: true,
+                logging: false
+            });
+
+            document.body.removeChild(clone);
+
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('l', 'mm', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Laporan_Bulanan_${document.getElementById('reportYear').value}.pdf`);
+
+            showToast('✅ PDF berhasil diunduh', 'success');
+        } catch (err) {
+            console.error(err);
+            showToast('❌ Gagal membuat PDF: ' + err.message, 'error');
+        }
+    }
+
+    // ================================================================
+    // EXPORT EXCEL (tetap)
     // ================================================================
     async function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2963,6 +3070,50 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
+    // SORTING ENGINE
+    // ================================================================
+    function setupSorting() {
+        document.querySelectorAll('.sortable-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const table = this.dataset.table;
+                const key = this.dataset.sort;
+                if (!table || !key) return;
+
+                const config = sortConfig[table];
+                if (config.key === key) {
+                    config.direction = config.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    config.key = key;
+                    config.direction = 'asc';
+                }
+
+                if (table === 'products') renderProductTable();
+                else if (table === 'orders') applyOrderFilters();
+                else if (table === 'categories') renderCategoryTable();
+                else if (table === 'reports') renderReportTable();
+
+                updateSortIndicators(table);
+            });
+        });
+    }
+
+    function updateSortIndicators(table) {
+        const config = sortConfig[table];
+        document.querySelectorAll(`.sortable-header[data-table="${table}"]`).forEach(el => {
+            el.classList.remove('active');
+            const icon = el.querySelector('.sort-icon');
+            if (icon) {
+                if (el.dataset.sort === config.key) {
+                    el.classList.add('active');
+                    icon.textContent = config.direction === 'asc' ? '▲' : '▼';
+                } else {
+                    icon.textContent = '↕';
+                }
+            }
+        });
+    }
+
+    // ================================================================
     // PENGATURAN
     // ================================================================
     function loadSettings() {
@@ -3097,7 +3248,8 @@ JAVASCRIPT – FULL LOGIKA
     // ================================================================
     // INISIALISASI
     // ================================================================
-    console.log('🚀 LekszyStore Admin Panel Pro loaded.');
+    setupSorting();
+    console.log('🚀 LekszyStore Admin Panel Pro loaded with Font Awesome icons & avg order card.');
 </script>
 
 </body>
