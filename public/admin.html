@@ -1412,6 +1412,34 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         }, duration);
     }
 
+    function normalizeAnnouncementId(value) {
+        if (!value) return '';
+        if (typeof value === 'string') return value;
+        if (typeof value === 'object') {
+            if (value.$oid) return value.$oid;
+            if (typeof value.toString === 'function') {
+                const str = value.toString();
+                if (str && str !== '[object Object]') return str;
+            }
+        }
+        return String(value);
+    }
+
+    function normalizeAnnouncement(entry) {
+        if (!entry) return entry;
+        const isActive = entry.isActive !== undefined ? entry.isActive : entry.active === true;
+        return {
+            ...entry,
+            _id: normalizeAnnouncementId(entry._id),
+            isActive,
+            active: isActive
+        };
+    }
+
+    function normalizeAnnouncements(list) {
+        return (Array.isArray(list) ? list : []).map(normalizeAnnouncement);
+    }
+
     // ================================================================
     // LOADING OVERLAY
     // ================================================================
@@ -1637,7 +1665,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
             allOrders = orders || [];
             allProducts = products || [];
             allCategories = categories || [];
-            allAnnouncements = announcements || [];
+            allAnnouncements = normalizeAnnouncements(announcements || []);
             updateBadges();
             renderNotifications();
             updateCategoryDropdowns();
@@ -1668,7 +1696,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
             allOrders = orders || [];
             allProducts = products || [];
             allCategories = categories || [];
-            allAnnouncements = announcements || [];
+            allAnnouncements = normalizeAnnouncements(announcements || []);
             updateBadges();
             updateCategoryDropdowns();
             navigateTo('dashboard');
@@ -2644,7 +2672,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         authFetch(`${API_BASE}?action=getAnnouncements`)
             .then(res => res.json())
             .then(data => {
-                allAnnouncements = data || [];
+                allAnnouncements = normalizeAnnouncements(data || []);
                 document.getElementById('announcementBadge').innerText = allAnnouncements.filter(a => a.isActive).length;
                 document.getElementById('announcementTotalItems').innerText = allAnnouncements.length;
                 document.getElementById('announcementCount').innerText = allAnnouncements.length + ' Pengumuman';
@@ -2679,6 +2707,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
             return;
         }
         pageItems.forEach(a => {
+            const id = normalizeAnnouncementId(a._id);
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-[#222a3d]/30 transition';
             const statusClass = a.isActive ? 'badge-aktif' : 'badge-nonaktif';
@@ -2689,11 +2718,11 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
                     <td class="py-3 px-4 text-center"><span class="text-xs font-medium px-3 py-1 rounded-full ${statusClass}">${statusText}</span></td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="toggleAnnouncementStatus('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="${a.isActive ? 'Nonaktifkan' : 'Aktifkan'}">
+                            <button onclick="toggleAnnouncementStatus('${id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="${a.isActive ? 'Nonaktifkan' : 'Aktifkan'}">
                                 <i class="fas ${a.isActive ? 'fa-eye' : 'fa-eye-slash'}"></i>
                             </button>
-                            <button onclick="openAnnouncementModal('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteAnnouncement('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><i class="fas fa-trash"></i></button>
+                            <button onclick="openAnnouncementModal('${id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteAnnouncement('${id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 `;
@@ -2749,7 +2778,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         document.getElementById('aActive').checked = true;
 
         if (id) {
-            const ann = allAnnouncements.find(a => a._id === id);
+            const ann = allAnnouncements.find(a => normalizeAnnouncementId(a._id) === id);
             if (ann) {
                 document.getElementById('modalAnnouncementTitle').innerText = 'Edit Pengumuman';
                 document.getElementById('editAnnouncementId').value = id;
@@ -2792,7 +2821,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
     }
 
     function toggleAnnouncementStatus(id) {
-        const ann = allAnnouncements.find(a => a._id === id);
+        const ann = allAnnouncements.find(a => normalizeAnnouncementId(a._id) === id);
         if (!ann) return;
         const newStatus = !ann.isActive;
         authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'editAnnouncement', id, isActive: newStatus }) })
