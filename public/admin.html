@@ -1384,6 +1384,20 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
     // ================================================================
     // TOAST
     // ================================================================
+    function iconizeEmoji(message) {
+        if (typeof message !== 'string') return message;
+        const map = {
+            '✅': 'https://cdn-icons-png.flaticon.com/512/190/190411.png',
+            '❌': 'https://cdn-icons-png.flaticon.com/512/565/565655.png',
+            '🛒': 'https://cdn-icons-png.flaticon.com/512/107/107831.png',
+            '🚀': 'https://cdn-icons-png.flaticon.com/512/414/414927.png',
+            '⚠️': 'https://cdn-icons-png.flaticon.com/512/564/564619.png'
+        };
+        return message.replace(/✅|❌|🛒|🚀|⚠️/g, match => `
+                <img src="${map[match]}" class="flaticon-inline" aria-hidden="true" alt="${match}">`
+        );
+    }
+
     function showToast(message, type = 'info', duration = 4000) {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
@@ -1402,7 +1416,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
                 <i class="fas ${icons[type] || 'fa-info-circle'}" style="color:${colorMap[type] || '#06b6d4'}"></i>
-                <span class="text-sm flex-1">${message}</span>
+                <span class="text-sm flex-1">${iconizeEmoji(message)}</span>
                 <button onclick="this.parentElement.remove()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition">×</button>
             `;
         container.appendChild(toast);
@@ -1565,7 +1579,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
                         <i class="fas fa-shopping-bag"></i>
                     </div>
                     <div class="notif-content">
-                        <div class="notif-title">🛒 Pesanan baru dari ${customerName}</div>
+                        <div class="notif-title">${iconizeEmoji('🛒')} Pesanan baru dari ${customerName}</div>
                         <div class="notif-desc">${o.productName || 'Produk'} • ${total}</div>
                     </div>
                     <div class="notif-time">${time}</div>
@@ -2543,7 +2557,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
                         </div>
                     </td>
                     <td class="py-3 px-4"><span class="font-medium">${c.name}</span></td>
-                    <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
+                    <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? iconizeEmoji('✅') + ' Ada gambar' : iconizeEmoji('❌') + ' Tidak ada gambar'}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
                             <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
