@@ -1294,6 +1294,11 @@
         return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
     }
 
+    function formatMultilineText(str) {
+        const safe = escapeHtml(str);
+        return safe.replace(/\r\n|\r|\n/g, '<br>');
+    }
+
     function getStockClass(stock) {
         if (stock <= 0) return 'low';
         if (stock < 10) return 'low';
@@ -1351,7 +1356,7 @@
             html += `
                 <div class="announcement-item">
                     <h4>${escapeHtml(a.title) || 'Pengumuman'}</h4>
-                    <p>${escapeHtml(a.content || a.message || '')}</p>
+                    <p>${formatMultilineText(a.content || a.message || '')}</p>
                 </div>
             `;
         });
