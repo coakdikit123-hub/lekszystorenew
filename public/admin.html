@@ -306,174 +306,129 @@
         .growth-neutral { color: #fbbf24; }
 
         /* ================================================================
-           POPUP NOTIFIKASI PESANAN BARU
+           NOTIFICATION DROPDOWN
            ================================================================ */
-        .notification-popup {
-            position: fixed;
-            top: 80px;
-            right: 24px;
-            z-index: 10000;
-            background: rgba(19, 27, 46, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(218, 226, 253, 0.15);
+        .notif-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--bg-surface-low);
+            border: 1px solid var(--border-outline-variant);
             border-radius: 16px;
-            padding: 20px 24px;
             min-width: 340px;
             max-width: 420px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            animation: slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            transform-origin: top right;
-        }
-
-        .notification-popup.hidden {
+            max-height: 460px;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             display: none;
+            z-index: 1000;
+            backdrop-filter: blur(16px);
+            padding: 8px 0;
         }
-
-        .notification-popup.slide-out {
-            animation: slideOutRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        .notif-dropdown.open {
+            display: block;
+            animation: dropdownIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(60px) scale(0.95); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
+        @keyframes dropdownIn {
+            from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-
-        @keyframes slideOutRight {
-            from { opacity: 1; transform: translateX(0) scale(1); }
-            to { opacity: 0; transform: translateX(60px) scale(0.95); }
+        .notif-dropdown-header {
+            padding: 12px 16px 10px 16px;
+            border-bottom: 1px solid var(--border-outline-variant);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .notification-popup .header {
+        .notif-dropdown-header h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-on-surface);
+        }
+        .notif-dropdown-header .badge-pending {
+            font-size: 10px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            background: rgba(255, 183, 132, 0.15);
+            color: #ffb784;
+            border: 1px solid rgba(255, 183, 132, 0.2);
+        }
+        .notif-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(74, 68, 85, 0.15);
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 12px;
         }
-
-        .notification-popup .header .icon {
-            width: 40px;
-            height: 40px;
+        .notif-item:hover {
+            background: rgba(210, 187, 255, 0.06);
+        }
+        .notif-item:last-child {
+            border-bottom: none;
+        }
+        .notif-item .notif-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: rgba(255, 183, 132, 0.15);
-            border: 1px solid rgba(255, 183, 132, 0.3);
+            background: rgba(255, 183, 132, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ffb784;
             flex-shrink: 0;
+            border: 1px solid rgba(255, 183, 132, 0.2);
         }
-
-        .notification-popup .header .icon .material-symbols-outlined {
-            font-size: 24px;
-        }
-
-        .notification-popup .header .title {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-on-surface);
-        }
-
-        .notification-popup .header .title span {
+        .notif-item .notif-icon .material-symbols-outlined {
+            font-size: 18px;
             color: #ffb784;
         }
-
-        .notification-popup .body {
-            padding-left: 4px;
+        .notif-item .notif-content {
+            flex: 1;
+            min-width: 0;
         }
-
-        .notification-popup .body .order-id {
+        .notif-item .notif-content .notif-title {
             font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .notification-popup .body .customer {
-            font-size: 14px;
+            font-weight: 500;
             color: var(--text-on-surface);
+        }
+        .notif-item .notif-content .notif-desc {
+            font-size: 12px;
+            color: var(--text-on-surface-variant);
             margin-top: 2px;
         }
-
-        .notification-popup .body .customer .name {
-            font-weight: 600;
-        }
-
-        .notification-popup .body .customer .phone {
+        .notif-item .notif-time {
+            font-size: 10px;
             color: var(--text-on-surface-variant);
-            font-size: 12px;
+            flex-shrink: 0;
+            align-self: flex-start;
+            margin-top: 2px;
         }
-
-        .notification-popup .body .total {
-            font-size: 18px;
-            font-weight: 700;
-            color: #4ade80;
-            margin-top: 6px;
+        .notif-item .notif-badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffb784;
+            flex-shrink: 0;
         }
-
-        .notification-popup .body .time {
-            font-size: 11px;
+        .notif-empty {
+            padding: 30px 20px;
+            text-align: center;
             color: var(--text-on-surface-variant);
-            margin-top: 4px;
+            font-size: 14px;
+        }
+        .notif-empty .material-symbols-outlined {
+            font-size: 40px;
+            color: var(--border-outline-variant);
+            margin-bottom: 8px;
         }
 
-        .notification-popup .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 14px;
-            padding-top: 14px;
-            border-top: 1px solid rgba(74, 68, 85, 0.2);
-        }
-
-        .notification-popup .actions button {
-            padding: 8px 16px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-        }
-
-        .notification-popup .actions .btn-detail {
-            background: rgba(210, 187, 255, 0.12);
-            color: var(--text-primary);
-            border: 1px solid rgba(210, 187, 255, 0.2);
-        }
-
-        .notification-popup .actions .btn-detail:hover {
-            background: rgba(210, 187, 255, 0.2);
-        }
-
-        .notification-popup .actions .btn-close {
-            background: rgba(255, 180, 171, 0.08);
-            color: var(--text-error);
-            border: 1px solid rgba(255, 180, 171, 0.15);
-        }
-
-        .notification-popup .actions .btn-close:hover {
-            background: rgba(255, 180, 171, 0.15);
-        }
-
-        /* Notifikasi dot animasi */
-        .notif-dot-active {
-            animation: pulseDot 1.5s ease-in-out infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.4); opacity: 0.6; }
-        }
-
+        /* Responsive notif dropdown */
         @media (max-width: 480px) {
-            .notification-popup {
-                top: 70px;
-                right: 12px;
-                left: 12px;
-                min-width: unset;
-                max-width: unset;
-                padding: 16px 18px;
+            .notif-dropdown {
+                min-width: 280px;
+                right: -60px;
+                max-width: 320px;
             }
         }
 
@@ -495,31 +450,6 @@
     TOAST CONTAINER
     ================================================================ -->
     <div id="toastContainer" class="toast-container"></div>
-
-    <!-- ================================================================
-    POPUP NOTIFIKASI PESANAN BARU
-    ================================================================ -->
-    <div id="notificationPopup" class="notification-popup hidden">
-        <div class="header">
-            <div class="icon">
-                <span class="material-symbols-outlined">notifications_active</span>
-            </div>
-            <div class="title">Pesanan <span>Baru!</span></div>
-        </div>
-        <div class="body">
-            <div class="order-id" id="notifOrderId">#LS-XXXX</div>
-            <div class="customer">
-                <span class="name" id="notifCustomerName">Pelanggan</span>
-                <span class="phone" id="notifCustomerPhone">📱 08xx-xxxx-xxxx</span>
-            </div>
-            <div class="total" id="notifTotal">Rp 0</div>
-            <div class="time" id="notifTime">Just now</div>
-        </div>
-        <div class="actions">
-            <button class="btn-detail" onclick="openNotifDetail()">📋 Lihat Detail</button>
-            <button class="btn-close" onclick="closeNotification()">Tutup</button>
-        </div>
-    </div>
 
     <!-- ================================================================
     LOGIN SCREEN
@@ -616,7 +546,7 @@ DASHBOARD UTAMA
 <!-- MAIN CONTENT -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
-    <!-- TOPBAR -->
+    <!-- TOPBAR DENGAN NOTIFIKASI -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
         <div class="flex items-center gap-3">
             <img src="/gambar/logo.png" 
@@ -627,11 +557,35 @@ DASHBOARD UTAMA
         </div>
 
         <div class="flex items-center gap-4 ml-auto">
-            <!-- ===== NOTIFIKASI BELL ===== -->
-            <button onclick="checkNotifications()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi">
-                <span class="material-symbols-outlined">notifications</span>
-                <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
-            </button>
+            <!-- Search -->
+            <div class="relative hidden lg:block">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
+                <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..."
+                class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
+            </div>
+
+            <!-- ===== NOTIFIKASI LONCENG ===== -->
+            <div class="relative">
+                <button onclick="toggleNotificationDropdown()" 
+                        class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" 
+                        data-tooltip="Notifikasi">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
+                    <span id="notifCount" class="absolute -top-1 -right-1 text-[10px] bg-[#ffb4ab] text-[#020617] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">0</span>
+                </button>
+
+                <!-- ===== DROPDOWN NOTIFIKASI ===== -->
+                <div id="notifDropdown" class="notif-dropdown">
+                    <div class="notif-dropdown-header">
+                        <h4>📬 Notifikasi</h4>
+                        <span id="notifPendingCount" class="badge-pending">0 pending</span>
+                    </div>
+                    <div id="notifList" class="notif-list">
+                        <!-- Akan diisi JavaScript -->
+                    </div>
+                </div>
+            </div>
+
             <button onclick="refreshData()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Refresh data">
                 <span class="material-symbols-outlined">refresh</span>
             </button>
@@ -647,6 +601,7 @@ DASHBOARD UTAMA
 
         <!-- VIEW: DASHBOARD -->
         <div id="viewDashboard" class="view active">
+            <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
@@ -698,6 +653,7 @@ DASHBOARD UTAMA
                 </div>
             </div>
 
+            <!-- Chart Row -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -1360,11 +1316,8 @@ JAVASCRIPT – FULL LOGIKA
     let chartInstance = null;
     let monthlyChartInstance = null;
     let monthlyReportData = [];
-
-    // ===== STATE UNTUK NOTIFIKASI =====
-    let lastCheckedOrderId = null;
-    let notificationCheckInterval = null;
-    let isNotificationShowing = false;
+    let lastNotifCheck = 0;
+    let notifDropdownOpen = false;
 
     // ================================================================
     // FORMAT RUPIAH
@@ -1438,8 +1391,6 @@ JAVASCRIPT – FULL LOGIKA
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'flex';
                 loadAllData();
-                // Mulai pengecekan notifikasi setelah login
-                startNotificationChecker();
                 showToast('Selamat datang kembali!', 'success');
             })
             .catch(err => showToast('Error: ' + err.message, 'error'));
@@ -1447,13 +1398,89 @@ JAVASCRIPT – FULL LOGIKA
     if (currentToken) verifyToken(currentToken);
 
     function handleLogout() {
-        // Hentikan pengecekan notifikasi
-        if (notificationCheckInterval) {
-            clearInterval(notificationCheckInterval);
-            notificationCheckInterval = null;
-        }
         localStorage.removeItem('adminToken');
         location.reload();
+    }
+
+    // ================================================================
+    // NOTIFIKASI DROPDOWN
+    // ================================================================
+    function toggleNotificationDropdown() {
+        notifDropdownOpen = !notifDropdownOpen;
+        const dropdown = document.getElementById('notifDropdown');
+        dropdown.classList.toggle('open', notifDropdownOpen);
+        if (notifDropdownOpen) {
+            renderNotifications();
+        }
+    }
+
+    // Tutup dropdown jika klik di luar
+    document.addEventListener('click', function(e) {
+        const notifBtn = document.querySelector('[data-tooltip="Notifikasi"]')?.parentElement || document.querySelector(
+            '.relative button');
+        if (notifBtn && !notifBtn.contains(e.target) && !document.getElementById('notifDropdown').contains(e.target)) {
+            document.getElementById('notifDropdown').classList.remove('open');
+            notifDropdownOpen = false;
+        }
+    });
+
+    function renderNotifications() {
+        const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
+        const list = document.getElementById('notifList');
+        const countEl = document.getElementById('notifPendingCount');
+
+        countEl.innerText = pending.length + ' pending';
+
+        if (pending.length === 0) {
+            list.innerHTML = `
+                    <div class="notif-empty">
+                        <span class="material-symbols-outlined">notifications_off</span>
+                        <p>Tidak ada pesanan pending</p>
+                        <p class="text-xs mt-1">Semua pesanan sudah diproses</p>
+                    </div>
+                `;
+            return;
+        }
+
+        list.innerHTML = '';
+        pending.forEach(o => {
+            const item = document.createElement('div');
+            item.className = 'notif-item';
+            const customerName = o.customer?.name || 'Pelanggan';
+            const total = formatRupiah(o.total || 0);
+            const time = new Date(o.createdAt).toLocaleString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+            item.innerHTML = `
+                    <div class="notif-icon">
+                        <span class="material-symbols-outlined">shopping_bag</span>
+                    </div>
+                    <div class="notif-content">
+                        <div class="notif-title">🛒 Pesanan baru dari ${customerName}</div>
+                        <div class="notif-desc">${o.productName || 'Produk'} • ${total}</div>
+                    </div>
+                    <div class="notif-time">${time}</div>
+                    <div class="notif-badge"></div>
+                `;
+            item.addEventListener('click', function() {
+                // Tutup dropdown
+                document.getElementById('notifDropdown').classList.remove('open');
+                notifDropdownOpen = false;
+                // Buka detail pesanan
+                openOrderDetailModal(o.transactionId || o._id);
+            });
+            list.appendChild(item);
+        });
+
+        // Update jumlah di badge
+        const notifCount = document.getElementById('notifCount');
+        if (pending.length > 0) {
+            notifCount.innerText = pending.length;
+            notifCount.classList.remove('hidden');
+            document.getElementById('notifDot').classList.remove('hidden');
+        } else {
+            notifCount.classList.add('hidden');
+            document.getElementById('notifDot').classList.add('hidden');
+        }
     }
 
     // ================================================================
@@ -1508,155 +1535,11 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // REFRESH & NOTIF
+    // REFRESH
     // ================================================================
-    function refreshData() { showToast('Memuat ulang data...', 'info');
-        loadAllData(); }
-
-    let lastNotifCheck = 0;
-
-    function checkNotifications() {
-        const now = Date.now();
-        if (now - lastNotifCheck < 30000) { showToast('Tidak ada notifikasi baru', 'info'); return; }
-        lastNotifCheck = now;
-        const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
-        if (pending.length > 0) {
-            showToast(`📬 ${pending.length} pesanan menunggu diproses!`, 'warning');
-            document.getElementById('notifDot').classList.remove('hidden');
-        } else {
-            showToast('✅ Semua pesanan sudah diproses', 'success');
-            document.getElementById('notifDot').classList.add('hidden');
-        }
-    }
-
-    // ================================================================
-    // NOTIFIKASI PESANAN BARU (POPUP)
-    // ================================================================
-    function startNotificationChecker() {
-        // Cek setiap 30 detik
-        if (notificationCheckInterval) clearInterval(notificationCheckInterval);
-        notificationCheckInterval = setInterval(checkNewOrders, 30000);
-        // Cek pertama kali setelah 3 detik
-        setTimeout(checkNewOrders, 3000);
-    }
-
-    function checkNewOrders() {
-        if (!currentToken) return;
-
-        authFetch(`${API_BASE}?action=transactions`)
-            .then(res => res.json())
-            .then(orders => {
-                if (!orders || orders.length === 0) return;
-
-                // Urutkan dari yang terbaru
-                const sorted = orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                const latest = sorted[0];
-
-                // Cek apakah ada pesanan baru (belum ditampilkan)
-                const latestId = latest.transactionId || latest._id;
-                if (lastCheckedOrderId !== latestId) {
-                    // Cek apakah pesanan ini adalah pesanan baru (dalam 5 menit terakhir)
-                    const orderTime = new Date(latest.createdAt).getTime();
-                    const now = Date.now();
-                    const fiveMinutes = 5 * 60 * 1000;
-
-                    if (now - orderTime < fiveMinutes) {
-                        // Tampilkan popup
-                        showNotificationPopup(latest);
-                    }
-                    lastCheckedOrderId = latestId;
-                }
-            })
-            .catch(err => console.error('Gagal cek pesanan baru:', err));
-    }
-
-    function showNotificationPopup(order) {
-        if (isNotificationShowing) return;
-        isNotificationShowing = true;
-
-        const popup = document.getElementById('notificationPopup');
-        const customerName = order.customer?.name || 'Tidak diketahui';
-        const customerPhone = order.customer?.phone || '';
-        const total = order.total || 0;
-        const transactionId = order.transactionId || order._id || 'LS-XXXX';
-        const createdAt = order.createdAt ? new Date(order.createdAt) : new Date();
-
-        document.getElementById('notifOrderId').innerText = transactionId;
-        document.getElementById('notifCustomerName').innerText = customerName;
-        document.getElementById('notifCustomerPhone').innerHTML = customerPhone ? `📱 ${customerPhone}` : '';
-        document.getElementById('notifTotal').innerText = formatRupiah(total);
-        document.getElementById('notifTime').innerText = '🕐 ' + createdAt.toLocaleString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        });
-
-        // Simpan data order untuk detail
-        popup.dataset.transactionId = transactionId;
-
-        popup.classList.remove('hidden', 'slide-out');
-        // Force reflow
-        void popup.offsetWidth;
-        popup.style.animation = 'none';
-        void popup.offsetWidth;
-        popup.style.animation = 'slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
-
-        // Suara notifikasi (opsional - jika browser mendukung)
-        try {
-            const audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.frequency.value = 880;
-            oscillator.type = 'sine';
-            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            oscillator.start(audioCtx.currentTime);
-            oscillator.stop(audioCtx.currentTime + 0.3);
-        } catch (e) {
-            // Suara tidak didukung, lanjutkan
-        }
-
-        // Update dot notifikasi
-        document.getElementById('notifDot').classList.remove('hidden');
-
-        // Auto close setelah 15 detik
-        setTimeout(() => {
-            if (isNotificationShowing) {
-                closeNotification();
-            }
-        }, 15000);
-    }
-
-    function closeNotification() {
-        const popup = document.getElementById('notificationPopup');
-        if (popup.classList.contains('hidden')) {
-            isNotificationShowing = false;
-            return;
-        }
-        popup.classList.add('slide-out');
-        setTimeout(() => {
-            popup.classList.add('hidden');
-            popup.classList.remove('slide-out');
-            isNotificationShowing = false;
-        }, 400);
-    }
-
-    function openNotifDetail() {
-        const popup = document.getElementById('notificationPopup');
-        const transactionId = popup.dataset.transactionId;
-        if (transactionId) {
-            closeNotification();
-            // Navigasi ke halaman orders dan buka modal detail
-            navigateTo('orders');
-            setTimeout(() => {
-                openOrderDetailModal(transactionId);
-            }, 300);
-        } else {
-            closeNotification();
-            navigateTo('orders');
-        }
+    function refreshData() {
+        showToast('Memuat ulang data...', 'info');
+        loadAllData();
     }
 
     // ================================================================
@@ -1676,13 +1559,9 @@ JAVASCRIPT – FULL LOGIKA
             const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
             document.getElementById('orderBadge').innerText = pending.length;
             document.getElementById('categoryBadge').innerText = allCategories.length;
-            if (pending.length > 0) document.getElementById('notifDot').classList.remove('hidden');
 
-            // Set last checked order
-            if (allOrders.length > 0) {
-                const sorted = allOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                lastCheckedOrderId = sorted[0].transactionId || sorted[0]._id;
-            }
+            // Update notifikasi
+            renderNotifications();
 
             updateCategoryDropdowns();
             navigateTo('dashboard');
@@ -2070,6 +1949,7 @@ JAVASCRIPT – FULL LOGIKA
                 allOrders = data || [];
                 updateOrderStats();
                 applyOrderFilters();
+                renderNotifications();
             })
             .catch(err => showToast('Gagal load pesanan: ' + err.message, 'error'));
     }
@@ -2269,7 +2149,6 @@ JAVASCRIPT – FULL LOGIKA
         if (!confirm(`⚠️ Yakin ingin menghapus ${checked.length} pesanan secara permanen? Tindakan ini tidak dapat dibatalkan!`)) {
             return;
         }
-
         const promises = [];
         checked.forEach(cb => {
             const transactionId = cb.dataset.id;
@@ -2282,14 +2161,11 @@ JAVASCRIPT – FULL LOGIKA
                 );
             }
         });
-
         if (promises.length === 0) {
             showToast('Tidak ada pesanan yang valid untuk dihapus', 'error');
             return;
         }
-
         showToast(`⏳ Menghapus ${promises.length} pesanan...`, 'info');
-
         Promise.all(promises)
             .then(responses => {
                 const failed = responses.filter(r => !r.ok);
@@ -2342,6 +2218,7 @@ JAVASCRIPT – FULL LOGIKA
     function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
         if (!order) return showToast('Data tidak ditemukan', 'error');
+
         const status = order.status || 'pending';
         const isCompleted = status === 'completed' || status === 'paid';
         const isCancelled = status === 'cancelled';
@@ -2351,52 +2228,83 @@ JAVASCRIPT – FULL LOGIKA
             label = 'Selesai'; } else if (isCancelled) { cls = 'badge-dibatalkan';
             label = 'Dibatalkan'; } else { cls = 'badge-pending';
             label = 'Menunggu'; }
+
         const totalCost = (order.items || []).reduce((s, i) => s + (i.cost || 0) * (i.quantity || 1), 0);
         const profit = (order.total || 0) - totalCost;
+
+        const customerName = order.customer?.name || 'Tidak diketahui';
+        const customerPhone = order.customer?.phone || '';
+        const customerEmail = order.customer?.email || '';
+        const customerUid = order.customer?.uid || 'N/A';
+
         const container = document.getElementById('orderDetailContent');
         container.innerHTML = `
                 <div class="flex justify-between items-start border-b border-[#4a4455]/20 pb-3">
-                    <div><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">ID Pesanan</p><p class="font-medium text-[#d2bbff] text-lg">${order.transactionId || order._id}</p></div>
+                    <div>
+                        <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">ID Pesanan</p>
+                        <p class="font-medium text-[#d2bbff] text-lg">${order.transactionId || order._id}</p>
+                    </div>
                     <span class="inline-block text-xs font-medium px-3 py-1 rounded-full ${cls}">${label}</span>
                 </div>
+
                 <div class="grid grid-cols-2 gap-4 bg-[#060e20] rounded-xl p-4 border border-[#4a4455]/20">
                     <div>
                         <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Pelanggan</p>
-                        <p class="font-medium">${order.customer?.name || 'Tidak diketahui'}</p>
-                        <p class="text-xs text-[#ccc3d8]">UID: ${order.customer?.uid || 'N/A'}</p>
-                        ${order.customer?.phone ? `<p class="text-xs text-[#ccc3d8]">📱 ${order.customer.phone}</p>` : ''}
-                        ${order.customer?.email ? `<p class="text-xs text-[#ccc3d8]">📧 ${order.customer.email}</p>` : ''}
+                        <p class="font-medium">${customerName}</p>
+                        <p class="text-xs text-[#ccc3d8]">UID: ${customerUid}</p>
+                        ${customerPhone ? `<p class="text-xs text-[#ccc3d8]">📞 ${customerPhone}</p>` : ''}
+                        ${customerEmail ? `<p class="text-xs text-[#ccc3d8]">📧 ${customerEmail}</p>` : ''}
                     </div>
                     <div>
                         <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Tanggal</p>
-                        <p class="font-medium">${new Date(order.createdAt).toLocaleString('id-ID', {dateStyle:'medium',timeStyle:'short'})}</p>
-                        <p class="text-xs text-[#ccc3d8]">${new Date(order.createdAt).toLocaleDateString('id-ID', {weekday:'long'})}</p>
+                        <p class="font-medium">${new Date(order.createdAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                        <p class="text-xs text-[#ccc3d8]">${new Date(order.createdAt).toLocaleDateString('id-ID', { weekday: 'long' })}</p>
                     </div>
                 </div>
+
                 <div class="border-t border-[#4a4455]/20 pt-3">
                     <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] mb-2">Item</p>
                     ${(order.items || []).map(i => `
                         <div class="flex justify-between py-2 border-b border-[#4a4455]/10 last:border-0">
-                            <div><span class="text-sm font-medium">${i.name || 'Produk'}</span><span class="text-xs text-[#ccc3d8] ml-2">×${i.quantity || 1}</span></div>
+                            <div>
+                                <span class="text-sm font-medium">${i.name || 'Produk'}</span>
+                                <span class="text-xs text-[#ccc3d8] ml-2">×${i.quantity || 1}</span>
+                            </div>
                             <span class="text-sm font-medium">${formatRupiah((i.price || 0) * (i.quantity || 1))}</span>
                         </div>
                     `).join('')}
                     ${(!order.items || order.items.length === 0) ? `
-                        <div class="flex justify-between py-2"><span class="text-sm">${order.productName || 'Produk'}</span><span class="text-sm font-medium">${formatRupiah(order.total || 0)}</span></div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-sm">${order.productName || 'Produk'}</span>
+                            <span class="text-sm font-medium">${formatRupiah(order.total || 0)}</span>
+                        </div>
                     ` : ''}
                 </div>
+
                 <div class="border-t border-[#4a4455]/20 pt-3 space-y-1.5 bg-[#060e20] rounded-xl p-4">
-                    <div class="flex justify-between"><span class="text-[#ccc3d8]">Subtotal</span><span class="font-medium">${formatRupiah(order.total || 0)}</span></div>
-                    <div class="flex justify-between"><span class="text-[#ccc3d8]">Total Biaya</span><span class="font-medium">${formatRupiah(totalCost)}</span></div>
-                    <div class="flex justify-between text-lg font-bold text-[#4ade80] border-t border-[#4a4455]/20 pt-2 mt-1"><span>Keuntungan</span><span>${formatRupiah(profit)}</span></div>
+                    <div class="flex justify-between">
+                        <span class="text-[#ccc3d8]">Subtotal</span>
+                        <span class="font-medium">${formatRupiah(order.total || 0)}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-[#ccc3d8]">Total Biaya</span>
+                        <span class="font-medium">${formatRupiah(totalCost)}</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-bold text-[#4ade80] border-t border-[#4a4455]/20 pt-2 mt-1">
+                        <span>Keuntungan</span>
+                        <span>${formatRupiah(profit)}</span>
+                    </div>
                 </div>
+
                 ${order.notes ? `<div class="border-t border-[#4a4455]/20 pt-3"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8]">Catatan</p><p class="text-sm bg-[#060e20] p-3 rounded-xl border border-[#4a4455]/20">${order.notes}</p></div>` : ''}
+
                 <div class="flex gap-2 mt-3 pt-3 border-t border-[#4a4455]/20">
                     ${isPending ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','completed');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-sm font-medium">✅ Proses</button>` : ''}
                     ${!isCancelled ? `<button onclick="updateOrderStatus('${order.transactionId || order._id}','cancelled');closeOrderDetailModal();" class="flex-1 py-2.5 rounded-xl text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-sm font-medium">❌ Batalkan</button>` : ''}
                     <button onclick="closeOrderDetailModal()" class="flex-1 py-2.5 rounded-xl bg-[#222a3d] text-[#ccc3d8] hover:bg-[#2d3449] transition text-sm font-medium">Tutup</button>
                 </div>
             `;
+
         document.getElementById('orderDetailModal').classList.add('show');
     }
 
@@ -2780,7 +2688,7 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT TO EXCEL (Menggunakan ExcelJS)
+    // EXPORT MONTHLY REPORT
     // ================================================================
     async function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2796,7 +2704,6 @@ JAVASCRIPT – FULL LOGIKA
             return;
         }
 
-        // Hitung total
         let totalOrders = 0, totalRevenue = 0, totalProfit = 0;
         dataWithData.forEach(d => {
             totalOrders += d.orders;
@@ -2806,7 +2713,6 @@ JAVASCRIPT – FULL LOGIKA
         const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
         const overallMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
-        // ===== BUAT WORKBOOK =====
         const workbook = new ExcelJS.Workbook();
         workbook.creator = 'LekszyStore';
         workbook.created = new Date();
@@ -2815,7 +2721,6 @@ JAVASCRIPT – FULL LOGIKA
             pageSetup: { orientation: 'landscape', fitToPage: true }
         });
 
-        // ===== AMBIL LOGO =====
         let logoImageId = null;
         try {
             const response = await fetch('/gambar/logo.png');
@@ -2834,7 +2739,6 @@ JAVASCRIPT – FULL LOGIKA
             console.warn('Logo tidak ditemukan, lanjutkan tanpa logo');
         }
 
-        // ===== SET KOLOM =====
         worksheet.columns = [
             { header: 'Bulan', key: 'month', width: 22 },
             { header: 'Pesanan', key: 'orders', width: 12 },
@@ -2844,7 +2748,6 @@ JAVASCRIPT – FULL LOGIKA
             { header: 'Pertumbuhan', key: 'growth', width: 16 }
         ];
 
-        // ===== TAMBAHKAN LOGO =====
         if (logoImageId) {
             worksheet.addImage(logoImageId, {
                 tl: { col: 0, row: 0 },
@@ -2852,7 +2755,6 @@ JAVASCRIPT – FULL LOGIKA
             });
         }
 
-        // ===== HEADER UTAMA =====
         const titleRow = worksheet.getRow(1);
         worksheet.mergeCells(`A1:F1`);
         const titleCell = titleRow.getCell(1);
@@ -2862,7 +2764,6 @@ JAVASCRIPT – FULL LOGIKA
         titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1A1A2E' } };
         titleRow.height = 40;
 
-        // ===== SUB HEADER =====
         const subRow = worksheet.getRow(2);
         worksheet.mergeCells(`A2:F2`);
         const subCell = subRow.getCell(1);
@@ -2872,7 +2773,6 @@ JAVASCRIPT – FULL LOGIKA
         subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '2D3449' } };
         subRow.height = 30;
 
-        // ===== INFO BOX =====
         const infoStartRow = 4;
         const infoData = [
             ['📅 Tahun', year],
@@ -2895,10 +2795,7 @@ JAVASCRIPT – FULL LOGIKA
             });
         });
 
-        // ===== TABEL DATA =====
         const tableStartRow = infoStartRow + infoData.length + 1;
-
-        // Header tabel
         const headerRow = worksheet.getRow(tableStartRow);
         const headers = ['Bulan', 'Pesanan', 'Pendapatan', 'Keuntungan', 'Margin', 'Pertumbuhan'];
         headers.forEach((h, i) => {
@@ -2916,7 +2813,6 @@ JAVASCRIPT – FULL LOGIKA
         });
         headerRow.height = 28;
 
-        // Data rows
         let currentRow = tableStartRow + 1;
         dataWithData.forEach((d) => {
             const row = worksheet.getRow(currentRow);
@@ -2968,7 +2864,6 @@ JAVASCRIPT – FULL LOGIKA
             currentRow++;
         });
 
-        // TOTAL ROW
         const totalRow = worksheet.getRow(currentRow);
         totalRow.getCell(1).value = 'TOTAL';
         totalRow.getCell(1).font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
@@ -3013,7 +2908,6 @@ JAVASCRIPT – FULL LOGIKA
         });
         totalRow.height = 30;
 
-        // ===== SUMMARY =====
         const summaryStartRow = currentRow + 3;
         worksheet.mergeCells(`A${summaryStartRow}:F${summaryStartRow}`);
         const summaryTitle = worksheet.getRow(summaryStartRow).getCell(1);
@@ -3046,7 +2940,6 @@ JAVASCRIPT – FULL LOGIKA
             });
         });
 
-        // ===== FOOTER =====
         const footerRow1 = summaryStartRow + summaryData.length + 2;
         const footerRow2 = footerRow1 + 1;
 
@@ -3062,7 +2955,6 @@ JAVASCRIPT – FULL LOGIKA
         footerCell2.font = { name: 'Arial', size: 8, italic: true, color: { argb: 'CBD5E1' } };
         footerCell2.alignment = { horizontal: 'center', vertical: 'middle' };
 
-        // ===== GENERATE FILE =====
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xlsx`);
