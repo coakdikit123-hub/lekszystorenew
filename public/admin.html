@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LekszyStore - Panel Admin Pro</title>
 
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/png" href="/gambar/favicon.ico" />
+    <link rel="apple-touch-icon" href="/gambar/logo.png" />
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
@@ -55,6 +59,32 @@
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        /* ===== LOGO STYLES ===== */
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .logo-img-sm {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .logo-img-lg {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+        .logo-img:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
         }
 
         .glass-card {
@@ -115,6 +145,7 @@
             50% { opacity: 0.5; box-shadow: 0 0 8px rgba(210, 187, 255, 0.2); }
         }
 
+        /* Badge Styles */
         .badge-selesai { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.25); }
         .badge-pending { background: rgba(255, 183, 132, 0.15); color: #ffb784; border: 1px solid rgba(255, 183, 132, 0.25); }
         .badge-dibatalkan { background: rgba(255, 180, 171, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.25); }
@@ -238,14 +269,6 @@
             z-index: 100;
         }
 
-        @media (max-width: 768px) {
-            .stat-grid { grid-template-columns: 1fr 1fr; }
-            .modal-box { padding: 1.25rem; max-width: 95%; }
-        }
-        @media (max-width: 480px) {
-            .stat-grid { grid-template-columns: 1fr; }
-        }
-
         .category-icon {
             width: 40px;
             height: 40px;
@@ -263,6 +286,16 @@
             height: 100%;
             object-fit: cover;
         }
+
+        @media (max-width: 768px) {
+            .stat-grid { grid-template-columns: 1fr 1fr; }
+            .modal-box { padding: 1.25rem; max-width: 95%; }
+            .logo-img { width: 32px; height: 32px; }
+            .logo-img-lg { width: 48px; height: 48px; }
+        }
+        @media (max-width: 480px) {
+            .stat-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -273,13 +306,20 @@
     <div id="toastContainer" class="toast-container"></div>
 
     <!-- ================================================================
-    LOGIN SCREEN
+    LOGIN SCREEN (Dengan Logo)
     ================================================================ -->
     <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-[9999]">
         <div class="bg-[#0b1326] p-8 rounded-2xl border border-[#4a4455]/30 max-w-sm w-full mx-4 shadow-2xl">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 mx-auto rounded-full bg-[#7c3aed]/20 flex items-center justify-center mb-4 border border-[#d2bbff]/30">
-                    <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
+                <!-- ===== LOGO DI LOGIN ===== -->
+                <div class="flex justify-center mb-4">
+                    <img src="/gambar/logo.png" 
+                         alt="LekszyStore Logo" 
+                         class="logo-img-lg"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="w-16 h-16 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
+                        <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
+                    </div>
                 </div>
                 <h2 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff]">LekszyStore</h2>
                 <p class="text-sm text-[#ccc3d8] mt-1 font-medium">Panel Admin Pro</p>
@@ -303,10 +343,15 @@ DASHBOARD UTAMA
 ================================================================ -->
 <div id="dashboard" style="display:none;" class="flex w-full min-h-screen">
 
-    <!-- SIDEBAR -->
+    <!-- ===== SIDEBAR (Dengan Logo) ===== -->
     <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
+        <!-- Brand dengan Logo -->
         <div class="px-6 mb-8 flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30">
+            <img src="/gambar/logo.png" 
+                 alt="LekszyStore" 
+                 class="logo-img"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
                 <span class="material-symbols-outlined text-[#d2bbff] text-2xl">storefront</span>
             </div>
             <div>
@@ -328,7 +373,6 @@ DASHBOARD UTAMA
                 <span class="material-symbols-outlined">shopping_cart</span> Pesanan
                 <span id="orderBadge" class="ml-auto text-[10px] bg-[#ffb784]/20 text-[#ffb784] px-2 py-0.5 rounded-full animate-pulse">0</span>
             </a>
-            <!-- ===== KATEGORI (ganti Pengguna) ===== -->
             <a href="#" data-view="categories" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">category</span> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
@@ -351,12 +395,20 @@ DASHBOARD UTAMA
 </div>
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- ===== MAIN CONTENT ===== -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
-    <!-- TOPBAR -->
+    <!-- ===== TOPBAR (Dengan Logo Kecil) ===== -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
-        <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
+        <div class="flex items-center gap-3">
+            <!-- Logo kecil di topbar -->
+            <img src="/gambar/logo.png" 
+                 alt="LekszyStore" 
+                 class="logo-img-sm md:hidden"
+                 onerror="this.style.display='none'">
+            <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
+        </div>
+
         <div class="flex items-center gap-4 ml-auto">
             <div class="relative hidden lg:block">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
@@ -377,12 +429,10 @@ DASHBOARD UTAMA
         </div>
     </header>
 
-    <!-- MAIN CANVAS -->
+    <!-- ===== MAIN CANVAS ===== -->
     <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
 
-        <!-- ============================================================
-        VIEW: DASHBOARD
-        ============================================================ -->
+        <!-- VIEW: DASHBOARD -->
         <div id="viewDashboard" class="view active">
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
@@ -492,9 +542,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PRODUK
-        ============================================================ -->
+        <!-- VIEW: PRODUK -->
         <div id="viewProducts" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -565,9 +613,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PESANAN
-        ============================================================ -->
+        <!-- VIEW: PESANAN -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -672,9 +718,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: KATEGORI (Ganti Pengguna)
-        ============================================================ -->
+        <!-- VIEW: KATEGORI -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -727,9 +771,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PENGATURAN
-        ============================================================ -->
+        <!-- VIEW: PENGATURAN -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
@@ -935,7 +977,7 @@ MODAL KATEGORI
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Icon (Material Symbol)</label>
                 <input id="cIcon" type="text" placeholder="category, inventory, sports_esports, etc"
                 class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
-                <p class="text-xs text-[#ccc3d8] mt-1">Masukkan nama icon Material Symbols (contoh: <span class="text-[#d2bbff]">category</span>, <span class="text-[#d2bbff]">sports_esports</span>)</p>
+                <p class="text-xs text-[#ccc3d8] mt-1">Masukkan nama icon Material Symbols</p>
             </div>
             <div>
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label>
@@ -1152,14 +1194,12 @@ JAVASCRIPT – FULL LOGIKA
             allProducts = products || [];
             allCategories = categories || [];
 
-            // Update badges
             document.getElementById('productBadge').innerText = allProducts.length;
             const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
             document.getElementById('orderBadge').innerText = pending.length;
             document.getElementById('categoryBadge').innerText = allCategories.length;
             if (pending.length > 0) document.getElementById('notifDot').classList.remove('hidden');
 
-            // Update category dropdown di produk
             updateCategoryDropdowns();
 
             navigateTo('dashboard');
@@ -1173,18 +1213,36 @@ JAVASCRIPT – FULL LOGIKA
     // UPDATE CATEGORY DROPDOWNS
     // ================================================================
     function updateCategoryDropdowns() {
+        // Update dropdown di modal produk
         const select = document.getElementById('pCategory');
-        if (!select) return;
-        const currentValue = select.value;
-        select.innerHTML = '<option value="">Pilih Kategori...</option>';
-        allCategories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.name;
-            option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
-            select.appendChild(option);
-        });
-        if (currentValue && allCategories.some(c => c.name === currentValue)) {
-            select.value = currentValue;
+        if (select) {
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">Pilih Kategori...</option>';
+            allCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name;
+                option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
+                select.appendChild(option);
+            });
+            if (currentValue && allCategories.some(c => c.name === currentValue)) {
+                select.value = currentValue;
+            }
+        }
+
+        // Update filter di produk
+        const filterSelect = document.getElementById('productCategoryFilter');
+        if (filterSelect) {
+            const currentValue = filterSelect.value;
+            filterSelect.innerHTML = '<option value="all">Semua Kategori</option>';
+            allCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name;
+                option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
+                filterSelect.appendChild(option);
+            });
+            if (currentValue && allCategories.some(c => c.name === currentValue)) {
+                filterSelect.value = currentValue;
+            }
         }
     }
 
@@ -1826,7 +1884,7 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // KATEGORI (MANAJEMEN)
+    // KATEGORI
     // ================================================================
     function loadCategories() {
         authFetch(`${API_BASE}?action=categories`)
@@ -2130,32 +2188,6 @@ JAVASCRIPT – FULL LOGIKA
             showToast('Tidak ditemukan hasil untuk: ' + query, 'warning');
         }
     });
-
-    // ================================================================
-    // UPDATE CATEGORY FILTER DI PRODUK
-    // ================================================================
-    function updateProductCategoryFilter() {
-        const select = document.getElementById('productCategoryFilter');
-        if (!select) return;
-        const currentValue = select.value;
-        select.innerHTML = '<option value="all">Semua Kategori</option>';
-        allCategories.forEach(cat => {
-            const option = document.createElement('option');
-            option.value = cat.name;
-            option.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
-            select.appendChild(option);
-        });
-        if (currentValue && allCategories.some(c => c.name === currentValue)) {
-            select.value = currentValue;
-        }
-    }
-
-    // Override updateCategoryDropdowns untuk include filter produk
-    const originalUpdate = updateCategoryDropdowns;
-    updateCategoryDropdowns = function() {
-        originalUpdate();
-        updateProductCategoryFilter();
-    };
 
     // ================================================================
     // INISIALISASI
