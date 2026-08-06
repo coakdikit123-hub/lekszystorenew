@@ -14,14 +14,10 @@
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
-    <!-- Flaticon Uicons -->
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" />
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-    <!-- ExcelJS & FileSaver -->
+    <!-- ExcelJS & FileSaver untuk export Excel profesional -->
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
@@ -64,27 +60,6 @@
             min-height: 100vh;
             overflow-x: hidden;
         }
-
-        /* ===== FLATICON STYLING ===== */
-        .fi {
-            font-size: 1.2rem;
-            line-height: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            vertical-align: middle;
-            color: inherit;
-        }
-        .fi-sm { font-size: 0.9rem; }
-        .fi-lg { font-size: 1.6rem; }
-        .fi-xl { font-size: 2.4rem; }
-        .fi-primary { color: var(--text-primary); }
-        .fi-profit { color: #4ade80; }
-        .fi-error { color: #ffb4ab; }
-        .fi-warning { color: #fbbf24; }
-        .fi-cyan { color: #06b6d4; }
-        .fi-secondary { color: #ffb0cd; }
-        .fi-tertiary { color: #ffb784; }
 
         .glass-card {
             background: rgba(19, 27, 46, 0.6);
@@ -256,37 +231,23 @@
         .toast-warning { border-left: 4px solid #fbbf24; }
         .toast-info { border-left: 4px solid #06b6d4; }
 
-        /* ================================================================
-           TOOLTIP - DIPERBAIKI
-           ================================================================ */
-        [data-tooltip] {
-            position: relative;
-        }
+        [data-tooltip] { position: relative; }
         [data-tooltip]:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: calc(100% + 10px);
+            bottom: calc(100% + 8px);
             left: 50%;
             transform: translateX(-50%);
-            background: #1a1a2e;
-            color: #dae2fc;
-            padding: 5px 14px;
+            background: var(--bg-surface-high);
+            color: var(--text-on-surface);
+            padding: 4px 12px;
             border-radius: 8px;
             font-size: 11px;
             font-weight: 500;
             white-space: nowrap;
-            border: 1px solid #4a4455;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            pointer-events: none;
-            font-family: 'Inter', sans-serif;
-            letter-spacing: 0.3px;
-        }
-        /* Untuk tooltip di tombol yang ada di tabel, agar tidak terpotong */
-        .order-actions [data-tooltip]:hover::after {
-            bottom: calc(100% + 12px);
-            left: 50%;
-            transform: translateX(-50%);
+            border: 1px solid var(--border-outline-variant);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            z-index: 100;
         }
 
         .category-icon {
@@ -418,39 +379,39 @@ DASHBOARD UTAMA
 
         <nav class="flex-1 px-3 space-y-1">
             <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-chart-pie"></span> Dashboard
+                <span class="material-symbols-outlined">dashboard</span> Dashboard
                 <span class="ml-auto text-[10px] bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">Live</span>
             </a>
             <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-box"></span> Produk
+                <span class="material-symbols-outlined">inventory_2</span> Produk
                 <span id="productBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
             <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-shopping-bag"></span> Pesanan
+                <span class="material-symbols-outlined">shopping_cart</span> Pesanan
                 <span id="orderBadge" class="ml-auto text-[10px] bg-[#ffb784]/20 text-[#ffb784] px-2 py-0.5 rounded-full animate-pulse">0</span>
             </a>
             <a href="#" data-view="categories" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-tags"></span> Kategori
+                <span class="material-symbols-outlined">category</span> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
             <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-chart-line"></span> Laporan
+                <span class="material-symbols-outlined">assessment</span> Laporan
                 <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
             </a>
             <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                <span class="fi fi-settings"></span> Pengaturan
+                <span class="material-symbols-outlined">settings</span> Pengaturan
             </a>
         </nav>
 
         <div class="px-4 mt-auto pt-4 border-t border-[#4a4455]/20 space-y-2">
             <button onclick="toggleTheme()"
             class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium">
-            <span class="fi fi-moon"></span>
+            <span class="material-symbols-outlined text-[18px]">dark_mode</span>
             <span id="themeLabel">Mode Gelap</span>
         </button>
         <button onclick="handleLogout()"
         class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium">
-        <span class="fi fi-sign-out-alt"></span> Keluar
+        <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
     </button>
 </div>
 </aside>
@@ -470,16 +431,16 @@ DASHBOARD UTAMA
 
         <div class="flex items-center gap-4 ml-auto">
             <div class="relative hidden lg:block">
-                <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[18px]">search</span>
                 <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..."
                 class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
             </div>
             <button onclick="checkNotifications()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi">
-                <span class="fi fi-bell"></span>
+                <span class="material-symbols-outlined">notifications</span>
                 <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
             </button>
             <button onclick="refreshData()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Refresh data">
-                <span class="fi fi-refresh"></span>
+                <span class="material-symbols-outlined">refresh</span>
             </button>
             <div class="w-9 h-9 rounded-full overflow-hidden border border-[#d2bbff]/30 flex-shrink-0 cursor-pointer hover:border-[#d2bbff] transition">
                 <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
@@ -495,11 +456,11 @@ DASHBOARD UTAMA
         <div id="viewDashboard" class="view active">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-money-bill text-7xl text-[#d2bbff]"></span></div>
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#d2bbff]">payments</span></div>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
                     <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
+                        <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -507,11 +468,11 @@ DASHBOARD UTAMA
                     </div>
                 </div>
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-receipt text-7xl text-[#06b6d4]"></span></div>
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#06b6d4]">receipt_long</span></div>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
                     <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
+                        <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -519,11 +480,11 @@ DASHBOARD UTAMA
                     </div>
                 </div>
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group border-[#4ade80]/20">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-diamond text-7xl text-[#4ade80]"></span></div>
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#4ade80]">trending_up</span></div>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
                     <h3 id="dashTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#4ade80] mt-1">Rp 0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
+                        <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_up</span> +0%</span>
                         <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -531,11 +492,11 @@ DASHBOARD UTAMA
                     </div>
                 </div>
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
-                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-box text-7xl text-[#ffb0cd]"></span></div>
+                    <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="material-symbols-outlined text-7xl text-[#ffb0cd]">inventory_2</span></div>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Produk</p>
                     <h3 id="dashTotalProducts" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
                     <div class="flex items-center gap-2 mt-1">
-                        <span id="productTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-minus text-[#fbbf24]"></span> Stabil</span>
+                        <span id="productTrend" class="text-xs font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">trending_flat</span> Stabil</span>
                         <span class="text-[10px] text-[#ccc3d8]">aktif</span>
                     </div>
                     <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
@@ -548,7 +509,7 @@ DASHBOARD UTAMA
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#d2bbff]"></span>Grafik Pendapatan</h3>
+                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Grafik Pendapatan</h3>
                             <p class="text-xs text-[#ccc3d8] mt-0.5">30 hari terakhir</p>
                         </div>
                         <div class="flex gap-1.5">
@@ -562,26 +523,26 @@ DASHBOARD UTAMA
                     </div>
                 </div>
                 <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4"><span class="fi fi-list mr-2 text-[#06b6d4]"></span>Ringkasan Cepat</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4">Ringkasan Cepat</h3>
                     <div class="space-y-3 flex-1">
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-shopping-bag mr-2 text-[#06b6d4]"></span>Pesanan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]">Pesanan Hari Ini</span>
                             <span id="quickTodayOrders" class="font-bold text-[#dae2fc]">0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-money-bill mr-2 text-[#d2bbff]"></span>Pendapatan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]">Pendapatan Hari Ini</span>
                             <span id="quickTodayRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-diamond mr-2 text-[#4ade80]"></span>Keuntungan Hari Ini</span>
+                            <span class="text-sm text-[#ccc3d8]">Keuntungan Hari Ini</span>
                             <span id="quickTodayProfit" class="font-bold text-[#4ade80]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-calculator mr-2 text-[#fbbf24]"></span>Rata-rata per Pesanan</span>
+                            <span class="text-sm text-[#ccc3d8]">Rata-rata per Pesanan</span>
                             <span id="quickAvgOrder" class="font-bold text-[#06b6d4]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-crown mr-2 text-[#ffb784]"></span>Produk Terlaris</span>
+                            <span class="text-sm text-[#ccc3d8]">Produk Terlaris</span>
                             <span id="quickTopProduct" class="font-bold text-[#ffb784]">-</span>
                         </div>
                     </div>
@@ -590,9 +551,9 @@ DASHBOARD UTAMA
 
             <div class="glass-card rounded-2xl p-5 md:p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-bolt mr-2 text-[#fbbf24]"></span>Aktivitas Terbaru</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Aktivitas Terbaru</h3>
                     <a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline flex items-center gap-1">
-                        Lihat Semua <span class="fi fi-arrow-right text-xs"></span>
+                        Lihat Semua <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
                 </div>
                 <div id="recentActivityList" class="space-y-3 max-h-[300px] overflow-y-auto pr-1"></div>
@@ -603,15 +564,15 @@ DASHBOARD UTAMA
         <div id="viewProducts" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-box mr-2 text-[#d2bbff]"></span>Manajemen Produk</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Produk</h3>
                     <p class="text-sm text-[#ccc3d8]">Kelola produk, stok, harga, kategori, dan gambar.</p>
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <button onclick="exportProducts()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="fi fi-download"></span> Export
+                        <span class="material-symbols-outlined text-[18px]">download</span> Export
                     </button>
                     <button onclick="openProductModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                        <span class="fi fi-plus"></span> Tambah Produk
+                        <span class="material-symbols-outlined text-[18px]">add</span> Tambah Produk
                     </button>
                 </div>
             </div>
@@ -629,7 +590,7 @@ DASHBOARD UTAMA
                             <option value="all">Semua Kategori</option>
                         </select>
                         <div class="relative">
-                            <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
                             <input type="text" id="productSearch" placeholder="Cari produk..."
                             class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                         </div>
@@ -659,46 +620,44 @@ DASHBOARD UTAMA
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="productShowFrom">1</span>-<span id="productShowTo">5</span> dari <span id="productTotalItems">0</span> produk</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
                         <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="fi fi-chevron-left text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
                         <div id="productPaginationNumbers" class="flex gap-1"></div>
                         <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="fi fi-chevron-right text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ============================================================
-        VIEW: PESANAN (DENGAN TOOLTIP YANG DIPERBAIKI)
-        ============================================================ -->
+        <!-- VIEW: PESANAN -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-shopping-bag mr-2 text-[#d2bbff]"></span>Manajemen Pesanan</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Pesanan</h3>
                     <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <button onclick="exportOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="fi fi-download"></span> Export
+                        <span class="material-symbols-outlined text-[18px]">download</span> Export
                     </button>
                     <button onclick="bulkUpdateOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                        <span class="fi fi-list-check"></span> Bulk
+                        <span class="material-symbols-outlined text-[18px]">checklist</span> Bulk
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-shopping-bag mr-1 text-[#06b6d4]"></span>Pesanan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pesanan Hari Ini</p>
                     <div class="flex items-end justify-between">
                         <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
                         <span id="statTodayOrdersTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-money-bill mr-1 text-[#d2bbff]"></span>Pendapatan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Pendapatan Hari Ini</p>
                     <div class="flex items-end justify-between">
                         <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
                         <span id="statTodayRevenueTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
@@ -706,14 +665,14 @@ DASHBOARD UTAMA
                 </div>
                 <div class="glass-card rounded-xl p-4 relative overflow-hidden border-[#4ade80]/20">
                     <div class="absolute inset-0 bg-gradient-to-r from-[#4ade80]/5 to-transparent"></div>
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative"><span class="fi fi-diamond mr-1 text-[#4ade80]"></span>Keuntungan Hari Ini</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative">Keuntungan Hari Ini</p>
                     <div class="flex items-end justify-between relative">
                         <span id="statTodayProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
                         <span id="statTodayProfitTrend" class="text-[#4ade80] text-[10px] font-medium">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-times mr-1 text-[#ffb4ab]"></span>Tingkat Pembatalan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Tingkat Pembatalan</p>
                     <div class="flex items-end justify-between">
                         <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
                         <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
@@ -736,7 +695,7 @@ DASHBOARD UTAMA
                         <input type="date" id="orderDateFrom" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                         <input type="date" id="orderDateTo" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                         <div class="relative">
-                            <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
                             <input id="orderSearch" type="text" placeholder="Cari ID atau pelanggan..."
                             class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                         </div>
@@ -766,11 +725,11 @@ DASHBOARD UTAMA
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
                         <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="fi fi-chevron-left text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
                         <div id="orderPaginationNumbers" class="flex gap-1"></div>
                         <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="fi fi-chevron-right text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
                     </div>
                 </div>
@@ -781,11 +740,11 @@ DASHBOARD UTAMA
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-tags mr-2 text-[#d2bbff]"></span>Manajemen Kategori</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Kategori</h3>
                     <p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p>
                 </div>
                 <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                    <span class="fi fi-plus"></span> Tambah Kategori
+                    <span class="material-symbols-outlined text-[18px]">add</span> Tambah Kategori
                 </button>
             </div>
 
@@ -795,7 +754,7 @@ DASHBOARD UTAMA
                         <span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span>
                     </div>
                     <div class="ml-auto relative">
-                        <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
                         <input type="text" id="categorySearch" placeholder="Cari kategori..."
                         class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
                     </div>
@@ -819,11 +778,11 @@ DASHBOARD UTAMA
                     <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="categoryShowFrom">1</span>-<span id="categoryShowTo">5</span> dari <span id="categoryTotalItems">0</span> kategori</span>
                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
                         <button id="categoryPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                            <span class="fi fi-chevron-left text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
                         <div id="categoryPaginationNumbers" class="flex gap-1"></div>
                         <button id="categoryNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                            <span class="fi fi-chevron-right text-sm"></span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
                     </div>
                 </div>
@@ -834,12 +793,12 @@ DASHBOARD UTAMA
         <div id="viewReports" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#4ade80]"></span>Laporan Keuangan Bulanan</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Laporan Keuangan Bulanan</h3>
                     <p class="text-sm text-[#ccc3d8]">Rekap penjualan dan keuntungan per bulan.</p>
                 </div>
                 <div class="flex gap-3 flex-wrap">
                     <div class="flex items-center gap-2">
-                        <label class="text-sm text-[#ccc3d8]"><span class="fi fi-calendar mr-1"></span>Tahun:</label>
+                        <label class="text-sm text-[#ccc3d8]">Tahun:</label>
                         <select id="reportYear" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
                             <option value="2026">2026</option>
                             <option value="2025">2025</option>
@@ -847,38 +806,38 @@ DASHBOARD UTAMA
                         </select>
                     </div>
                     <button onclick="exportMonthlyReport()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#4ade80] to-[#22c55e] text-white text-sm font-medium flex items-center gap-2 btn-profit-glow hover:opacity-90 transition">
-                        <span class="fi fi-file-excel"></span> Export Excel
+                        <span class="material-symbols-outlined text-[18px]">file_download</span> Export Excel
                     </button>
                     <button onclick="loadMonthlyReport()" class="px-4 py-2 rounded-xl bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] transition text-sm font-medium flex items-center gap-2">
-                        <span class="fi fi-refresh"></span> Refresh
+                        <span class="material-symbols-outlined text-[18px]">refresh</span> Refresh
                     </button>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-money-bill mr-1 text-[#d2bbff]"></span>Total Pendapatan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
                         <span id="reportRevenueGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-shopping-bag mr-1 text-[#06b6d4]"></span>Total Pesanan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
                         <span id="reportOrdersGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat border-[#4ade80]/20">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-diamond mr-1 text-[#4ade80]"></span>Total Keuntungan</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
                     <div class="flex items-end justify-between">
                         <span id="reportTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
                         <span id="reportProfitGrowth" class="text-xs font-medium growth-neutral">+0%</span>
                     </div>
                 </div>
                 <div class="glass-card rounded-xl p-4 report-stat">
-                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-calculator mr-1 text-[#fbbf24]"></span>Rata-rata per Order</p>
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
                     <div class="flex items-end justify-between">
                         <span id="reportAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#06b6d4]">Rp 0</span>
                         <span id="reportAvgGrowth" class="text-xs font-medium growth-neutral">+0%</span>
@@ -890,7 +849,7 @@ DASHBOARD UTAMA
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#d2bbff]"></span>Grafik Pendapatan & Keuntungan</h3>
+                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Grafik Pendapatan & Keuntungan</h3>
                             <p class="text-xs text-[#ccc3d8] mt-0.5">Per bulan</p>
                         </div>
                     </div>
@@ -899,22 +858,22 @@ DASHBOARD UTAMA
                     </div>
                 </div>
                 <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
-                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4"><span class="fi fi-crown mr-2 text-[#fbbf24]"></span>Ringkasan Tahunan</h3>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4">Ringkasan Tahunan</h3>
                     <div class="space-y-3 flex-1">
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-star mr-2 text-[#4ade80]"></span>Bulan Terbaik</span>
+                            <span class="text-sm text-[#ccc3d8]">Bulan Terbaik</span>
                             <span id="bestMonth" class="font-bold text-[#4ade80]">-</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-arrow-up mr-2 text-[#d2bbff]"></span>Pendapatan Tertinggi</span>
+                            <span class="text-sm text-[#ccc3d8]">Pendapatan Tertinggi</span>
                             <span id="highestRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-diamond mr-2 text-[#4ade80]"></span>Keuntungan Tertinggi</span>
+                            <span class="text-sm text-[#ccc3d8]">Keuntungan Tertinggi</span>
                             <span id="highestProfit" class="font-bold text-[#4ade80]">Rp 0</span>
                         </div>
                         <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                            <span class="text-sm text-[#ccc3d8]"><span class="fi fi-shopping-bag mr-2 text-[#06b6d4]"></span>Total Pesanan</span>
+                            <span class="text-sm text-[#ccc3d8]">Total Pesanan</span>
                             <span id="totalOrdersYear" class="font-bold text-[#06b6d4]">0</span>
                         </div>
                     </div>
@@ -924,7 +883,7 @@ DASHBOARD UTAMA
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40">
                     <div>
-                        <span class="text-sm font-semibold text-[#dae2fc]"><span class="fi fi-table mr-2"></span>Rekap Bulanan</span>
+                        <span class="text-sm font-semibold text-[#dae2fc]">Rekap Bulanan</span>
                         <span id="reportTableYear" class="text-xs text-[#ccc3d8] ml-2">Tahun 2026</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -955,14 +914,14 @@ DASHBOARD UTAMA
         <!-- VIEW: PENGATURAN -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
-                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-settings mr-2 text-[#d2bbff]"></span>Pengaturan</h3>
+                <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
                 <p class="text-sm text-[#ccc3d8]">Kelola konfigurasi global, bot Telegram, dan backup data.</p>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="fi fi-sliders-h text-xl text-[#d2bbff]"></span>
+                            <span class="material-symbols-outlined text-[#d2bbff]">build</span>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Pengaturan Umum</h4>
                         </div>
                         <div class="space-y-4">
@@ -978,7 +937,7 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
                                 <div>
-                                    <h5 class="font-semibold text-sm text-[#dae2fc]"><span class="fi fi-shield mr-2 text-[#fbbf24]"></span>Mode Pemeliharaan</h5>
+                                    <h5 class="font-semibold text-sm text-[#dae2fc]">Mode Pemeliharaan</h5>
                                     <p class="text-xs text-[#ccc3d8]">Nonaktifkan akses publik ke toko.</p>
                                 </div>
                                 <div class="relative inline-block w-12 flex-shrink-0">
@@ -988,14 +947,14 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex justify-end pt-2">
                                 <button onclick="saveSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
-                                    <span class="fi fi-save mr-2"></span> Simpan Perubahan
+                                    Simpan Perubahan
                                 </button>
                             </div>
                         </div>
                     </div>
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="fi fi-telegram text-xl text-[#06b6d4]"></span>
+                            <span class="material-symbols-outlined text-[#06b6d4]">telegram</span>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Bot Telegram</h4>
                         </div>
                         <div class="space-y-4">
@@ -1011,7 +970,7 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
                                 <div>
-                                    <h5 class="font-semibold text-sm text-[#dae2fc]"><span class="fi fi-bell mr-2 text-[#06b6d4]"></span>Notifikasi Otomatis</h5>
+                                    <h5 class="font-semibold text-sm text-[#dae2fc]">Notifikasi Otomatis</h5>
                                     <p class="text-xs text-[#ccc3d8]">Kirim notifikasi ke Telegram saat pesanan baru.</p>
                                 </div>
                                 <div class="relative inline-block w-12 flex-shrink-0">
@@ -1021,7 +980,7 @@ DASHBOARD UTAMA
                             </div>
                             <div class="flex justify-end pt-2">
                                 <button onclick="saveBotSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#06b6d4] to-[#0891b2] text-white rounded-xl font-semibold text-sm hover:opacity-90 transition">
-                                    <span class="fi fi-save mr-2"></span> Simpan Bot
+                                    <span class="flex items-center gap-2">Simpan Bot <span class="material-symbols-outlined text-[16px]">send</span></span>
                                 </button>
                             </div>
                         </div>
@@ -1030,15 +989,15 @@ DASHBOARD UTAMA
                 <div class="space-y-6">
                     <div class="glass-card rounded-2xl p-6">
                         <div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6">
-                            <span class="fi fi-folder text-xl text-[#ffb784]"></span>
+                            <span class="material-symbols-outlined text-[#ffb784]">backup</span>
                             <h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Backup Data</h4>
                         </div>
                         <p class="text-sm text-[#ccc3d8] mb-4">Unduh backup semua data dalam format JSON.</p>
                         <button onclick="backupData()" class="w-full py-2.5 bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2">
-                            <span class="fi fi-download"></span> Download Backup
+                            <span class="material-symbols-outlined text-[18px]">download</span> Download Backup
                         </button>
                         <button onclick="restoreData()" class="w-full mt-2 py-2.5 border border-[#4a4455]/30 hover:border-[#d2bbff]/50 text-[#ccc3d8] hover:text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2">
-                            <span class="fi fi-upload"></span> Restore Backup
+                            <span class="material-symbols-outlined text-[18px]">upload</span> Restore Backup
                         </button>
                     </div>
                     <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center">
@@ -1046,7 +1005,7 @@ DASHBOARD UTAMA
                             <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
                             alt="Admin" class="w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-[#020617]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                <span class="fi fi-pencil text-[#dae2fc]"></span>
+                                <span class="material-symbols-outlined text-[#dae2fc]">edit</span>
                             </div>
                         </div>
                         <h4 class="font-semibold text-lg text-[#dae2fc]">Administrator</h4>
@@ -1062,15 +1021,15 @@ DASHBOARD UTAMA
                                 <div class="relative">
                                     <input type="password" value="********" disabled
                                     class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" />
-                                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d2bbff] text-xs font-medium hover:underline"><span class="fi fi-pencil mr-1"></span>Ubah</button>
+                                    <button class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d2bbff] text-xs font-medium hover:underline">Ubah</button>
                                 </div>
                             </div>
                             <div class="pt-2 border-t border-[#4a4455]/20">
                                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Autentikasi Dua Faktor</label>
                                 <div class="flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20 mt-1">
-                                    <span class="text-sm text-[#dae2fc]"><span class="fi fi-shield mr-2"></span>Aplikasi Authenticator</span>
+                                    <span class="text-sm text-[#dae2fc]">Aplikasi Authenticator</span>
                                     <span class="flex items-center gap-1 text-[#06b6d4] text-xs font-medium">
-                                        <span class="fi fi-check-circle text-[#06b6d4]"></span> Aktif
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
                                     </span>
                                 </div>
                             </div>
@@ -1151,10 +1110,10 @@ MODAL KATEGORI
                 class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
             </div>
             <div>
-                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Icon (Material Symbol atau Flaticon)</label>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Icon (Material Symbol)</label>
                 <input id="cIcon" type="text" placeholder="category, inventory, sports_esports, etc"
                 class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
-                <p class="text-xs text-[#ccc3d8] mt-1">Masukkan nama icon Material Symbols atau Flaticon class</p>
+                <p class="text-xs text-[#ccc3d8] mt-1">Masukkan nama icon Material Symbols</p>
             </div>
             <div>
                 <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label>
@@ -1220,20 +1179,14 @@ JAVASCRIPT – FULL LOGIKA
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
         const icons = {
-            success: 'fi-check-circle',
-            error: 'fi-times-circle',
-            warning: 'fi-exclamation-triangle',
-            info: 'fi-info-circle'
-        };
-        const colors = {
-            success: '#4ade80',
-            error: '#ffb4ab',
-            warning: '#fbbf24',
-            info: '#06b6d4'
+            success: 'check_circle',
+            error: 'error',
+            warning: 'warning',
+            info: 'info'
         };
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `
-                <span class="fi ${icons[type] || 'fi-info-circle'} text-${type === 'success' ? 'profit' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'cyan'}" style="color:${colors[type] || '#06b6d4'};font-size:1.2rem;"></span>
+                <span class="material-symbols-outlined text-${type === 'success' ? '#4ade80' : type === 'error' ? '#ffb4ab' : type === 'warning' ? '#fbbf24' : '#06b6d4'}">${icons[type] || 'info'}</span>
                 <span class="text-sm flex-1">${message}</span>
                 <button onclick="this.parentElement.remove()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition">×</button>
             `;
@@ -1477,7 +1430,7 @@ JAVASCRIPT – FULL LOGIKA
             const isCompleted = status === 'completed' || status === 'paid';
             const isCancelled = status === 'cancelled';
             const isPending = !isCompleted && !isCancelled;
-            const icon = isCompleted ? 'fi-shopping-bag' : isCancelled ? 'fi-times-circle' : 'fi-clock';
+            const icon = isCompleted ? 'shopping_bag' : isCancelled ? 'error' : 'sync';
             const color = isCompleted ? '#06b6d4' : isCancelled ? '#ffb4ab' : '#ffb784';
             const label = isCompleted ? 'Selesai' : isCancelled ? 'Dibatalkan' : 'Menunggu';
             const div = document.createElement('div');
@@ -1486,7 +1439,7 @@ JAVASCRIPT – FULL LOGIKA
             div.innerHTML = `
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-9 h-9 rounded-full bg-[#222a3d] flex items-center justify-center flex-shrink-0" style="border:1px solid ${color}33;">
-                            <span class="fi ${icon} text-lg" style="color:${color};"></span>
+                            <span class="material-symbols-outlined text-[20px]" style="color:${color};">${icon}</span>
                         </div>
                         <div class="min-w-0">
                             <p class="text-sm font-medium text-[#dae2fc] truncate">${o.transactionId || 'Order'}</p>
@@ -1637,8 +1590,8 @@ JAVASCRIPT – FULL LOGIKA
                     </td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g,'&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="fi fi-pencil"></span></button>
-                            <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="fi fi-trash"></span></button>
+                            <button onclick="openProductModal(${JSON.stringify(p).replace(/"/g,'&quot;')})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button onclick="deleteProduct(${p.id})" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="material-symbols-outlined text-[18px]">delete</span></button>
                         </div>
                     </td>
                 `;
@@ -1764,7 +1717,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // PESANAN (dengan tooltip yang diperbaiki)
+    // PESANAN
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
@@ -1832,9 +1785,6 @@ JAVASCRIPT – FULL LOGIKA
         renderOrderPagination(pages);
     }
 
-    // ================================================================
-    // RENDER ORDER ROWS (dengan tooltip)
-    // ================================================================
     function renderOrderRows(orders) {
         const tbody = document.getElementById('orderTableBody');
         tbody.innerHTML = '';
@@ -1869,17 +1819,11 @@ JAVASCRIPT – FULL LOGIKA
                     </td>
                     <td class="py-3 px-4" onclick="openOrderDetailModal('${o.transactionId || o._id}')"><span class="inline-block text-[10px] font-medium px-3 py-1 rounded-full ${cls}">${label}</span></td>
                     <td class="py-3 px-4 text-right">
-                        <div class="flex items-center justify-end gap-1.5 order-actions">
-                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium flex items-center gap-1" data-tooltip="Proses pesanan"><span class="fi fi-check-circle text-xs"></span> Proses</button>` : ''}
-                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium flex items-center gap-1" data-tooltip="Batalkan pesanan"><span class="fi fi-times-circle text-xs"></span> Batalkan</button>` : ''}
-                            <!-- Tombol Detail dengan tooltip -->
-                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Detail Pesanan">
-                                <span class="fi fi-more-vertical"></span>
-                            </button>
-                            <!-- Tombol Hapus dengan tooltip -->
-                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan">
-                                <span class="fi fi-trash"></span>
-                            </button>
+                        <div class="flex items-center justify-end gap-1.5">
+                            ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
+                            ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
+                            <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition" data-tooltip="Detail"><span class="material-symbols-outlined text-[18px]">more_vert</span></button>
+                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan"><span class="material-symbols-outlined text-[18px]">delete</span></button>
                         </div>
                     </td>
                 `;
@@ -1953,7 +1897,6 @@ JAVASCRIPT – FULL LOGIKA
             .catch(err => showToast('Gagal update: ' + err.message, 'error'));
     }
 
-    // ===== HAPUS PESANAN SATU PER SATU =====
     function deleteOrder(transactionId) {
         if (!confirm(`Yakin ingin menghapus pesanan ${transactionId}? Tindakan ini tidak dapat dibatalkan!`)) return;
         authFetch(API_BASE, {
@@ -2130,8 +2073,8 @@ JAVASCRIPT – FULL LOGIKA
                     <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
-                            <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="fi fi-pencil"></span></button>
-                            <button onclick="deleteCategory('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="fi fi-trash"></span></button>
+                            <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+                            <button onclick="deleteCategory('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="material-symbols-outlined text-[18px]">delete</span></button>
                         </div>
                     </td>
                 `;
@@ -2447,7 +2390,7 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT TO EXCEL
+    // EXPORT MONTHLY REPORT TO EXCEL (Menggunakan ExcelJS)
     // ================================================================
     async function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2463,6 +2406,7 @@ JAVASCRIPT – FULL LOGIKA
             return;
         }
 
+        // Hitung total
         let totalOrders = 0, totalRevenue = 0, totalProfit = 0;
         dataWithData.forEach(d => {
             totalOrders += d.orders;
@@ -2472,6 +2416,7 @@ JAVASCRIPT – FULL LOGIKA
         const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
         const overallMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
+        // ===== BUAT WORKBOOK =====
         const workbook = new ExcelJS.Workbook();
         workbook.creator = 'LekszyStore';
         workbook.created = new Date();
@@ -2480,6 +2425,7 @@ JAVASCRIPT – FULL LOGIKA
             pageSetup: { orientation: 'landscape', fitToPage: true }
         });
 
+        // ===== AMBIL LOGO =====
         let logoImageId = null;
         try {
             const response = await fetch('/gambar/logo.png');
@@ -2498,6 +2444,7 @@ JAVASCRIPT – FULL LOGIKA
             console.warn('Logo tidak ditemukan, lanjutkan tanpa logo');
         }
 
+        // ===== SET KOLOM =====
         worksheet.columns = [
             { header: 'Bulan', key: 'month', width: 22 },
             { header: 'Pesanan', key: 'orders', width: 12 },
@@ -2507,6 +2454,7 @@ JAVASCRIPT – FULL LOGIKA
             { header: 'Pertumbuhan', key: 'growth', width: 16 }
         ];
 
+        // ===== TAMBAHKAN LOGO =====
         if (logoImageId) {
             worksheet.addImage(logoImageId, {
                 tl: { col: 0, row: 0 },
@@ -2514,6 +2462,7 @@ JAVASCRIPT – FULL LOGIKA
             });
         }
 
+        // ===== HEADER UTAMA =====
         const titleRow = worksheet.getRow(1);
         worksheet.mergeCells(`A1:F1`);
         const titleCell = titleRow.getCell(1);
@@ -2523,6 +2472,7 @@ JAVASCRIPT – FULL LOGIKA
         titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1A1A2E' } };
         titleRow.height = 40;
 
+        // ===== SUB HEADER =====
         const subRow = worksheet.getRow(2);
         worksheet.mergeCells(`A2:F2`);
         const subCell = subRow.getCell(1);
@@ -2532,6 +2482,7 @@ JAVASCRIPT – FULL LOGIKA
         subCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '2D3449' } };
         subRow.height = 30;
 
+        // ===== INFO BOX =====
         const infoStartRow = 4;
         const infoData = [
             ['📅 Tahun', year],
@@ -2554,7 +2505,10 @@ JAVASCRIPT – FULL LOGIKA
             });
         });
 
+        // ===== TABEL DATA =====
         const tableStartRow = infoStartRow + infoData.length + 1;
+
+        // Header tabel
         const headerRow = worksheet.getRow(tableStartRow);
         const headers = ['Bulan', 'Pesanan', 'Pendapatan', 'Keuntungan', 'Margin', 'Pertumbuhan'];
         headers.forEach((h, i) => {
@@ -2572,6 +2526,7 @@ JAVASCRIPT – FULL LOGIKA
         });
         headerRow.height = 28;
 
+        // Data rows
         let currentRow = tableStartRow + 1;
         dataWithData.forEach((d) => {
             const row = worksheet.getRow(currentRow);
@@ -2623,6 +2578,7 @@ JAVASCRIPT – FULL LOGIKA
             currentRow++;
         });
 
+        // TOTAL ROW
         const totalRow = worksheet.getRow(currentRow);
         totalRow.getCell(1).value = 'TOTAL';
         totalRow.getCell(1).font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
@@ -2667,6 +2623,7 @@ JAVASCRIPT – FULL LOGIKA
         });
         totalRow.height = 30;
 
+        // ===== SUMMARY =====
         const summaryStartRow = currentRow + 3;
         worksheet.mergeCells(`A${summaryStartRow}:F${summaryStartRow}`);
         const summaryTitle = worksheet.getRow(summaryStartRow).getCell(1);
@@ -2699,6 +2656,7 @@ JAVASCRIPT – FULL LOGIKA
             });
         });
 
+        // ===== FOOTER =====
         const footerRow1 = summaryStartRow + summaryData.length + 2;
         const footerRow2 = footerRow1 + 1;
 
@@ -2714,6 +2672,7 @@ JAVASCRIPT – FULL LOGIKA
         footerCell2.font = { name: 'Arial', size: 8, italic: true, color: { argb: 'CBD5E1' } };
         footerCell2.alignment = { horizontal: 'center', vertical: 'middle' };
 
+        // ===== GENERATE FILE =====
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         saveAs(blob, `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xlsx`);
