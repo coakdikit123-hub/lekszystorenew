@@ -4,29 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LekszyStore - Panel Admin Pro</title>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
-
-    <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-
-    <!-- Flaticon Uicons -->
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css" />
     <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/uicons-solid-rounded/css/uicons-solid-rounded.css" />
-
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-    <!-- ExcelJS & FileSaver -->
     <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-
     <style>
-        /* ===== ROOT VARIABLES & BASE ===== */
+        /* ===== ROOT VARIABLES ===== */
         :root {
             --bg-deep: #020617;
             --bg-surface: #0b1326;
@@ -49,355 +36,114 @@
             --profit-color: #22c55e;
             --shadow-glow: rgba(210, 187, 255, 0.25);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg-deep);
-            color: var(--text-on-surface);
-            font-family: 'Inter', sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .fi { font-size: 1.2rem; line-height: 1; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; }
-        .fi-sm { font-size: 0.9rem; }
-        .fi-lg { font-size: 1.6rem; }
-        .fi-xl { font-size: 2.4rem; }
-
-        .glass-card {
-            background: rgba(19, 27, 46, 0.6);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(218, 226, 253, 0.08);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-card:hover {
-            border-color: rgba(218, 226, 253, 0.15);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
-        }
-
-        .neon-glow:focus-within {
-            box-shadow: 0 0 25px rgba(210, 187, 255, 0.2), inset 0 0 25px rgba(210, 187, 255, 0.05);
-            border-color: var(--border-primary);
-        }
-        .btn-primary-glow {
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.25);
-            transition: all 0.3s ease;
-        }
-        .btn-primary-glow:hover {
-            box-shadow: 0 0 50px rgba(124, 58, 237, 0.4);
-            transform: translateY(-2px) scale(1.02);
-        }
-        .btn-profit-glow {
-            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
-            transition: all 0.3s ease;
-        }
-        .btn-profit-glow:hover {
-            box-shadow: 0 0 50px rgba(74, 222, 128, 0.3);
-            transform: translateY(-2px) scale(1.02);
-        }
-
-        .nav-link {
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
-            position: relative;
-        }
-        .nav-link:hover {
-            background: rgba(210, 187, 255, 0.08);
-            color: var(--text-primary);
-            transform: translateX(4px);
-        }
-        .nav-link.active {
-            color: var(--text-primary);
-            font-weight: 700;
-            background: rgba(210, 187, 255, 0.12);
-        }
-        .nav-link.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 8px;
-            bottom: 8px;
-            width: 3.5px;
-            background: var(--text-primary);
-            border-radius: 0 6px 6px 0;
-            box-shadow: 0 0 16px rgba(210, 187, 255, 0.6);
-            animation: pulseBorder 2s ease-in-out infinite;
-        }
-        @keyframes pulseBorder {
-            0%, 100% { opacity: 1; box-shadow: 0 0 16px rgba(210, 187, 255, 0.6); }
-            50% { opacity: 0.5; box-shadow: 0 0 8px rgba(210, 187, 255, 0.2); }
-        }
-
-        .badge-selesai { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.25); }
-        .badge-pending { background: rgba(255, 183, 132, 0.15); color: #ffb784; border: 1px solid rgba(255, 183, 132, 0.25); }
-        .badge-dibatalkan { background: rgba(255, 180, 171, 0.15); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.25); }
-        .badge-aktif { background: rgba(6, 182, 212, 0.12); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2); }
-        .badge-nonaktif { background: rgba(255, 180, 171, 0.12); color: #ffb4ab; border: 1px solid rgba(255, 180, 171, 0.2); }
-
-        .view {
-            display: none;
-            animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .view.active { display: block; }
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(16px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.7);
-            backdrop-filter: blur(12px);
-            z-index: 999;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
-            background: var(--bg-surface-low);
-            border: 1px solid var(--border-outline-variant);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            max-width: 580px;
-            width: 100%;
-            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
-            animation: modalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-height: 92vh;
-            overflow-y: auto;
-        }
-        @keyframes modalSlideIn {
-            from { opacity: 0; transform: scale(0.92) translateY(30px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .toggle-checkbox {
-            right: -4px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .toggle-checkbox:checked {
-            right: 0;
-            border-color: var(--border-primary);
-            background: var(--border-primary);
-        }
-        .toggle-checkbox:checked + .toggle-label {
-            background: var(--primary-container);
-        }
-        .toggle-label {
-            background: var(--bg-surface-highest);
-            transition: background 0.3s ease;
-        }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-deep); }
-        ::-webkit-scrollbar-thumb { background: var(--border-outline-variant); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-primary); }
-
-        .toast-container {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .toast {
-            padding: 14px 20px;
-            border-radius: 14px;
-            background: var(--bg-surface-low);
-            border: 1px solid var(--border-outline-variant);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            min-width: 280px;
-            max-width: 420px;
-        }
-        .toast-out { animation: toastOut 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
-        @keyframes toastIn {
-            from { opacity: 0; transform: translateX(40px) scale(0.95); }
-            to { opacity: 1; transform: translateX(0) scale(1); }
-        }
-        @keyframes toastOut {
-            from { opacity: 1; transform: translateX(0) scale(1); }
-            to { opacity: 0; transform: translateX(40px) scale(0.95); }
-        }
-        .toast-success { border-left: 4px solid #4ade80; }
-        .toast-error { border-left: 4px solid #ffb4ab; }
-        .toast-warning { border-left: 4px solid #fbbf24; }
-        .toast-info { border-left: 4px solid #06b6d4; }
-
-        [data-tooltip] { position: relative; }
-        [data-tooltip]:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--bg-surface-high);
-            color: var(--text-on-surface);
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 500;
-            white-space: nowrap;
-            border: 1px solid var(--border-outline-variant);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-            z-index: 100;
-        }
-
-        .category-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            background: rgba(210, 187, 255, 0.1);
-            border: 1px solid rgba(210, 187, 255, 0.2);
-            overflow: hidden;
-        }
-        .category-icon img { width: 100%; height: 100%; object-fit: cover; }
-
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .logo-img-sm { width: 32px; height: 32px; object-fit: contain; border-radius: 8px; }
-        .logo-img-lg { width: 64px; height: 64px; object-fit: contain; border-radius: 16px; margin-bottom: 8px; }
-
-        .report-stat {
-            background: rgba(19, 27, 46, 0.4);
-            border: 1px solid rgba(74, 68, 85, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-        .report-stat:hover {
-            border-color: rgba(210, 187, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .growth-positive { color: #4ade80; }
-        .growth-negative { color: #ffb4ab; }
-        .growth-neutral { color: #fbbf24; }
-        .fi-purple { color: #7c3aed; }
-        .fi-green { color: #4ade80; }
-        .fi-blue { color: #06b6d4; }
-        .fi-gold { color: #fbbf24; }
-        .fi-pink { color: #ffb0cd; }
-        .fi-red { color: #ffb4ab; }
-
-        @media (max-width: 768px) {
-            .stat-grid { grid-template-columns: 1fr 1fr; }
-            .modal-box { padding: 1.25rem; max-width: 95%; }
-            .logo-img { width: 32px; height: 32px; }
-            .logo-img-lg { width: 48px; height: 48px; }
-            .report-stat { padding: 0.75rem; }
-        }
-        @media (max-width: 480px) { .stat-grid { grid-template-columns: 1fr; } }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg-deep); color:var(--text-on-surface); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; }
+        .fi { font-size:1.2rem; line-height:1; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
+        .glass-card { background:rgba(19,27,46,0.6); backdrop-filter:blur(16px); border:1px solid rgba(218,226,253,0.08); box-shadow:0 8px 32px rgba(0,0,0,0.25); transition:all 0.3s; }
+        .glass-card:hover { border-color:rgba(218,226,253,0.15); transform:translateY(-2px); box-shadow:0 12px 40px rgba(0,0,0,0.35); }
+        .neon-glow:focus-within { box-shadow:0 0 25px rgba(210,187,255,0.2),inset 0 0 25px rgba(210,187,255,0.05); border-color:var(--border-primary); }
+        .btn-primary-glow { box-shadow:0 0 30px rgba(124,58,237,0.25); transition:all 0.3s; }
+        .btn-primary-glow:hover { box-shadow:0 0 50px rgba(124,58,237,0.4); transform:translateY(-2px) scale(1.02); }
+        .btn-profit-glow { box-shadow:0 0 30px rgba(74,222,128,0.2); transition:all 0.3s; }
+        .btn-profit-glow:hover { box-shadow:0 0 50px rgba(74,222,128,0.3); transform:translateY(-2px) scale(1.02); }
+        .nav-link { transition:all 0.25s; border-radius:12px; position:relative; }
+        .nav-link:hover { background:rgba(210,187,255,0.08); color:var(--text-primary); transform:translateX(4px); }
+        .nav-link.active { color:var(--text-primary); font-weight:700; background:rgba(210,187,255,0.12); }
+        .nav-link.active::before { content:''; position:absolute; left:0; top:8px; bottom:8px; width:3.5px; background:var(--text-primary); border-radius:0 6px 6px 0; box-shadow:0 0 16px rgba(210,187,255,0.6); animation:pulseBorder 2s infinite; }
+        @keyframes pulseBorder { 0%,100%{opacity:1;box-shadow:0 0 16px rgba(210,187,255,0.6);} 50%{opacity:0.5;box-shadow:0 0 8px rgba(210,187,255,0.2);} }
+        .badge-selesai { background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.25); }
+        .badge-pending { background:rgba(255,183,132,0.15); color:#ffb784; border:1px solid rgba(255,183,132,0.25); }
+        .badge-dibatalkan { background:rgba(255,180,171,0.15); color:#ffb4ab; border:1px solid rgba(255,180,171,0.25); }
+        .badge-aktif { background:rgba(6,182,212,0.12); color:#06b6d4; border:1px solid rgba(6,182,212,0.2); }
+        .badge-nonaktif { background:rgba(255,180,171,0.12); color:#ffb4ab; border:1px solid rgba(255,180,171,0.2); }
+        .view { display:none; animation:fadeSlideIn 0.4s; }
+        .view.active { display:block; }
+        @keyframes fadeSlideIn { from{opacity:0;transform:translateY(16px) scale(0.98);} to{opacity:1;transform:translateY(0) scale(1);} }
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(2,6,23,0.7); backdrop-filter:blur(12px); z-index:999; align-items:center; justify-content:center; padding:1rem; }
+        .modal-overlay.show { display:flex; }
+        .modal-box { background:var(--bg-surface-low); border:1px solid var(--border-outline-variant); border-radius:1.5rem; padding:2rem; max-width:580px; width:100%; box-shadow:0 32px 80px rgba(0,0,0,0.6); animation:modalSlideIn 0.35s; max-height:92vh; overflow-y:auto; }
+        @keyframes modalSlideIn { from{opacity:0;transform:scale(0.92) translateY(30px);} to{opacity:1;transform:scale(1) translateY(0);} }
+        .toggle-checkbox { right:-4px; transition:all 0.3s; }
+        .toggle-checkbox:checked { right:0; border-color:var(--border-primary); background:var(--border-primary); }
+        .toggle-checkbox:checked + .toggle-label { background:var(--primary-container); }
+        .toggle-label { background:var(--bg-surface-highest); transition:background 0.3s; }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-track { background:var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background:var(--border-outline-variant); border-radius:10px; }
+        ::-webkit-scrollbar-thumb:hover { background:var(--text-primary); }
+        .toast-container { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column; gap:12px; }
+        .toast { padding:14px 20px; border-radius:14px; background:var(--bg-surface-low); border:1px solid var(--border-outline-variant); box-shadow:0 12px 40px rgba(0,0,0,0.4); backdrop-filter:blur(12px); display:flex; align-items:center; gap:12px; animation:toastIn 0.4s; min-width:280px; max-width:420px; }
+        .toast-out { animation:toastOut 0.35s forwards; }
+        @keyframes toastIn { from{opacity:0;transform:translateX(40px) scale(0.95);} to{opacity:1;transform:translateX(0) scale(1);} }
+        @keyframes toastOut { from{opacity:1;transform:translateX(0) scale(1);} to{opacity:0;transform:translateX(40px) scale(0.95);} }
+        .toast-success { border-left:4px solid #4ade80; }
+        .toast-error { border-left:4px solid #ffb4ab; }
+        .toast-warning { border-left:4px solid #fbbf24; }
+        .toast-info { border-left:4px solid #06b6d4; }
+        [data-tooltip] { position:relative; }
+        [data-tooltip]:hover::after { content:attr(data-tooltip); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); background:var(--bg-surface-high); color:var(--text-on-surface); padding:4px 12px; border-radius:8px; font-size:11px; font-weight:500; white-space:nowrap; border:1px solid var(--border-outline-variant); box-shadow:0 8px 20px rgba(0,0,0,0.3); z-index:100; }
+        .category-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:24px; background:rgba(210,187,255,0.1); border:1px solid rgba(210,187,255,0.2); overflow:hidden; }
+        .category-icon img { width:100%; height:100%; object-fit:cover; }
+        .logo-img { width:40px; height:40px; object-fit:contain; border-radius:10px; transition:all 0.3s; }
+        .logo-img-sm { width:32px; height:32px; object-fit:contain; border-radius:8px; }
+        .logo-img-lg { width:64px; height:64px; object-fit:contain; border-radius:16px; margin-bottom:8px; }
+        .report-stat { background:rgba(19,27,46,0.4); border:1px solid rgba(74,68,85,0.2); border-radius:12px; padding:1rem; transition:all 0.3s; }
+        .report-stat:hover { border-color:rgba(210,187,255,0.3); transform:translateY(-2px); }
+        .growth-positive { color:#4ade80; }
+        .growth-negative { color:#ffb4ab; }
+        .growth-neutral { color:#fbbf24; }
+        @media (max-width:768px){ .stat-grid { grid-template-columns:1fr 1fr; } .modal-box { padding:1.25rem; max-width:95%; } .logo-img { width:32px; height:32px; } .logo-img-lg { width:48px; height:48px; } .report-stat { padding:0.75rem; } }
+        @media (max-width:480px){ .stat-grid { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
-
-    <!-- ===== TOAST CONTAINER ===== -->
+    <!-- TOAST CONTAINER -->
     <div id="toastContainer" class="toast-container"></div>
 
-    <!-- ===== LOGIN SCREEN ===== -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 flex items-center justify-center bg-[#020617] z-[9999]">
         <div class="bg-[#0b1326] p-8 rounded-2xl border border-[#4a4455]/30 max-w-sm w-full mx-4 shadow-2xl">
             <div class="text-center mb-8">
                 <div class="flex justify-center mb-4">
-                    <img src="/gambar/logo.png" alt="LekszyStore Logo" class="logo-img-lg"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div class="w-16 h-16 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
-                        <span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span>
-                    </div>
+                    <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img-lg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div class="w-16 h-16 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden"><span class="material-symbols-outlined text-5xl text-[#d2bbff]">storefront</span></div>
                 </div>
                 <h2 class="font-['Plus_Jakarta_Sans'] text-2xl font-extrabold text-[#d2bbff]">LekszyStore</h2>
                 <p class="text-sm text-[#ccc3d8] mt-1 font-medium">Panel Admin Pro</p>
             </div>
             <div class="space-y-4">
-                <div class="relative neon-glow rounded-xl transition-all">
-                    <input id="tokenInput" type="password" placeholder="Masukkan Token Admin"
-                           class="w-full bg-[#060e20] border border-[#4a4455]/50 rounded-xl py-3 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition text-sm" />
-                </div>
-                <button onclick="handleLogin()"
-                        class="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                    Masuk
-                </button>
-                <p id="loginError" class="text-[#ffb4ab] text-sm text-center hidden">Token salah! Coba lagi.</p>
+                <div class="relative neon-glow rounded-xl"><input id="tokenInput" type="password" placeholder="Masukkan Token Admin" class="w-full bg-[#060e20] border border-[#4a4455]/50 rounded-xl py-3 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition text-sm" /></div>
+                <button onclick="handleLogin()" class="w-full py-3 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">Masuk</button>
+                <p id="loginError" class="text-[#ffb4ab] text-sm text-center hidden">Token salah!</p>
             </div>
         </div>
     </div>
 
-    <!-- ===== DASHBOARD UTAMA ===== -->
+    <!-- DASHBOARD UTAMA -->
     <div id="dashboard" style="display:none;" class="flex w-full min-h-screen">
-
         <!-- SIDEBAR -->
         <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
             <div class="px-6 mb-8 flex items-center gap-3">
-                <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img"
-                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
-                    <span class="material-symbols-outlined text-[#d2bbff] text-2xl">storefront</span>
-                </div>
-                <div>
-                    <h1 class="font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-[#d2bbff] tracking-tight">LekszyStore</h1>
-                    <p class="text-[9px] uppercase tracking-[0.2em] text-[#ccc3d8] font-medium">Panel Admin Pro</p>
-                </div>
+                <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden"><span class="material-symbols-outlined text-[#d2bbff] text-2xl">storefront</span></div>
+                <div><h1 class="font-['Plus_Jakarta_Sans'] text-xl font-extrabold text-[#d2bbff] tracking-tight">LekszyStore</h1><p class="text-[9px] uppercase tracking-[0.2em] text-[#ccc3d8] font-medium">Panel Admin Pro</p></div>
             </div>
             <nav class="flex-1 px-3 space-y-1">
-                <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-chart-pie"></span> Dashboard
-                    <span class="ml-auto text-[10px] bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">Live</span>
-                </a>
-                <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-box"></span> Produk
-                    <span id="productBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
-                </a>
-                <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-shopping-bag"></span> Pesanan
-                    <span id="orderBadge" class="ml-auto text-[10px] bg-[#ffb784]/20 text-[#ffb784] px-2 py-0.5 rounded-full animate-pulse">0</span>
-                </a>
-                <a href="#" data-view="categories" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-tags"></span> Kategori
-                    <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
-                </a>
-                <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-chart-line"></span> Laporan
-                    <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
-                </a>
-                <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
-                    <span class="fi fi-settings"></span> Pengaturan
-                </a>
+                <a href="#" data-view="dashboard" class="nav-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-chart-pie"></span> Dashboard <span class="ml-auto text-[10px] bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">Live</span></a>
+                <a href="#" data-view="products" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-box"></span> Produk <span id="productBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span></a>
+                <a href="#" data-view="orders" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-shopping-bag"></span> Pesanan <span id="orderBadge" class="ml-auto text-[10px] bg-[#ffb784]/20 text-[#ffb784] px-2 py-0.5 rounded-full animate-pulse">0</span></a>
+                <a href="#" data-view="categories" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-tags"></span> Kategori <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span></a>
+                <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-chart-line"></span> Laporan <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span></a>
+                <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"><span class="fi fi-settings"></span> Pengaturan</a>
             </nav>
             <div class="px-4 mt-auto pt-4 border-t border-[#4a4455]/20 space-y-2">
-                <button onclick="toggleTheme()"
-                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium">
-                    <span class="fi fi-moon"></span> <span id="themeLabel">Mode Gelap</span>
-                </button>
-                <button onclick="handleLogout()"
-                        class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium">
-                    <span class="fi fi-sign-out-alt"></span> Keluar
-                </button>
+                <button onclick="toggleTheme()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium"><span class="fi fi-moon"></span> <span id="themeLabel">Mode Gelap</span></button>
+                <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium"><span class="fi fi-sign-out-alt"></span> Keluar</button>
             </div>
         </aside>
 
         <!-- MAIN CONTENT -->
         <div class="flex-1 md:ml-64 min-h-screen">
-
             <!-- TOPBAR -->
             <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
                 <div class="flex items-center gap-3">
@@ -407,132 +153,68 @@
                 <div class="flex items-center gap-4 ml-auto">
                     <div class="relative hidden lg:block">
                         <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
-                        <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..."
-                               class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
+                        <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..." class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
                     </div>
-                    <button onclick="checkNotifications()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi">
-                        <span class="fi fi-bell"></span>
-                        <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
-                    </button>
-                    <button onclick="refreshData()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Refresh data">
-                        <span class="fi fi-refresh"></span>
-                    </button>
+                    <button onclick="checkNotifications()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi"><span class="fi fi-bell"></span><span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span></button>
+                    <button onclick="refreshData()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Refresh"><span class="fi fi-refresh"></span></button>
                     <div class="w-9 h-9 rounded-full overflow-hidden border border-[#d2bbff]/30 flex-shrink-0 cursor-pointer hover:border-[#d2bbff] transition">
-                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg"
-                             alt="Admin" class="w-full h-full object-cover" />
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg" alt="Admin" class="w-full h-full object-cover" />
                     </div>
                 </div>
             </header>
 
             <!-- MAIN CANVAS -->
             <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
-
                 <!-- VIEW: DASHBOARD -->
                 <div id="viewDashboard" class="view active">
-                    <!-- Stats Grid -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                         <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                             <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-money-bill text-7xl text-[#d2bbff]"></span></div>
                             <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
                             <h3 id="dashTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">Rp 0</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
-                                <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
-                            </div>
-                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
-                            </div>
+                            <div class="flex items-center gap-2 mt-1"><span id="revenueTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span><span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span></div>
+                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div></div>
                         </div>
                         <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                             <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-receipt text-7xl text-[#06b6d4]"></span></div>
                             <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
                             <h3 id="dashTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
-                                <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
-                            </div>
-                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
-                            </div>
+                            <div class="flex items-center gap-2 mt-1"><span id="orderTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span><span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span></div>
+                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div></div>
                         </div>
                         <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group border-[#4ade80]/20">
                             <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-diamond text-7xl text-[#4ade80]"></span></div>
                             <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
                             <h3 id="dashTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#4ade80] mt-1">Rp 0</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span>
-                                <span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span>
-                            </div>
-                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-[#4ade80] to-[#22c55e] w-[70%] rounded-full shadow-[0_0_12px_rgba(74,222,128,0.3)]"></div>
-                            </div>
+                            <div class="flex items-center gap-2 mt-1"><span id="profitTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-arrow-up text-[#4ade80]"></span> +0%</span><span class="text-[10px] text-[#ccc3d8]">vs bulan lalu</span></div>
+                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-[#4ade80] to-[#22c55e] w-[70%] rounded-full shadow-[0_0_12px_rgba(74,222,128,0.3)]"></div></div>
                         </div>
                         <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                             <div class="absolute -top-6 -right-6 opacity-[0.06] group-hover:opacity-10 transition"><span class="fi fi-box text-7xl text-[#ffb0cd]"></span></div>
                             <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Produk</p>
                             <h3 id="dashTotalProducts" class="font-['Plus_Jakarta_Sans'] text-2xl md:text-3xl font-extrabold text-[#dae2fc] mt-1">0</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span id="productTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-minus text-[#fbbf24]"></span> Stabil</span>
-                                <span class="text-[10px] text-[#ccc3d8]">aktif</span>
-                            </div>
-                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[85%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div>
-                            </div>
+                            <div class="flex items-center gap-2 mt-1"><span id="productTrend" class="text-xs font-medium flex items-center gap-1"><span class="fi fi-minus text-[#fbbf24]"></span> Stabil</span><span class="text-[10px] text-[#ccc3d8]">aktif</span></div>
+                            <div class="mt-3 h-1.5 w-full bg-[#2d3449] rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-[#ffb0cd] to-[#d2bbff] w-[85%] rounded-full shadow-[0_0_12px_rgba(255,176,205,0.3)]"></div></div>
                         </div>
                     </div>
-
-                    <!-- Chart Row -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                         <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
-                            <div class="flex items-center justify-between mb-4">
-                                <div>
-                                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#d2bbff]"></span>Grafik Pendapatan</h3>
-                                    <p class="text-xs text-[#ccc3d8] mt-0.5">30 hari terakhir</p>
-                                </div>
-                                <div class="flex gap-1.5">
-                                    <button class="chart-period px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition" data-period="7">7H</button>
-                                    <button class="chart-period px-3 py-1 rounded-lg bg-[#d2bbff]/10 border border-[#d2bbff]/40 text-[#d2bbff] text-xs font-medium" data-period="30">30H</button>
-                                    <button class="chart-period px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition" data-period="90">90H</button>
-                                </div>
-                            </div>
-                            <div class="relative h-56 md:h-64">
-                                <canvas id="revenueChart"></canvas>
-                            </div>
+                            <div class="flex items-center justify-between mb-4"><div><h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#d2bbff]"></span>Grafik Pendapatan</h3><p class="text-xs text-[#ccc3d8] mt-0.5">30 hari terakhir</p></div><div class="flex gap-1.5"><button class="chart-period px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition" data-period="7">7H</button><button class="chart-period px-3 py-1 rounded-lg bg-[#d2bbff]/10 border border-[#d2bbff]/40 text-[#d2bbff] text-xs font-medium" data-period="30">30H</button><button class="chart-period px-3 py-1 rounded-lg border border-[#4a4455]/30 text-xs font-medium text-[#ccc3d8] hover:bg-[#222a3d] transition" data-period="90">90H</button></div></div>
+                            <div class="relative h-56 md:h-64"><canvas id="revenueChart"></canvas></div>
                         </div>
                         <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
                             <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4"><span class="fi fi-list mr-2 text-[#06b6d4]"></span>Ringkasan Cepat</h3>
                             <div class="space-y-3 flex-1">
-                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                                    <span class="text-sm text-[#ccc3d8]"><span class="fi fi-shopping-bag mr-2 text-[#06b6d4]"></span>Pesanan Hari Ini</span>
-                                    <span id="quickTodayOrders" class="font-bold text-[#dae2fc]">0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                                    <span class="text-sm text-[#ccc3d8]"><span class="fi fi-money-bill mr-2 text-[#d2bbff]"></span>Pendapatan Hari Ini</span>
-                                    <span id="quickTodayRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                                    <span class="text-sm text-[#ccc3d8]"><span class="fi fi-diamond mr-2 text-[#4ade80]"></span>Keuntungan Hari Ini</span>
-                                    <span id="quickTodayProfit" class="font-bold text-[#4ade80]">Rp 0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                                    <span class="text-sm text-[#ccc3d8]"><span class="fi fi-calculator mr-2 text-[#fbbf24]"></span>Rata-rata per Pesanan</span>
-                                    <span id="quickAvgOrder" class="font-bold text-[#06b6d4]">Rp 0</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
-                                    <span class="text-sm text-[#ccc3d8]"><span class="fi fi-crown mr-2 text-[#ffb784]"></span>Produk Terlaris</span>
-                                    <span id="quickTopProduct" class="font-bold text-[#ffb784]">-</span>
-                                </div>
+                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-shopping-bag mr-2 text-[#06b6d4]"></span>Pesanan Hari Ini</span><span id="quickTodayOrders" class="font-bold text-[#dae2fc]">0</span></div>
+                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-money-bill mr-2 text-[#d2bbff]"></span>Pendapatan Hari Ini</span><span id="quickTodayRevenue" class="font-bold text-[#dae2fc]">Rp 0</span></div>
+                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-diamond mr-2 text-[#4ade80]"></span>Keuntungan Hari Ini</span><span id="quickTodayProfit" class="font-bold text-[#4ade80]">Rp 0</span></div>
+                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-calculator mr-2 text-[#fbbf24]"></span>Rata-rata per Pesanan</span><span id="quickAvgOrder" class="font-bold text-[#06b6d4]">Rp 0</span></div>
+                                <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-crown mr-2 text-[#ffb784]"></span>Produk Terlaris</span><span id="quickTopProduct" class="font-bold text-[#ffb784]">-</span></div>
                             </div>
                         </div>
                     </div>
-
                     <div class="glass-card rounded-2xl p-5 md:p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-bolt mr-2 text-[#fbbf24]"></span>Aktivitas Terbaru</h3>
-                            <a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline flex items-center gap-1">
-                                Lihat Semua <span class="fi fi-arrow-right text-xs"></span>
-                            </a>
-                        </div>
+                        <div class="flex items-center justify-between mb-4"><h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-bolt mr-2 text-[#fbbf24]"></span>Aktivitas Terbaru</h3><a href="#" onclick="navigateTo('orders')" class="text-xs font-semibold text-[#d2bbff] hover:underline flex items-center gap-1">Lihat Semua <span class="fi fi-arrow-right text-xs"></span></a></div>
                         <div id="recentActivityList" class="space-y-3 max-h-[300px] overflow-y-auto pr-1"></div>
                     </div>
                 </div>
@@ -540,174 +222,56 @@
                 <!-- VIEW: PRODUK -->
                 <div id="viewProducts" class="view">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-box mr-2 text-[#d2bbff]"></span>Manajemen Produk</h3>
-                            <p class="text-sm text-[#ccc3d8]">Kelola produk, stok, harga, kategori, dan gambar.</p>
-                        </div>
-                        <div class="flex gap-3 flex-wrap">
-                            <button onclick="exportProducts()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                                <span class="fi fi-download"></span> Export
-                            </button>
-                            <button onclick="openProductModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                                <span class="fi fi-plus"></span> Tambah Produk
-                            </button>
-                        </div>
+                        <div><h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-box mr-2 text-[#d2bbff]"></span>Manajemen Produk</h3><p class="text-sm text-[#ccc3d8]">Kelola produk, stok, harga, kategori, dan gambar.</p></div>
+                        <div class="flex gap-3 flex-wrap"><button onclick="exportProducts()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2"><span class="fi fi-download"></span> Export</button><button onclick="openProductModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90"><span class="fi fi-plus"></span> Tambah Produk</button></div>
                     </div>
                     <div class="glass-card rounded-2xl overflow-hidden">
                         <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
-                            <div class="flex items-center gap-2">
-                                <span id="productCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Produk</span>
-                                <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Sinkron
-                                </span>
-                            </div>
+                            <div class="flex items-center gap-2"><span id="productCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Produk</span><span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Sinkron</span></div>
                             <div class="flex gap-2 ml-auto">
-                                <select id="productCategoryFilter" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
-                                    <option value="all">Semua Kategori</option>
-                                </select>
-                                <div class="relative">
-                                    <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
-                                    <input type="text" id="productSearch" placeholder="Cari produk..."
-                                           class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
-                                </div>
+                                <select id="productCategoryFilter" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition"><option value="all">Semua Kategori</option></select>
+                                <div class="relative"><span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span><input type="text" id="productSearch" placeholder="Cari produk..." class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" /></div>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
-                                    <tr>
-                                        <th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllProducts" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th>
-                                        <th class="py-3 px-4 font-semibold">Gambar</th>
-                                        <th class="py-3 px-4 font-semibold">Nama</th>
-                                        <th class="py-3 px-4 font-semibold hidden sm:table-cell">Kategori</th>
-                                        <th class="py-3 px-4 font-semibold text-right">Harga</th>
-                                        <th class="py-3 px-4 font-semibold text-right hidden md:table-cell">Stok</th>
-                                        <th class="py-3 px-4 font-semibold text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="productTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
-                            </table>
+                            <table class="w-full text-left"><thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30"><tr><th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllProducts" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th><th class="py-3 px-4 font-semibold">Gambar</th><th class="py-3 px-4 font-semibold">Nama</th><th class="py-3 px-4 font-semibold hidden sm:table-cell">Kategori</th><th class="py-3 px-4 font-semibold text-right">Harga</th><th class="py-3 px-4 font-semibold text-right hidden md:table-cell">Stok</th><th class="py-3 px-4 font-semibold text-right">Aksi</th></tr></thead>
+                            <tbody id="productTableBody" class="divide-y divide-[#4a4455]/15"></tbody></table>
                         </div>
                         <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                             <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="productShowFrom">1</span>-<span id="productShowTo">5</span> dari <span id="productTotalItems">0</span> produk</span>
-                            <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                                <button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                                    <span class="fi fi-chevron-left text-sm"></span>
-                                </button>
-                                <div id="productPaginationNumbers" class="flex gap-1"></div>
-                                <button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                                    <span class="fi fi-chevron-right text-sm"></span>
-                                </button>
-                            </div>
+                            <div class="flex items-center gap-1 ml-auto sm:ml-0"><button id="productPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40" disabled><span class="fi fi-chevron-left text-sm"></span></button><div id="productPaginationNumbers" class="flex gap-1"></div><button id="productNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40"><span class="fi fi-chevron-right text-sm"></span></button></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- VIEW: PESANAN (DENGAN TOMBOL HAPUS) -->
+                <!-- VIEW: PESANAN -->
                 <div id="viewOrders" class="view">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-shopping-bag mr-2 text-[#d2bbff]"></span>Manajemen Pesanan</h3>
-                            <p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p>
-                        </div>
+                        <div><h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-shopping-bag mr-2 text-[#d2bbff]"></span>Manajemen Pesanan</h3><p class="text-sm text-[#ccc3d8]">Pantau, proses, dan kelola transaksi yang masuk.</p></div>
                         <div class="flex gap-3 flex-wrap">
-                            <!-- ===== TOMBOL HAPUS (BARU) ===== -->
-                            <button onclick="bulkDeleteOrders()" class="px-4 py-2 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium flex items-center gap-2">
-                                <span class="fi fi-trash"></span> Hapus
-                            </button>
-                            <button onclick="exportOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                                <span class="fi fi-download"></span> Export
-                            </button>
-                            <button onclick="bulkUpdateOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2">
-                                <span class="fi fi-list-check"></span> Bulk
-                            </button>
+                            <button onclick="bulkDeleteOrders()" class="px-4 py-2 rounded-xl border border-[#ffb4ab]/30 text-[#ffb4ab] hover:bg-[#ffb4ab]/10 transition text-sm font-medium flex items-center gap-2"><span class="fi fi-trash"></span> Hapus</button>
+                            <button onclick="exportOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2"><span class="fi fi-download"></span> Export</button>
+                            <button onclick="bulkUpdateOrders()" class="px-4 py-2 rounded-xl border border-[#4a4455]/30 text-[#ccc3d8] hover:bg-[#222a3d] transition text-sm font-medium flex items-center gap-2"><span class="fi fi-list-check"></span> Bulk</button>
                         </div>
                     </div>
-
-                    <!-- Order Stats -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div class="glass-card rounded-xl p-4">
-                            <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-shopping-bag mr-1 text-[#06b6d4]"></span>Pesanan Hari Ini</p>
-                            <div class="flex items-end justify-between">
-                                <span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
-                                <span id="statTodayOrdersTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card rounded-xl p-4">
-                            <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-money-bill mr-1 text-[#d2bbff]"></span>Pendapatan Hari Ini</p>
-                            <div class="flex items-end justify-between">
-                                <span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
-                                <span id="statTodayRevenueTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card rounded-xl p-4 relative overflow-hidden border-[#4ade80]/20">
-                            <div class="absolute inset-0 bg-gradient-to-r from-[#4ade80]/5 to-transparent"></div>
-                            <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative"><span class="fi fi-diamond mr-1 text-[#4ade80]"></span>Keuntungan Hari Ini</p>
-                            <div class="flex items-end justify-between relative">
-                                <span id="statTodayProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
-                                <span id="statTodayProfitTrend" class="text-[#4ade80] text-[10px] font-medium">+0%</span>
-                            </div>
-                        </div>
-                        <div class="glass-card rounded-xl p-4">
-                            <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-times mr-1 text-[#ffb4ab]"></span>Tingkat Pembatalan</p>
-                            <div class="flex items-end justify-between">
-                                <span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span>
-                                <span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span>
-                            </div>
-                        </div>
+                        <div class="glass-card rounded-xl p-4"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-shopping-bag mr-1 text-[#06b6d4]"></span>Pesanan Hari Ini</p><div class="flex items-end justify-between"><span id="statTodayOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span><span id="statTodayOrdersTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-money-bill mr-1 text-[#d2bbff]"></span>Pendapatan Hari Ini</p><div class="flex items-end justify-between"><span id="statTodayRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span><span id="statTodayRevenueTrend" class="text-[#06b6d4] text-xs font-medium flex items-center">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4 relative overflow-hidden border-[#4ade80]/20"><div class="absolute inset-0 bg-gradient-to-r from-[#4ade80]/5 to-transparent"></div><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold relative"><span class="fi fi-diamond mr-1 text-[#4ade80]"></span>Keuntungan Hari Ini</p><div class="flex items-end justify-between relative"><span id="statTodayProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span><span id="statTodayProfitTrend" class="text-[#4ade80] text-[10px] font-medium">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-times mr-1 text-[#ffb4ab]"></span>Tingkat Pembatalan</p><div class="flex items-end justify-between"><span id="statCancellationRate" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0%</span><span class="text-[#ccc3d8] text-xs font-medium flex items-center">→ Stabil</span></div></div>
                     </div>
-
-                    <!-- Orders Table -->
                     <div class="glass-card rounded-2xl overflow-hidden">
                         <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-semibold text-[#dae2fc]">Transaksi</span>
-                                <div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5">
-                                    <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">Semua</button>
-                                    <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Menunggu</button>
-                                    <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Selesai</button>
-                                    <button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Dibatalkan</button>
-                                </div>
-                            </div>
-                            <div class="flex gap-2 ml-auto">
-                                <input type="date" id="orderDateFrom" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
-                                <input type="date" id="orderDateTo" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
-                                <div class="relative">
-                                    <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
-                                    <input id="orderSearch" type="text" placeholder="Cari ID atau pelanggan..."
-                                           class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
-                                </div>
-                            </div>
+                            <div class="flex items-center gap-2"><span class="text-sm font-semibold text-[#dae2fc]">Transaksi</span><div class="hidden sm:flex bg-[#060e20] rounded-xl border border-[#4a4455]/20 p-0.5"><button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff]" data-filter="all">Semua</button><button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="pending">Menunggu</button><button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="completed">Selesai</button><button class="filter-btn px-3 py-1 rounded-lg text-xs font-medium text-[#ccc3d8] hover:text-[#dae2fc] transition" data-filter="cancelled">Dibatalkan</button></div></div>
+                            <div class="flex gap-2 ml-auto"><input type="date" id="orderDateFrom" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition"><input type="date" id="orderDateTo" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 px-3 text-sm text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition"><div class="relative"><span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span><input id="orderSearch" type="text" placeholder="Cari ID atau pelanggan..." class="w-40 md:w-56 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" /></div></div>
                         </div>
-
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
-                                    <tr>
-                                        <th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllOrders" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th>
-                                        <th class="py-3 px-4 font-semibold">ID Pesanan</th>
-                                        <th class="py-3 px-4 font-semibold">Pelanggan</th>
-                                        <th class="py-3 px-4 font-semibold hidden sm:table-cell">Item</th>
-                                        <th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th>
-                                        <th class="py-3 px-4 font-semibold">Status</th>
-                                        <th class="py-3 px-4 font-semibold text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
-                            </table>
+                            <table class="w-full text-left"><thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30"><tr><th class="py-3 px-4 font-semibold w-10"><input type="checkbox" id="selectAllOrders" class="rounded border-[#4a4455]/30 bg-[#060e20] text-[#d2bbff] focus:ring-[#d2bbff]"></th><th class="py-3 px-4 font-semibold">ID Pesanan</th><th class="py-3 px-4 font-semibold">Pelanggan</th><th class="py-3 px-4 font-semibold hidden sm:table-cell">Item</th><th class="py-3 px-4 font-semibold hidden md:table-cell">Tanggal</th><th class="py-3 px-4 font-semibold">Status</th><th class="py-3 px-4 font-semibold text-right">Aksi</th></tr></thead>
+                            <tbody id="orderTableBody" class="divide-y divide-[#4a4455]/15"></tbody></table>
                         </div>
-
                         <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                             <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="orderShowFrom">1</span> hingga <span id="orderShowTo">5</span> dari <span id="orderTotalItems">0</span> entri</span>
-                            <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                                <button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                                    <span class="fi fi-chevron-left text-sm"></span>
-                                </button>
-                                <div id="orderPaginationNumbers" class="flex gap-1"></div>
-                                <button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                                    <span class="fi fi-chevron-right text-sm"></span>
-                                </button>
-                            </div>
+                            <div class="flex items-center gap-1 ml-auto sm:ml-0"><button id="orderPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40" disabled><span class="fi fi-chevron-left text-sm"></span></button><div id="orderPaginationNumbers" class="flex gap-1"></div><button id="orderNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40"><span class="fi fi-chevron-right text-sm"></span></button></div>
                         </div>
                     </div>
                 </div>
@@ -715,71 +279,104 @@
                 <!-- VIEW: KATEGORI -->
                 <div id="viewCategories" class="view">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                        <div>
-                            <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-tags mr-2 text-[#d2bbff]"></span>Manajemen Kategori</h3>
-                            <p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p>
-                        </div>
-                        <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
-                            <span class="fi fi-plus"></span> Tambah Kategori
-                        </button>
+                        <div><h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-tags mr-2 text-[#d2bbff]"></span>Manajemen Kategori</h3><p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p></div>
+                        <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90"><span class="fi fi-plus"></span> Tambah Kategori</button>
                     </div>
                     <div class="glass-card rounded-2xl overflow-hidden">
                         <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
-                            <div class="flex items-center gap-2">
-                                <span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span>
-                            </div>
-                            <div class="ml-auto relative">
-                                <span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span>
-                                <input type="text" id="categorySearch" placeholder="Cari kategori..."
-                                       class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
-                            </div>
+                            <div class="flex items-center gap-2"><span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span></div>
+                            <div class="ml-auto relative"><span class="fi fi-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></span><input type="text" id="categorySearch" placeholder="Cari kategori..." class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" /></div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left">
-                                <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
-                                    <tr>
-                                        <th class="py-3 px-4 font-semibold">Icon</th>
-                                        <th class="py-3 px-4 font-semibold">Nama Kategori</th>
-                                        <th class="py-3 px-4 font-semibold hidden sm:table-cell">Gambar</th>
-                                        <th class="py-3 px-4 font-semibold text-right">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="categoryTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
-                            </table>
+                            <table class="w-full text-left"><thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30"><tr><th class="py-3 px-4 font-semibold">Icon</th><th class="py-3 px-4 font-semibold">Nama Kategori</th><th class="py-3 px-4 font-semibold hidden sm:table-cell">Gambar</th><th class="py-3 px-4 font-semibold text-right">Aksi</th></tr></thead>
+                            <tbody id="categoryTableBody" class="divide-y divide-[#4a4455]/15"></tbody></table>
                         </div>
                         <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
                             <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="categoryShowFrom">1</span>-<span id="categoryShowTo">5</span> dari <span id="categoryTotalItems">0</span> kategori</span>
-                            <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                                <button id="categoryPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled>
-                                    <span class="fi fi-chevron-left text-sm"></span>
-                                </button>
-                                <div id="categoryPaginationNumbers" class="flex gap-1"></div>
-                                <button id="categoryNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent">
-                                    <span class="fi fi-chevron-right text-sm"></span>
-                                </button>
-                            </div>
+                            <div class="flex items-center gap-1 ml-auto sm:ml-0"><button id="categoryPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40" disabled><span class="fi fi-chevron-left text-sm"></span></button><div id="categoryPaginationNumbers" class="flex gap-1"></div><button id="categoryNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40"><span class="fi fi-chevron-right text-sm"></span></button></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- VIEW: LAPORAN -->
                 <div id="viewReports" class="view">
-                    <!-- ... konten laporan ... (sama seperti sebelumnya) -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div><h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#4ade80]"></span>Laporan Keuangan Bulanan</h3><p class="text-sm text-[#ccc3d8]">Rekap penjualan dan keuntungan per bulan.</p></div>
+                        <div class="flex gap-3 flex-wrap"><div class="flex items-center gap-2"><label class="text-sm text-[#ccc3d8]"><span class="fi fi-calendar mr-1"></span>Tahun:</label><select id="reportYear" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition"><option value="2026">2026</option><option value="2025">2025</option><option value="2024">2024</option></select></div><button onclick="exportMonthlyReport()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#4ade80] to-[#22c55e] text-white text-sm font-medium flex items-center gap-2 btn-profit-glow hover:opacity-90 transition"><span class="fi fi-file-excel"></span> Export Excel</button><button onclick="loadMonthlyReport()" class="px-4 py-2 rounded-xl bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] transition text-sm font-medium flex items-center gap-2"><span class="fi fi-refresh"></span> Refresh</button></div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <div class="glass-card rounded-xl p-4 report-stat"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-money-bill mr-1 text-[#d2bbff]"></span>Total Pendapatan</p><div class="flex items-end justify-between"><span id="reportTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span><span id="reportRevenueGrowth" class="text-xs font-medium growth-neutral">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4 report-stat"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-shopping-bag mr-1 text-[#06b6d4]"></span>Total Pesanan</p><div class="flex items-end justify-between"><span id="reportTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span><span id="reportOrdersGrowth" class="text-xs font-medium growth-neutral">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4 report-stat border-[#4ade80]/20"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-diamond mr-1 text-[#4ade80]"></span>Total Keuntungan</p><div class="flex items-end justify-between"><span id="reportTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span><span id="reportProfitGrowth" class="text-xs font-medium growth-neutral">+0%</span></div></div>
+                        <div class="glass-card rounded-xl p-4 report-stat"><p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><span class="fi fi-calculator mr-1 text-[#fbbf24]"></span>Rata-rata per Order</p><div class="flex items-end justify-between"><span id="reportAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#06b6d4]">Rp 0</span><span id="reportAvgGrowth" class="text-xs font-medium growth-neutral">+0%</span></div></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                        <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2"><div class="flex items-center justify-between mb-4"><div><h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]"><span class="fi fi-chart-line mr-2 text-[#d2bbff]"></span>Grafik Pendapatan & Keuntungan</h3><p class="text-xs text-[#ccc3d8] mt-0.5">Per bulan</p></div></div><div class="relative h-56 md:h-64"><canvas id="monthlyReportChart"></canvas></div></div>
+                        <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col"><h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4"><span class="fi fi-crown mr-2 text-[#fbbf24]"></span>Ringkasan Tahunan</h3><div class="space-y-3 flex-1"><div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-star mr-2 text-[#4ade80]"></span>Bulan Terbaik</span><span id="bestMonth" class="font-bold text-[#4ade80]">-</span></div><div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-arrow-up mr-2 text-[#d2bbff]"></span>Pendapatan Tertinggi</span><span id="highestRevenue" class="font-bold text-[#dae2fc]">Rp 0</span></div><div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-diamond mr-2 text-[#4ade80]"></span>Keuntungan Tertinggi</span><span id="highestProfit" class="font-bold text-[#4ade80]">Rp 0</span></div><div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><span class="text-sm text-[#ccc3d8]"><span class="fi fi-shopping-bag mr-2 text-[#06b6d4]"></span>Total Pesanan</span><span id="totalOrdersYear" class="font-bold text-[#06b6d4]">0</span></div></div></div>
+                    </div>
+                    <div class="glass-card rounded-2xl overflow-hidden">
+                        <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40"><div><span class="text-sm font-semibold text-[#dae2fc]"><span class="fi fi-table mr-2"></span>Rekap Bulanan</span><span id="reportTableYear" class="text-xs text-[#ccc3d8] ml-2">Tahun 2026</span></div><div class="flex items-center gap-2"><span class="text-xs text-[#ccc3d8]">Total: <span id="reportTableTotal" class="font-bold text-[#dae2fc]">0</span> bulan</span></div></div>
+                        <div class="overflow-x-auto"><table class="w-full text-left"><thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30"><tr><th class="py-3 px-4 font-semibold">Bulan</th><th class="py-3 px-4 font-semibold text-right">Pesanan</th><th class="py-3 px-4 font-semibold text-right">Pendapatan</th><th class="py-3 px-4 font-semibold text-right">Keuntungan</th><th class="py-3 px-4 font-semibold text-right">Margin</th><th class="py-3 px-4 font-semibold text-right">Pertumbuhan</th></tr></thead><tbody id="reportTableBody" class="divide-y divide-[#4a4455]/15"></tbody></table></div>
+                        <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20"><span class="text-xs text-[#ccc3d8]">Menampilkan <span id="reportShowFrom">1</span>-<span id="reportShowTo">12</span> dari <span id="reportTotalItems">0</span> bulan</span></div>
+                    </div>
                 </div>
 
                 <!-- VIEW: PENGATURAN -->
                 <div id="viewSettings" class="view">
-                    <!-- ... konten pengaturan ... (sama seperti sebelumnya) -->
+                    <div class="mb-6"><h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]"><span class="fi fi-settings mr-2 text-[#d2bbff]"></span>Pengaturan</h3><p class="text-sm text-[#ccc3d8]">Kelola konfigurasi global, bot Telegram, dan backup data.</p></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="glass-card rounded-2xl p-6"><div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6"><span class="fi fi-sliders-h text-xl text-[#d2bbff]"></span><h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Pengaturan Umum</h4></div><div class="space-y-4"><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Toko</label><input id="siteName" type="text" value="LekszyStore" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Email Dukungan</label><input id="supportEmail" type="email" value="support@lekszystore.com" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div><div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><div><h5 class="font-semibold text-sm text-[#dae2fc]"><span class="fi fi-shield mr-2 text-[#fbbf24]"></span>Mode Pemeliharaan</h5><p class="text-xs text-[#ccc3d8]">Nonaktifkan akses publik ke toko.</p></div><div class="relative inline-block w-12 flex-shrink-0"><input type="checkbox" id="maintenanceToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" /><label for="maintenanceToggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label></div></div><div class="flex justify-end pt-2"><button onclick="saveSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition"><span class="fi fi-save mr-2"></span> Simpan Perubahan</button></div></div></div>
+                            <div class="glass-card rounded-2xl p-6"><div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6"><span class="fi fi-telegram text-xl text-[#06b6d4]"></span><h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Bot Telegram</h4></div><div class="space-y-4"><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Token Bot</label><input id="botToken" type="password" placeholder="Masukkan token bot Telegram" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">ID Admin Telegram</label><input id="adminId" type="number" placeholder="Masukkan ID Telegram admin" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div><div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20"><div><h5 class="font-semibold text-sm text-[#dae2fc]"><span class="fi fi-bell mr-2 text-[#06b6d4]"></span>Notifikasi Otomatis</h5><p class="text-xs text-[#ccc3d8]">Kirim notifikasi ke Telegram saat pesanan baru.</p></div><div class="relative inline-block w-12 flex-shrink-0"><input type="checkbox" checked id="notifToggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" /><label for="notifToggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label></div></div><div class="flex justify-end pt-2"><button onclick="saveBotSettings()" class="px-6 py-2.5 bg-gradient-to-r from-[#06b6d4] to-[#0891b2] text-white rounded-xl font-semibold text-sm hover:opacity-90 transition"><span class="fi fi-save mr-2"></span> Simpan Bot</button></div></div></div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="glass-card rounded-2xl p-6"><div class="flex items-center gap-3 border-b border-[#4a4455]/20 pb-4 mb-6"><span class="fi fi-folder text-xl text-[#ffb784]"></span><h4 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Backup Data</h4></div><p class="text-sm text-[#ccc3d8] mb-4">Unduh backup semua data dalam format JSON.</p><button onclick="backupData()" class="w-full py-2.5 bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2"><span class="fi fi-download"></span> Download Backup</button><button onclick="restoreData()" class="w-full mt-2 py-2.5 border border-[#4a4455]/30 hover:border-[#d2bbff]/50 text-[#ccc3d8] hover:text-[#dae2fc] rounded-xl font-semibold text-sm transition flex items-center justify-center gap-2"><span class="fi fi-upload"></span> Restore Backup</button></div>
+                            <div class="glass-card rounded-2xl p-6 flex flex-col items-center text-center"><div class="w-24 h-24 rounded-full overflow-hidden border-2 border-[#d2bbff] mb-4 relative group cursor-pointer"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiQccWUb8N0O2DhhSuQbukiySdkQlOWaMNRzGfHOSbsvib0kGTYJfQi3bofBKg-QadWle84cHUQqUSc6p0auZ1QaOC7mvxhPg-S9dQiPEdgpKB7UjtcEdx9MJslBhHqZfETcvSzKiQsh_sF1PNQ48upBmwjRkr5IUq-Mr4f1iDH2xvIdJDeE85LC0U0AtyqZeteaJEMkHlRPfnlxGc-eT8wXbmPVdDP21rykBdTKlK5U1oEN0uYofUwg" alt="Admin" class="w-full h-full object-cover" /><div class="absolute inset-0 bg-[#020617]/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"><span class="fi fi-pencil text-[#dae2fc]"></span></div></div><h4 class="font-semibold text-lg text-[#dae2fc]">Administrator</h4><span class="text-[10px] uppercase tracking-[0.12em] bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-full border border-[#d2bbff]/20 mt-1">Super Admin</span><div class="w-full mt-6 text-left space-y-4"><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Pengguna</label><input type="text" value="admin_root" disabled class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" /></div><div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Kata Sandi</label><div class="relative"><input type="password" value="********" disabled class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#ccc3d8] text-sm" /><button class="absolute right-3 top-1/2 -translate-y-1/2 text-[#d2bbff] text-xs font-medium hover:underline"><span class="fi fi-pencil mr-1"></span>Ubah</button></div></div><div class="pt-2 border-t border-[#4a4455]/20"><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Autentikasi Dua Faktor</label><div class="flex items-center justify-between p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20 mt-1"><span class="text-sm text-[#dae2fc]"><span class="fi fi-shield mr-2"></span>Aplikasi Authenticator</span><span class="flex items-center gap-1 text-[#06b6d4] text-xs font-medium"><span class="fi fi-check-circle text-[#06b6d4]"></span> Aktif</span></div></div></div></div>
+                        </div>
+                    </div>
                 </div>
-
             </main>
         </div>
     </div>
 
-    <!-- MODALS (Sama seperti sebelumnya) -->
-    <div id="productModal" class="modal-overlay">...</div>
-    <div id="categoryModal" class="modal-overlay">...</div>
-    <div id="orderDetailModal" class="modal-overlay">...</div>
+    <!-- MODAL PRODUK -->
+    <div id="productModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex items-center justify-between mb-5"><h3 id="modalProductTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Tambah Produk</h3><button onclick="closeProductModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button></div>
+            <input type="hidden" id="editProductId" />
+            <div class="space-y-4">
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Produk</label><input id="pName" type="text" placeholder="Masukkan nama produk" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Kategori</label><select id="pCategory" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition mt-1"><option value="">Pilih Kategori...</option></select></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label><input id="pImage" type="text" placeholder="https://example.com/gambar.jpg" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /><p class="text-xs text-[#ccc3d8] mt-1">Masukkan URL gambar produk (opsional)</p></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Harga Jual (Rp)</label><input id="pPrice" type="number" placeholder="0" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Harga Modal (Rp)</label><input id="pCost" type="number" placeholder="0" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Stok</label><input id="pStock" type="number" placeholder="0" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div>
+            </div>
+            <button onclick="saveProduct()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">Simpan Produk</button>
+        </div>
+    </div>
+
+    <!-- MODAL KATEGORI -->
+    <div id="categoryModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex items-center justify-between mb-5"><h3 id="modalCategoryTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Tambah Kategori</h3><button onclick="closeCategoryModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button></div>
+            <input type="hidden" id="editCategoryName" />
+            <div class="space-y-4">
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Nama Kategori</label><input id="cName" type="text" placeholder="Masukkan nama kategori" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Icon (Material Symbol atau Flaticon)</label><input id="cIcon" type="text" placeholder="category, inventory, sports_esports, etc" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /><p class="text-xs text-[#ccc3d8] mt-1">Masukkan nama icon Material Symbols atau Flaticon class</p></div>
+                <div><label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">URL Gambar</label><input id="cImage" type="text" placeholder="https://example.com/category-image.jpg" class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" /><p class="text-xs text-[#ccc3d8] mt-1">Masukkan URL gambar untuk kategori (opsional)</p></div>
+            </div>
+            <button onclick="saveCategory()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">Simpan Kategori</button>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL PESANAN -->
+    <div id="orderDetailModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="flex items-center justify-between mb-5"><h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Detail Pesanan</h3><button onclick="closeOrderDetailModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button></div>
+            <div id="orderDetailContent" class="space-y-4"></div>
+        </div>
+    </div>
 
     <!-- ================================================================
     JAVASCRIPT
@@ -1059,21 +656,19 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Pendapatan', data: revenueData, backgroundColor: 'rgba(210, 187, 255, 0.6)', borderColor: 'rgba(210, 187, 255, 0.9)', borderWidth: 2, borderRadius: 4, order: 1 },
-                        { label: 'Keuntungan', data: profitData, backgroundColor: 'rgba(74, 222, 128, 0.5)', borderColor: 'rgba(74, 222, 128, 0.8)', borderWidth: 2, borderRadius: 4, order: 2 }
+                        { label: 'Pendapatan', data: revenueData, backgroundColor: 'rgba(210,187,255,0.6)', borderColor: 'rgba(210,187,255,0.9)', borderWidth: 2, borderRadius: 4, order: 1 },
+                        { label: 'Keuntungan', data: profitData, backgroundColor: 'rgba(74,222,128,0.5)', borderColor: 'rgba(74,222,128,0.8)', borderWidth: 2, borderRadius: 4, order: 2 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            labels: { color: '#ccc3d8', font: { size: 11, family: 'Inter' }, usePointStyle: true, pointStyle: 'circle' }
-                        }
+                        legend: { labels: { color: '#ccc3d8', font: { size: 11, family: 'Inter' }, usePointStyle: true, pointStyle: 'circle' } }
                     },
                     scales: {
-                        x: { grid: { color: 'rgba(74, 68, 85, 0.2)', display: false }, ticks: { color: '#ccc3d8', font: { size: 9 } } },
-                        y: { grid: { color: 'rgba(74, 68, 85, 0.2)' }, ticks: { color: '#ccc3d8', font: { size: 9 }, callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; } } }
+                        x: { grid: { color: 'rgba(74,68,85,0.2)', display: false }, ticks: { color: '#ccc3d8', font: { size: 9 } } },
+                        y: { grid: { color: 'rgba(74,68,85,0.2)' }, ticks: { color: '#ccc3d8', font: { size: 9 }, callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; } } }
                     }
                 }
             });
@@ -1254,9 +849,7 @@
             showToast('Export produk berhasil', 'success');
         }
 
-        // ================================================================
-        // PESANAN
-        // ================================================================
+        // ===== PESANAN =====
         function loadOrders() {
             authFetch(`${API_BASE}?action=transactions`)
                 .then(res => res.json())
@@ -1352,7 +945,7 @@
                             ${isPending ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','completed')" class="px-3 py-1.5 rounded-lg bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30 hover:bg-[#d2bbff]/20 transition text-xs font-medium">Proses</button>` : ''}
                             ${!isCancelled ? `<button onclick="event.stopPropagation();updateOrderStatus('${o.transactionId || o._id}','cancelled')" class="px-3 py-1.5 rounded-lg text-[#ffb4ab] border border-[#ffb4ab]/30 hover:bg-[#ffb4ab]/10 transition text-xs font-medium">Batalkan</button>` : ''}
                             <button onclick="event.stopPropagation();openOrderDetailModal('${o.transactionId || o._id}')" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition" data-tooltip="Detail"><span class="fi fi-more-vertical"></span></button>
-                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus Pesanan"><span class="fi fi-trash"></span></button>
+                            <button onclick="event.stopPropagation();deleteOrder('${o.transactionId || o._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><span class="fi fi-trash"></span></button>
                         </div>
                     </td>
                 `;
@@ -1430,16 +1023,14 @@
             .catch(err => showToast('❌ Gagal hapus: ' + err.message, 'error'));
         }
 
-        // ===== HAPUS PESANAN MASSAL (BULK DELETE) - FITUR BARU =====
+        // ===== HAPUS PESANAN MASSAL =====
         function bulkDeleteOrders() {
             const checked = document.querySelectorAll('.order-checkbox:checked');
             if (checked.length === 0) {
                 showToast('Pilih minimal satu pesanan untuk dihapus', 'warning');
                 return;
             }
-            if (!confirm(`⚠️ Yakin ingin menghapus ${checked.length} pesanan secara permanen? Tindakan ini tidak dapat dibatalkan!`)) {
-                return;
-            }
+            if (!confirm(`⚠️ Yakin ingin menghapus ${checked.length} pesanan secara permanen? Tindakan ini tidak dapat dibatalkan!`)) return;
             const promises = [];
             checked.forEach(cb => {
                 const transactionId = cb.dataset.id;
@@ -1501,9 +1092,7 @@
             showToast('Export pesanan berhasil', 'success');
         }
 
-        // ================================================================
-        // DETAIL ORDER
-        // ================================================================
+        // ===== DETAIL ORDER =====
         function openOrderDetailModal(transactionId) {
             const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
             if (!order) return showToast('Data tidak ditemukan', 'error');
@@ -1571,9 +1160,7 @@
             if (e.target === this) closeOrderDetailModal();
         });
 
-        // ================================================================
-        // KATEGORI
-        // ================================================================
+        // ===== KATEGORI =====
         function loadCategories() {
             authFetch(`${API_BASE}?action=categories`)
                 .then(res => res.json())
@@ -1730,9 +1317,7 @@
             .catch(err => showToast('Gagal hapus kategori: ' + err.message, 'error'));
         }
 
-        // ================================================================
-        // LAPORAN BULANAN
-        // ================================================================
+        // ===== LAPORAN BULANAN =====
         function loadMonthlyReport() {
             const year = document.getElementById('reportYear').value || new Date().getFullYear();
             const yearOrders = allOrders.filter(o => {
@@ -1852,21 +1437,19 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Pendapatan', data: revenueData, borderColor: 'rgba(210, 187, 255, 0.9)', backgroundColor: 'rgba(210, 187, 255, 0.1)', fill: true, tension: 0.4, pointBackgroundColor: 'rgba(210, 187, 255, 1)', pointBorderColor: 'rgba(210, 187, 255, 1)', borderWidth: 3 },
-                        { label: 'Keuntungan', data: profitData, borderColor: 'rgba(74, 222, 128, 0.9)', backgroundColor: 'rgba(74, 222, 128, 0.1)', fill: true, tension: 0.4, pointBackgroundColor: 'rgba(74, 222, 128, 1)', pointBorderColor: 'rgba(74, 222, 128, 1)', borderWidth: 3 }
+                        { label: 'Pendapatan', data: revenueData, borderColor: 'rgba(210,187,255,0.9)', backgroundColor: 'rgba(210,187,255,0.1)', fill: true, tension: 0.4, pointBackgroundColor: 'rgba(210,187,255,1)', pointBorderColor: 'rgba(210,187,255,1)', borderWidth: 3 },
+                        { label: 'Keuntungan', data: profitData, borderColor: 'rgba(74,222,128,0.9)', backgroundColor: 'rgba(74,222,128,0.1)', fill: true, tension: 0.4, pointBackgroundColor: 'rgba(74,222,128,1)', pointBorderColor: 'rgba(74,222,128,1)', borderWidth: 3 }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            labels: { color: '#ccc3d8', font: { size: 11, family: 'Inter' }, usePointStyle: true, pointStyle: 'circle' }
-                        }
+                        legend: { labels: { color: '#ccc3d8', font: { size: 11, family: 'Inter' }, usePointStyle: true, pointStyle: 'circle' } }
                     },
                     scales: {
-                        x: { grid: { color: 'rgba(74, 68, 85, 0.2)', display: false }, ticks: { color: '#ccc3d8', font: { size: 10 } } },
-                        y: { grid: { color: 'rgba(74, 68, 85, 0.2)' }, ticks: { color: '#ccc3d8', font: { size: 10 }, callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; } } }
+                        x: { grid: { color: 'rgba(74,68,85,0.2)', display: false }, ticks: { color: '#ccc3d8', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(74,68,85,0.2)' }, ticks: { color: '#ccc3d8', font: { size: 10 }, callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; } } }
                     },
                     interaction: { intersect: false, mode: 'index' }
                 }
@@ -1877,9 +1460,7 @@
             loadMonthlyReport();
         });
 
-        // ================================================================
-        // EXPORT MONTHLY REPORT TO EXCEL
-        // ================================================================
+        // ===== EXPORT MONTHLY REPORT =====
         async function exportMonthlyReport() {
             const year = document.getElementById('reportYear').value || new Date().getFullYear();
             if (monthlyReportData.length === 0 || !monthlyReportData.some(d => d.hasData)) {
@@ -2125,9 +1706,7 @@
             showToast('✅ Laporan Excel berhasil diunduh!', 'success');
         }
 
-        // ================================================================
-        // PENGATURAN
-        // ================================================================
+        // ===== PENGATURAN =====
         function loadSettings() {
             authFetch(`${API_BASE}?action=getSettings`)
                 .then(res => res.json())
@@ -2169,9 +1748,7 @@
                 .catch(err => showToast('❌ Gagal simpan: ' + err.message, 'error'));
         }
 
-        // ================================================================
-        // BACKUP
-        // ================================================================
+        // ===== BACKUP =====
         function backupData() {
             const data = { products: allProducts, orders: allOrders, categories: allCategories, exportedAt: new Date().toISOString() };
             const json = JSON.stringify(data, null, 2);
@@ -2216,9 +1793,7 @@
             URL.revokeObjectURL(link.href);
         }
 
-        // ================================================================
-        // GLOBAL SEARCH
-        // ================================================================
+        // ===== GLOBAL SEARCH =====
         document.getElementById('globalSearch').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const query = this.value.trim().toLowerCase();
@@ -2252,11 +1827,8 @@
             }
         });
 
-        // ================================================================
-        // INISIALISASI
-        // ================================================================
+        // ===== INISIALISASI =====
         console.log('🚀 LekszyStore Admin Panel Pro loaded.');
     </script>
-
 </body>
 </html>
