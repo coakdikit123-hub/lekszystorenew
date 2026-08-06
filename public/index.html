@@ -1357,6 +1357,14 @@
         });
 
         html += `
+                </div>
+            </div>
+        `;
+
+        area.innerHTML = html;
+    }
+
+    function renderProducts(products) {
         const grid = document.getElementById('productGrid');
         if (!products.length) {
             grid.innerHTML = `<div class="empty-state"><i class="fas fa-store-slash"></i><h3>Oops, toko masih kosong</h3><p>Belum ada produk yang tersedia. Silakan cek kembali nanti atau hubungi admin.</p><button onclick="loadProducts()"><i class="fas fa-sync-alt"></i> Refresh</button></div>`;
