@@ -1492,26 +1492,36 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
         verifyToken(token);
     }
 
-    function verifyToken(token) {
-        fetch(`${API_BASE}?action=list`, { headers: { 'Authorization': `Bearer ${token}` } })
-            .then(res => {
-                if (res.status === 401) {
-                    document.getElementById('loginError').style.display = 'block';
-                    localStorage.removeItem('adminToken');
-                    showToast('Token tidak valid!', 'error');
-                    return;
-                }
-                if (!res.ok) throw new Error('Gagal koneksi');
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'flex';
-                loadAllData();
-                showToast('Selamat datang kembali!', 'success');
-                updateConnectionStatus(true);
-            })
-            .catch(err => {
-                showToast('Error: ' + err.message, 'error');
-                updateConnectionStatus(false);
+    async function verifyToken(token) {
+        try {
+            const res = await fetch(`${API_BASE}?action=list`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
+
+            if (res.status === 401) {
+                document.getElementById('loginError').style.display = 'block';
+                localStorage.removeItem('adminToken');
+                throw new Error('Token tidak valid');
+            }
+
+            if (!res.ok) {
+                let message = res.statusText || 'Gagal koneksi';
+                try {
+                    const payload = await res.json();
+                    message = payload.error || payload.message || message;
+                } catch (_err) {}
+                throw new Error(`${res.status} ${message}`);
+            }
+
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            loadAllData();
+            showToast('Selamat datang kembali!', 'success');
+            updateConnectionStatus(true);
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+            updateConnectionStatus(false);
+        }
     }
     if (currentToken) verifyToken(currentToken);
 
