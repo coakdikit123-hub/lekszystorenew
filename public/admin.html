@@ -11,7 +11,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
 
-    <!-- ===== FITUR BARU: Font Awesome (gaya Flaticon) ===== -->
+    <!-- Font Awesome (Gaya Flaticon) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <!-- Chart.js -->
@@ -27,7 +27,7 @@
 
     <style>
         /* ================================================================
-           ROOT VARIABLES & BASE (sama seperti sebelumnya)
+           ROOT VARIABLES & BASE
            ================================================================ */
         :root {
             --bg-deep: #020617;
@@ -493,6 +493,11 @@ DASHBOARD UTAMA
                 <i class="fas fa-tags w-5 text-center"></i> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
+            <!-- ===== FITUR BARU: MENU PENGUMUMAN ===== -->
+            <a href="#" data-view="announcements" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <i class="fas fa-bullhorn w-5 text-center"></i> Pengumuman
+                <span id="announcementBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
+            </a>
             <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <i class="fas fa-file-alt w-5 text-center"></i> Laporan
                 <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
@@ -532,7 +537,7 @@ DASHBOARD UTAMA
             <!-- Search -->
             <div class="relative hidden lg:block">
                 <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
-                <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, kategori..."
+                <input type="text" id="globalSearch" placeholder="Cari produk, pesanan, pengumuman..."
                 class="w-80 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 pl-10 pr-4 text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] focus:ring-1 focus:ring-[#d2bbff] transition text-sm" />
             </div>
 
@@ -567,9 +572,8 @@ DASHBOARD UTAMA
 
         <!-- VIEW: DASHBOARD -->
         <div id="viewDashboard" class="view active">
-            <!-- Stats Grid (4 kartu: Total Pendapatan, Total Pesanan, Total Keuntungan, Rata-rata per Order) -->
+            <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-                <!-- Kartu 1: Total Pendapatan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <i class="fas fa-coins stat-icon coins"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
@@ -582,8 +586,6 @@ DASHBOARD UTAMA
                         <div class="h-full bg-gradient-to-r from-[#d2bbff] to-[#06b6d4] w-[75%] rounded-full shadow-[0_0_12px_rgba(210,187,255,0.3)]"></div>
                     </div>
                 </div>
-
-                <!-- Kartu 2: Total Pesanan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <i class="fas fa-shopping-cart stat-icon cart"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
@@ -596,8 +598,6 @@ DASHBOARD UTAMA
                         <div class="h-full bg-gradient-to-r from-[#06b6d4] to-[#d2bbff] w-[60%] rounded-full shadow-[0_0_12px_rgba(6,182,212,0.3)]"></div>
                     </div>
                 </div>
-
-                <!-- Kartu 3: Total Keuntungan -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group border-[#4ade80]/20">
                     <i class="fas fa-chart-line stat-icon chart"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
@@ -610,8 +610,6 @@ DASHBOARD UTAMA
                         <div class="h-full bg-gradient-to-r from-[#4ade80] to-[#22c55e] w-[70%] rounded-full shadow-[0_0_12px_rgba(74,222,128,0.3)]"></div>
                     </div>
                 </div>
-
-                <!-- Kartu 4: Rata-rata per Order (BARU) -->
                 <div class="glass-card rounded-2xl p-5 md:p-6 relative overflow-hidden group">
                     <i class="fas fa-calculator stat-icon calc"></i>
                     <p class="text-[10px] uppercase tracking-[0.15em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
@@ -626,7 +624,7 @@ DASHBOARD UTAMA
                 </div>
             </div>
 
-            <!-- Grafik & Ringkasan (sama seperti sebelumnya) -->
+            <!-- Chart Row -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -683,9 +681,8 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PRODUK (sama seperti sebelumnya, hanya ikon Font Awesome) -->
+        <!-- VIEW: PRODUK -->
         <div id="viewProducts" class="view">
-            <!-- ... konten produk ... -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Produk</h3>
@@ -700,7 +697,6 @@ DASHBOARD UTAMA
                     </button>
                 </div>
             </div>
-            <!-- ... tabel produk ... (sama) -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
@@ -747,7 +743,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PESANAN (dengan ikon Font Awesome) -->
+        <!-- VIEW: PESANAN -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -766,7 +762,6 @@ DASHBOARD UTAMA
                     </button>
                 </div>
             </div>
-            <!-- Statistik pesanan (sama) -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4">
                     <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-calendar-day mr-1"></i> Pesanan Hari Ini</p>
@@ -798,7 +793,6 @@ DASHBOARD UTAMA
                     </div>
                 </div>
             </div>
-            <!-- Tabel pesanan (sama, hanya ikon) -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
@@ -847,7 +841,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: KATEGORI (sama, hanya ikon) -->
+        <!-- VIEW: KATEGORI -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -893,6 +887,60 @@ DASHBOARD UTAMA
             </div>
         </div>
 
+        <!-- =============================================================
+        VIEW: PENGUMUMAN (FITUR BARU)
+        ============================================================= -->
+        <div id="viewAnnouncements" class="view">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Pengumuman</h3>
+                    <p class="text-sm text-[#ccc3d8]">Buat dan kelola pengumuman yang tampil di halaman utama toko.</p>
+                </div>
+                <button onclick="openAnnouncementModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
+                    <i class="fas fa-plus"></i> Tambah Pengumuman
+                </button>
+            </div>
+
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
+                    <div class="flex items-center gap-2">
+                        <span id="announcementCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Pengumuman</span>
+                        <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Sinkron
+                        </span>
+                    </div>
+                    <div class="ml-auto relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-sm"></i>
+                        <input type="text" id="announcementSearch" placeholder="Cari pengumuman..."
+                        class="w-48 md:w-64 bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-1.5 pl-9 pr-3 text-sm text-[#dae2fc] placeholder-[#ccc3d8]/50 focus:outline-none focus:border-[#d2bbff] transition" />
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold">Judul</th>
+                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Konten</th>
+                                <th class="py-3 px-4 font-semibold text-center">Status</th>
+                                <th class="py-3 px-4 font-semibold text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="announcementTableBody" class="divide-y divide-[#4a4455]/15"></tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                    <span class="text-xs text-[#ccc3d8] hidden sm:block">Menampilkan <span id="announcementShowFrom">1</span>-<span id="announcementShowTo">5</span> dari <span id="announcementTotalItems">0</span> pengumuman</span>
+                    <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                        <button id="announcementPrevPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent" disabled><i class="fas fa-chevron-left"></i></button>
+                        <div id="announcementPaginationNumbers" class="flex gap-1"></div>
+                        <button id="announcementNextPage" class="p-1.5 rounded-lg text-[#ccc3d8] hover:bg-[#222a3d] transition disabled:opacity-40 disabled:hover:bg-transparent"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- VIEW: LAPORAN -->
         <div id="viewReports" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -920,7 +968,6 @@ DASHBOARD UTAMA
                     </button>
                 </div>
             </div>
-            <!-- Statistik laporan -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4 report-stat">
                     <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold"><i class="fas fa-coins mr-1 text-[#fbbf24]"></i> Total Pendapatan</p>
@@ -951,7 +998,6 @@ DASHBOARD UTAMA
                     </div>
                 </div>
             </div>
-            <!-- Grafik dan ringkasan -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                 <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
                     <div class="flex items-center justify-between mb-4">
@@ -986,7 +1032,6 @@ DASHBOARD UTAMA
                     </div>
                 </div>
             </div>
-            <!-- Tabel rekap -->
             <div class="glass-card rounded-2xl overflow-hidden">
                 <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40">
                     <div>
@@ -1018,7 +1063,7 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PENGATURAN (sama, hanya ikon) -->
+        <!-- VIEW: PENGATURAN -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
@@ -1248,7 +1293,45 @@ MODAL DETAIL PESANAN
 </div>
 
 <!-- ================================================================
-JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
+MODAL PENGUMUMAN (FITUR BARU)
+================================================================ -->
+<div id="announcementModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="flex items-center justify-between mb-5">
+            <h3 id="modalAnnouncementTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Tambah Pengumuman</h3>
+            <button onclick="closeAnnouncementModal()" class="text-[#ccc3d8] hover:text-[#dae2fc] transition text-2xl">&times;</button>
+        </div>
+        <input type="hidden" id="editAnnouncementId" />
+        <div class="space-y-4">
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Judul</label>
+                <input id="aTitle" type="text" placeholder="Masukkan judul pengumuman"
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1" />
+            </div>
+            <div>
+                <label class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Konten</label>
+                <textarea id="aContent" rows="4" placeholder="Tulis isi pengumuman..."
+                class="w-full bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2.5 px-4 text-[#dae2fc] placeholder-[#ccc3d8]/40 focus:outline-none focus:border-[#d2bbff] transition mt-1"></textarea>
+            </div>
+            <div class="flex items-center justify-between p-4 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                <div>
+                    <h5 class="font-semibold text-sm text-[#dae2fc]">Aktif</h5>
+                    <p class="text-xs text-[#ccc3d8]">Tampilkan di halaman utama</p>
+                </div>
+                <div class="relative inline-block w-12 flex-shrink-0">
+                    <input type="checkbox" checked id="aActive" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-[#0b1326] border-4 border-[#4a4455] appearance-none cursor-pointer transition-all z-10" />
+                    <label for="aActive" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors"></label>
+                </div>
+            </div>
+        </div>
+        <button onclick="saveAnnouncement()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow hover:opacity-90 transition">
+            Simpan Pengumuman
+        </button>
+    </div>
+</div>
+
+<!-- ================================================================
+JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
 ================================================================ -->
 <script>
     // ================================================================
@@ -1259,14 +1342,17 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     let allOrders = [];
     let allProducts = [];
     let allCategories = [];
+    let allAnnouncements = []; // <-- STATE UNTUK PENGUMUMAN
     let orderPage = 1,
         productPage = 1,
-        categoryPage = 1;
+        categoryPage = 1,
+        announcementPage = 1; // <-- PAGINASI PENGUMUMAN
     const perPage = 5;
     let currentFilter = 'all',
         orderSearch = '',
         productSearch = '',
-        categorySearch = '';
+        categorySearch = '',
+        announcementSearch = '';
     let chartInstance = null;
     let monthlyChartInstance = null;
     let monthlyReportData = [];
@@ -1477,7 +1563,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // NAVIGASI
+    // NAVIGASI (DITAMBAH ANNOUNCEMENTS)
     // ================================================================
     function navigateTo(view) {
         document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
@@ -1489,6 +1575,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
             products: 'Produk',
             orders: 'Pesanan',
             categories: 'Kategori',
+            announcements: 'Pengumuman',
             reports: 'Laporan',
             settings: 'Pengaturan'
         };
@@ -1502,6 +1589,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
         if (view === 'products') loadProducts();
         if (view === 'orders') loadOrders();
         if (view === 'categories') loadCategories();
+        if (view === 'announcements') loadAnnouncements();
         if (view === 'reports') loadMonthlyReport();
         if (view === 'settings') loadSettings();
     }
@@ -1543,11 +1631,13 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
         Promise.all([
             authFetch(`${API_BASE}?action=transactions`).then(r => r.json()).catch(() => []),
             authFetch(`${API_BASE}?action=list`).then(r => r.json()).catch(() => []),
-            authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
-        ]).then(([orders, products, categories]) => {
+            authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => []),
+            authFetch(`${API_BASE}?action=getAnnouncements`).then(r => r.json()).catch(() => []) // <-- TAMBAH
+        ]).then(([orders, products, categories, announcements]) => {
             allOrders = orders || [];
             allProducts = products || [];
             allCategories = categories || [];
+            allAnnouncements = announcements || [];
             updateBadges();
             renderNotifications();
             updateCategoryDropdowns();
@@ -1558,6 +1648,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
                 else if (id === 'products') renderProductTable();
                 else if (id === 'orders') applyOrderFilters();
                 else if (id === 'categories') renderCategoryTable();
+                else if (id === 'announcements') renderAnnouncementTable();
                 else if (id === 'reports') loadMonthlyReport();
             }
             updateConnectionStatus(true);
@@ -1565,17 +1656,19 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // LOAD ALL DATA
+    // LOAD ALL DATA (DITAMBAH ANNOUNCEMENTS)
     // ================================================================
     function loadAllData() {
         return Promise.all([
             authFetch(`${API_BASE}?action=transactions`).then(r => r.json()),
             authFetch(`${API_BASE}?action=list`).then(r => r.json()),
-            authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
-        ]).then(([orders, products, categories]) => {
+            authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => []),
+            authFetch(`${API_BASE}?action=getAnnouncements`).then(r => r.json()).catch(() => [])
+        ]).then(([orders, products, categories, announcements]) => {
             allOrders = orders || [];
             allProducts = products || [];
             allCategories = categories || [];
+            allAnnouncements = announcements || [];
             updateBadges();
             updateCategoryDropdowns();
             navigateTo('dashboard');
@@ -1592,6 +1685,8 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
         const pending = allOrders.filter(o => o.status === 'pending' || !o.status || o.status === 'waiting');
         document.getElementById('orderBadge').innerText = pending.length;
         document.getElementById('categoryBadge').innerText = allCategories.length;
+        const activeAnnouncements = allAnnouncements.filter(a => a.isActive);
+        document.getElementById('announcementBadge').innerText = activeAnnouncements.length;
     }
 
     function updateCategoryDropdowns() {
@@ -1627,7 +1722,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // DASHBOARD (dengan Rata-rata per Order)
+    // DASHBOARD
     // ================================================================
     function loadDashboard() {
         const totalRevenue = allOrders.reduce((s, o) => s + (o.total || 0), 0);
@@ -1640,7 +1735,6 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
         document.getElementById('dashTotalProfit').innerText = formatRupiah(totalProfit);
         document.getElementById('dashAvgOrder').innerText = formatRupiah(avgOrder);
 
-        // Trend dummy (bisa dikembangkan)
         document.getElementById('revenueTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
         document.getElementById('orderTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
         document.getElementById('profitTrend').innerHTML = `<i class="fas fa-arrow-up text-[10px]"></i> +0%`;
@@ -1778,7 +1872,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // PRODUK (sama seperti sebelumnya, hanya ikon)
+    // PRODUK (Fungsi yang sama, sudah ada di kode sebelumnya)
     // ================================================================
     function loadProducts() {
         authFetch(`${API_BASE}?action=list`)
@@ -2001,7 +2095,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // PESANAN (sama, hanya ikon)
+    // PESANAN (Fungsi yang sama)
     // ================================================================
     function loadOrders() {
         authFetch(`${API_BASE}?action=transactions`)
@@ -2254,7 +2348,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // DETAIL ORDER (sama, hanya ikon)
+    // DETAIL ORDER
     // ================================================================
     function openOrderDetailModal(transactionId) {
         const order = allOrders.find(o => o.transactionId === transactionId || o._id === transactionId);
@@ -2357,7 +2451,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     });
 
     // ================================================================
-    // KATEGORI (sama, hanya ikon)
+    // KATEGORI
     // ================================================================
     function loadCategories() {
         authFetch(`${API_BASE}?action=categories`)
@@ -2544,7 +2638,193 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     }
 
     // ================================================================
-    // LAPORAN BULANAN (sama, hanya ikon)
+    // ===== FITUR PENGUMUMAN (ANNOUNCEMENTS) =====
+    // ================================================================
+    function loadAnnouncements() {
+        authFetch(`${API_BASE}?action=getAnnouncements`)
+            .then(res => res.json())
+            .then(data => {
+                allAnnouncements = data || [];
+                document.getElementById('announcementBadge').innerText = allAnnouncements.filter(a => a.isActive).length;
+                document.getElementById('announcementTotalItems').innerText = allAnnouncements.length;
+                document.getElementById('announcementCount').innerText = allAnnouncements.length + ' Pengumuman';
+                renderAnnouncementTable();
+            })
+            .catch(err => showToast('Gagal load pengumuman: ' + err.message, 'error'));
+    }
+
+    function renderAnnouncementTable() {
+        const search = document.getElementById('announcementSearch').value.toLowerCase();
+        let filtered = allAnnouncements.filter(a =>
+            (a.title || '').toLowerCase().includes(search) ||
+            (a.content || '').toLowerCase().includes(search)
+        );
+
+        const total = filtered.length,
+            pages = Math.ceil(total / perPage) || 1;
+        if (announcementPage > pages) announcementPage = pages;
+        const start = (announcementPage - 1) * perPage,
+            end = Math.min(start + perPage, total);
+        const pageItems = filtered.slice(start, end);
+
+        document.getElementById('announcementShowFrom').innerText = total === 0 ? 0 : start + 1;
+        document.getElementById('announcementShowTo').innerText = end;
+        document.getElementById('announcementTotalItems').innerText = total;
+
+        const tbody = document.getElementById('announcementTableBody');
+        tbody.innerHTML = '';
+        if (pageItems.length === 0) {
+            tbody.innerHTML =
+                '<tr><td colspan="4" class="text-center text-[#ccc3d8] py-8">Tidak ada pengumuman</td></tr>';
+            return;
+        }
+        pageItems.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-[#222a3d]/30 transition';
+            const statusClass = a.isActive ? 'badge-aktif' : 'badge-nonaktif';
+            const statusText = a.isActive ? 'Aktif' : 'Nonaktif';
+            tr.innerHTML = `
+                    <td class="py-3 px-4 font-medium text-[#dae2fc]">${a.title}</td>
+                    <td class="py-3 px-4 hidden sm:table-cell text-sm text-[#ccc3d8] truncate max-w-xs">${a.content}</td>
+                    <td class="py-3 px-4 text-center"><span class="text-xs font-medium px-3 py-1 rounded-full ${statusClass}">${statusText}</span></td>
+                    <td class="py-3 px-4 text-right">
+                        <div class="flex items-center justify-end gap-1.5">
+                            <button onclick="toggleAnnouncementStatus('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="${a.isActive ? 'Nonaktifkan' : 'Aktifkan'}">
+                                <i class="fas ${a.isActive ? 'fa-eye' : 'fa-eye-slash'}"></i>
+                            </button>
+                            <button onclick="openAnnouncementModal('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteAnnouncement('${a._id}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#ffb4ab] transition" data-tooltip="Hapus"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </td>
+                `;
+            tbody.appendChild(tr);
+        });
+
+        renderAnnouncementPagination(pages);
+    }
+
+    function renderAnnouncementPagination(pages) {
+        const container = document.getElementById('announcementPaginationNumbers');
+        container.innerHTML = '';
+        for (let i = 1; i <= Math.min(pages, 5); i++) {
+            const btn = document.createElement('button');
+            btn.innerText = i;
+            btn.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${i === announcementPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            btn.onclick = () => { announcementPage = i;
+                renderAnnouncementTable(); };
+            container.appendChild(btn);
+        }
+        if (pages > 5) {
+            const dots = document.createElement('span');
+            dots.className = 'text-[#ccc3d8] px-1';
+            dots.innerText = '...';
+            container.appendChild(dots);
+            const last = document.createElement('button');
+            last.innerText = pages;
+            last.className =
+                `w-8 h-8 rounded-lg text-sm font-medium transition ${pages === announcementPage ? 'bg-[#d2bbff]/10 text-[#d2bbff] border border-[#d2bbff]/30' : 'text-[#ccc3d8] hover:bg-[#222a3d]'}`;
+            last.onclick = () => { announcementPage = pages;
+                renderAnnouncementTable(); };
+            container.appendChild(last);
+        }
+        document.getElementById('announcementPrevPage').disabled = announcementPage <= 1;
+        document.getElementById('announcementPrevPage').onclick = () => { if (announcementPage > 1) { announcementPage--;
+                renderAnnouncementTable(); } };
+        document.getElementById('announcementNextPage').disabled = announcementPage >= pages;
+        document.getElementById('announcementNextPage').onclick = () => { if (announcementPage < pages) { announcementPage++;
+                renderAnnouncementTable(); } };
+    }
+
+    document.getElementById('announcementSearch').addEventListener('input', function() { announcementPage = 1;
+        renderAnnouncementTable(); });
+
+    function openAnnouncementModal(id = null) {
+        const modal = document.getElementById('announcementModal');
+        modal.classList.add('show');
+        document.getElementById('editAnnouncementId').value = '';
+        document.getElementById('modalAnnouncementTitle').innerText = 'Tambah Pengumuman';
+        document.getElementById('aTitle').value = '';
+        document.getElementById('aContent').value = '';
+        document.getElementById('aActive').checked = true;
+
+        if (id) {
+            const ann = allAnnouncements.find(a => a._id === id);
+            if (ann) {
+                document.getElementById('modalAnnouncementTitle').innerText = 'Edit Pengumuman';
+                document.getElementById('editAnnouncementId').value = id;
+                document.getElementById('aTitle').value = ann.title || '';
+                document.getElementById('aContent').value = ann.content || '';
+                document.getElementById('aActive').checked = ann.isActive !== false;
+            }
+        }
+    }
+
+    function closeAnnouncementModal() {
+        document.getElementById('announcementModal').classList.remove('show');
+    }
+
+    function saveAnnouncement() {
+        const id = document.getElementById('editAnnouncementId').value;
+        const title = document.getElementById('aTitle').value.trim();
+        const content = document.getElementById('aContent').value.trim();
+        const isActive = document.getElementById('aActive').checked;
+
+        if (!title) return showToast('Judul wajib diisi!', 'error');
+        if (!content) return showToast('Konten wajib diisi!', 'error');
+
+        const action = id ? 'editAnnouncement' : 'addAnnouncement';
+        const payload = { action, title, content, isActive };
+        if (id) payload.id = id;
+
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeAnnouncementModal();
+                    loadAnnouncements();
+                    showToast(id ? 'Pengumuman berhasil diupdate' : 'Pengumuman berhasil ditambahkan', 'success');
+                } else {
+                    showToast('Gagal: ' + (data.error || 'Unknown error'), 'error');
+                }
+            })
+            .catch(err => showToast('Gagal simpan: ' + err.message, 'error'));
+    }
+
+    function toggleAnnouncementStatus(id) {
+        const ann = allAnnouncements.find(a => a._id === id);
+        if (!ann) return;
+        const newStatus = !ann.isActive;
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'editAnnouncement', id, isActive: newStatus }) })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    loadAnnouncements();
+                    showToast(`Pengumuman ${newStatus ? 'diaktifkan' : 'dinonaktifkan'}`, 'success');
+                } else {
+                    showToast('Gagal ubah status', 'error');
+                }
+            })
+            .catch(err => showToast('Gagal: ' + err.message, 'error'));
+    }
+
+    function deleteAnnouncement(id) {
+        if (!confirm('Yakin hapus pengumuman ini?')) return;
+        authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'deleteAnnouncement', id }) })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    loadAnnouncements();
+                    showToast('Pengumuman dihapus', 'success');
+                } else {
+                    showToast('Gagal hapus', 'error');
+                }
+            })
+            .catch(err => showToast('Gagal hapus: ' + err.message, 'error'));
+    }
+
+    // ================================================================
+    // LAPORAN BULANAN
     // ================================================================
     function loadMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2751,7 +3031,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     });
 
     // ================================================================
-    // EXPORT PDF (tetap)
+    // EXPORT PDF & EXCEL (sama seperti sebelumnya)
     // ================================================================
     async function exportMonthlyReportPDF() {
         showToast('⏳ Menyiapkan PDF...', 'info');
@@ -2794,9 +3074,6 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
         }
     }
 
-    // ================================================================
-    // EXPORT EXCEL (tetap)
-    // ================================================================
     async function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
 
@@ -3165,6 +3442,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
             products: allProducts,
             orders: allOrders,
             categories: allCategories,
+            announcements: allAnnouncements,
             exportedAt: new Date().toISOString()
         };
         const json = JSON.stringify(data, null, 2);
@@ -3186,9 +3464,11 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
                     if (data.products) allProducts = data.products;
                     if (data.orders) allOrders = data.orders;
                     if (data.categories) allCategories = data.categories;
+                    if (data.announcements) allAnnouncements = data.announcements;
                     loadProducts();
                     loadOrders();
                     loadCategories();
+                    loadAnnouncements();
                     loadDashboard();
                     showToast('✅ Restore data berhasil!', 'success');
                 } catch (err) {
@@ -3241,6 +3521,15 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
                 showToast('🔍 Ditemukan di kategori: ' + cat.name, 'success');
                 return;
             }
+            const ann = allAnnouncements.find(a => (a.title || '').toLowerCase().includes(query) ||
+                (a.content || '').toLowerCase().includes(query));
+            if (ann) {
+                navigateTo('announcements');
+                document.getElementById('announcementSearch').value = query;
+                renderAnnouncementTable();
+                showToast('🔍 Ditemukan di pengumuman: ' + ann.title, 'success');
+                return;
+            }
             showToast('Tidak ditemukan hasil untuk: ' + query, 'warning');
         }
     });
@@ -3249,7 +3538,7 @@ JAVASCRIPT – FULL LOGIKA + PERUBAHAN UNTUK RATA-RATA
     // INISIALISASI
     // ================================================================
     setupSorting();
-    console.log('🚀 LekszyStore Admin Panel Pro loaded with Font Awesome icons & avg order card.');
+    console.log('🚀 LekszyStore Admin Panel Pro loaded with Announcements feature.');
 </script>
 
 </body>
