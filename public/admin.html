@@ -479,7 +479,7 @@ DASHBOARD UTAMA
     <!-- SIDEBAR -->
     <aside class="hidden md:flex w-64 h-screen fixed left-0 top-0 bg-[#131b2e]/80 backdrop-blur-xl border-r border-[#4a4455]/20 flex-col py-6 z-40">
         <div class="px-6 mb-8 flex items-center gap-3">
-            <img src="/gambar/logo" alt="LekszyStore" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             <div class="w-10 h-10 rounded-full bg-[#7c3aed]/20 flex items-center justify-center border border-[#d2bbff]/30 hidden" style="display:none;">
                 <i class="fas fa-store text-[#d2bbff] text-2xl"></i>
             </div>
@@ -539,7 +539,7 @@ DASHBOARD UTAMA
     <!-- TOPBAR -->
     <header class="fixed top-0 right-0 left-0 md:left-64 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#4a4455]/20 flex items-center justify-between px-4 md:px-6 z-30">
         <div class="flex items-center gap-3">
-            <img src="/gambar/logo" alt="LekszyStore" class="logo-img-sm md:hidden" onerror="this.style.display='none'">
+            <img src="/gambar/logo.png" alt="LekszyStore" class="logo-img-sm md:hidden" onerror="this.style.display='none'">
             <h2 id="pageTitle" class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc] hidden md:block">Dashboard</h2>
             <span id="connectionStatus" class="flex items-center gap-1.5 text-[10px] font-medium px-2 py-1 rounded-full bg-[#4ade80]/10 text-[#4ade80] border border-[#4ade80]/20 ml-2">
                 <span class="w-1.5 h-1.5 rounded-full bg-[#4ade80] animate-pulse"></span> Online
@@ -3220,7 +3220,7 @@ JAVASCRIPT – FULL LOGIKA + PENGUMUMAN
 
         let logoImageId = null;
         try {
-            const response = await fetch('/gambar/logo');
+            const response = await fetch('/gambar/logo.png');
             const blob = await response.blob();
             const reader = new FileReader();
             const logoBase64 = await new Promise((resolve) => {
