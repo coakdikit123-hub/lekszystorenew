@@ -57,31 +57,6 @@
             overflow-x: hidden;
         }
 
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
-        .logo-img-sm {
-            width: 32px;
-            height: 32px;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        .logo-img-lg {
-            width: 64px;
-            height: 64px;
-            object-fit: contain;
-            border-radius: 16px;
-            margin-bottom: 8px;
-        }
-        .logo-img:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
-        }
-
         .glass-card {
             background: rgba(19, 27, 46, 0.6);
             backdrop-filter: blur(16px);
@@ -105,6 +80,14 @@
         }
         .btn-primary-glow:hover {
             box-shadow: 0 0 50px rgba(124, 58, 237, 0.4);
+            transform: translateY(-2px) scale(1.02);
+        }
+        .btn-profit-glow {
+            box-shadow: 0 0 30px rgba(74, 222, 128, 0.2);
+            transition: all 0.3s ease;
+        }
+        .btn-profit-glow:hover {
+            box-shadow: 0 0 50px rgba(74, 222, 128, 0.3);
             transform: translateY(-2px) scale(1.02);
         }
 
@@ -281,11 +264,49 @@
             object-fit: cover;
         }
 
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .logo-img-sm {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .logo-img-lg {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+
+        .report-stat {
+            background: rgba(19, 27, 46, 0.4);
+            border: 1px solid rgba(74, 68, 85, 0.2);
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        .report-stat:hover {
+            border-color: rgba(210, 187, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .growth-positive { color: #4ade80; }
+        .growth-negative { color: #ffb4ab; }
+        .growth-neutral { color: #fbbf24; }
+
         @media (max-width: 768px) {
             .stat-grid { grid-template-columns: 1fr 1fr; }
             .modal-box { padding: 1.25rem; max-width: 95%; }
             .logo-img { width: 32px; height: 32px; }
             .logo-img-lg { width: 48px; height: 48px; }
+            .report-stat { padding: 0.75rem; }
         }
         @media (max-width: 480px) {
             .stat-grid { grid-template-columns: 1fr; }
@@ -369,6 +390,11 @@ DASHBOARD UTAMA
                 <span class="material-symbols-outlined">category</span> Kategori
                 <span id="categoryBadge" class="ml-auto text-[10px] bg-[#222a3d] text-[#ccc3d8] px-2 py-0.5 rounded-full">0</span>
             </a>
+            <!-- ===== LAPORAN (NEW) ===== -->
+            <a href="#" data-view="reports" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
+                <span class="material-symbols-outlined">assessment</span> Laporan
+                <span class="ml-auto text-[10px] bg-[#4ade80]/10 text-[#4ade80] px-2 py-0.5 rounded-full">Bulanan</span>
+            </a>
             <a href="#" data-view="settings" class="nav-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all">
                 <span class="material-symbols-outlined">settings</span> Pengaturan
             </a>
@@ -387,7 +413,9 @@ DASHBOARD UTAMA
 </div>
 </aside>
 
-<!-- MAIN CONTENT -->
+<!-- ============================================================
+MAIN CONTENT
+================================================================ -->
 <div class="flex-1 md:ml-64 min-h-screen">
 
     <!-- TOPBAR -->
@@ -420,10 +448,14 @@ DASHBOARD UTAMA
         </div>
     </header>
 
-    <!-- MAIN CANVAS -->
+    <!-- ============================================================
+    MAIN CANVAS
+    ============================================================ -->
     <main class="pt-20 px-4 md:px-6 pb-12 max-w-7xl mx-auto">
 
-        <!-- VIEW: DASHBOARD -->
+        <!-- ============================================================
+        VIEW: DASHBOARD
+        ============================================================ -->
         <div id="viewDashboard" class="view active">
             <!-- Stats Grid -->
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
@@ -533,7 +565,9 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PRODUK -->
+        <!-- ============================================================
+        VIEW: PRODUK
+        ============================================================ -->
         <div id="viewProducts" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -604,7 +638,9 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PESANAN -->
+        <!-- ============================================================
+        VIEW: PESANAN
+        ============================================================ -->
         <div id="viewOrders" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
@@ -709,15 +745,14 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- ================================================================
-        VIEW: KATEGORI (Sinkron dengan Produk)
-        ================================================================ -->
+        <!-- ============================================================
+        VIEW: KATEGORI
+        ============================================================ -->
         <div id="viewCategories" class="view">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                     <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Manajemen Kategori</h3>
                     <p class="text-sm text-[#ccc3d8]">Kelola kategori produk dan ikon/gambar kategori.</p>
-                    <p class="text-xs text-[#06b6d4] mt-1">📌 Kategori otomatis diambil dari produk yang ada</p>
                 </div>
                 <button onclick="openCategoryModal()" class="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#7c3aed] to-[#732ee4] text-white rounded-xl font-semibold text-sm btn-primary-glow transition-all hover:opacity-90">
                     <span class="material-symbols-outlined text-[18px]">add</span> Tambah Kategori
@@ -728,9 +763,6 @@ DASHBOARD UTAMA
                 <div class="p-4 border-b border-[#4a4455]/20 flex flex-wrap items-center gap-3 bg-[#131b2e]/40">
                     <div class="flex items-center gap-2">
                         <span id="categoryCount" class="text-xs font-medium bg-[#222a3d] text-[#ccc3d8] px-3 py-1 rounded-lg">0 Kategori</span>
-                        <span class="text-xs font-medium bg-[#d2bbff]/10 text-[#d2bbff] px-3 py-1 rounded-lg flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-[#d2bbff] animate-pulse"></span> Live
-                        </span>
                     </div>
                     <div class="ml-auto relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#ccc3d8] text-[16px]">search</span>
@@ -745,8 +777,7 @@ DASHBOARD UTAMA
                             <tr>
                                 <th class="py-3 px-4 font-semibold">Icon</th>
                                 <th class="py-3 px-4 font-semibold">Nama Kategori</th>
-                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Jumlah Produk</th>
-                                <th class="py-3 px-4 font-semibold hidden md:table-cell">Gambar</th>
+                                <th class="py-3 px-4 font-semibold hidden sm:table-cell">Gambar</th>
                                 <th class="py-3 px-4 font-semibold text-right">Aksi</th>
                             </tr>
                         </thead>
@@ -769,7 +800,138 @@ DASHBOARD UTAMA
             </div>
         </div>
 
-        <!-- VIEW: PENGATURAN -->
+        <!-- ============================================================
+        VIEW: LAPORAN BULANAN (NEW)
+        ============================================================ -->
+        <div id="viewReports" class="view">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Laporan Keuangan Bulanan</h3>
+                    <p class="text-sm text-[#ccc3d8]">Rekap penjualan dan keuntungan per bulan.</p>
+                </div>
+                <div class="flex gap-3 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <label class="text-sm text-[#ccc3d8]">Tahun:</label>
+                        <select id="reportYear" class="bg-[#060e20] border border-[#4a4455]/30 rounded-xl py-2 px-4 text-[#dae2fc] focus:outline-none focus:border-[#d2bbff] transition">
+                            <option value="2026">2026</option>
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
+                    <button onclick="exportMonthlyReport()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-[#4ade80] to-[#22c55e] text-white text-sm font-medium flex items-center gap-2 btn-profit-glow hover:opacity-90 transition">
+                        <span class="material-symbols-outlined text-[18px]">file_download</span> Export Excel
+                    </button>
+                    <button onclick="loadMonthlyReport()" class="px-4 py-2 rounded-xl bg-[#222a3d] hover:bg-[#2d3449] text-[#dae2fc] transition text-sm font-medium flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">refresh</span> Refresh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="glass-card rounded-xl p-4 report-stat">
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pendapatan</p>
+                    <div class="flex items-end justify-between">
+                        <span id="reportTotalRevenue" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">Rp 0</span>
+                        <span id="reportRevenueGrowth" class="text-xs font-medium growth-neutral">+0%</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 report-stat">
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Pesanan</p>
+                    <div class="flex items-end justify-between">
+                        <span id="reportTotalOrders" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#dae2fc]">0</span>
+                        <span id="reportOrdersGrowth" class="text-xs font-medium growth-neutral">+0%</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 report-stat border-[#4ade80]/20">
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Total Keuntungan</p>
+                    <div class="flex items-end justify-between">
+                        <span id="reportTotalProfit" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#4ade80]">Rp 0</span>
+                        <span id="reportProfitGrowth" class="text-xs font-medium growth-neutral">+0%</span>
+                    </div>
+                </div>
+                <div class="glass-card rounded-xl p-4 report-stat">
+                    <p class="text-[10px] uppercase tracking-[0.12em] text-[#ccc3d8] font-semibold">Rata-rata per Order</p>
+                    <div class="flex items-end justify-between">
+                        <span id="reportAvgOrder" class="font-['Plus_Jakarta_Sans'] text-2xl font-bold text-[#06b6d4]">Rp 0</span>
+                        <span id="reportAvgGrowth" class="text-xs font-medium growth-neutral">+0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="glass-card rounded-2xl p-5 md:p-6 lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc]">Grafik Pendapatan & Keuntungan</h3>
+                            <p class="text-xs text-[#ccc3d8] mt-0.5">Per bulan</p>
+                        </div>
+                    </div>
+                    <div class="relative h-56 md:h-64">
+                        <canvas id="monthlyReportChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col">
+                    <h3 class="font-['Plus_Jakarta_Sans'] text-lg font-bold text-[#dae2fc] mb-4">Ringkasan Tahunan</h3>
+                    <div class="space-y-3 flex-1">
+                        <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                            <span class="text-sm text-[#ccc3d8]">Bulan Terbaik</span>
+                            <span id="bestMonth" class="font-bold text-[#4ade80]">-</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                            <span class="text-sm text-[#ccc3d8]">Pendapatan Tertinggi</span>
+                            <span id="highestRevenue" class="font-bold text-[#dae2fc]">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                            <span class="text-sm text-[#ccc3d8]">Keuntungan Tertinggi</span>
+                            <span id="highestProfit" class="font-bold text-[#4ade80]">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-[#060e20] rounded-xl border border-[#4a4455]/20">
+                            <span class="text-sm text-[#ccc3d8]">Total Pesanan</span>
+                            <span id="totalOrdersYear" class="font-bold text-[#06b6d4]">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabel Bulanan -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+                <div class="p-4 border-b border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/40">
+                    <div>
+                        <span class="text-sm font-semibold text-[#dae2fc]">Rekap Bulanan</span>
+                        <span id="reportTableYear" class="text-xs text-[#ccc3d8] ml-2">Tahun 2026</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs text-[#ccc3d8]">Total: <span id="reportTableTotal" class="font-bold text-[#dae2fc]">0</span> bulan</span>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="text-[10px] uppercase tracking-[0.08em] text-[#ccc3d8] border-b border-[#4a4455]/20 bg-[#131b2e]/30">
+                            <tr>
+                                <th class="py-3 px-4 font-semibold">Bulan</th>
+                                <th class="py-3 px-4 font-semibold text-right">Pesanan</th>
+                                <th class="py-3 px-4 font-semibold text-right">Pendapatan</th>
+                                <th class="py-3 px-4 font-semibold text-right">Keuntungan</th>
+                                <th class="py-3 px-4 font-semibold text-right">Margin</th>
+                                <th class="py-3 px-4 font-semibold text-right">Pertumbuhan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody" class="divide-y divide-[#4a4455]/15">
+                            <!-- diisi JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-[#4a4455]/20 flex items-center justify-between bg-[#131b2e]/20">
+                    <span class="text-xs text-[#ccc3d8]">Menampilkan <span id="reportShowFrom">1</span>-<span id="reportShowTo">12</span> dari <span id="reportTotalItems">0</span> bulan</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        VIEW: PENGATURAN
+        ============================================================ -->
         <div id="viewSettings" class="view">
             <div class="mb-6">
                 <h3 class="font-['Plus_Jakarta_Sans'] text-xl font-bold text-[#dae2fc]">Pengaturan</h3>
@@ -1024,6 +1186,8 @@ JAVASCRIPT – FULL LOGIKA
         productSearch = '',
         categorySearch = '';
     let chartInstance = null;
+    let monthlyChartInstance = null;
+    let monthlyReportData = [];
 
     // ================================================================
     // FORMAT RUPIAH
@@ -1121,6 +1285,7 @@ JAVASCRIPT – FULL LOGIKA
             products: 'Produk',
             orders: 'Pesanan',
             categories: 'Kategori',
+            reports: 'Laporan',
             settings: 'Pengaturan'
         };
         document.getElementById('pageTitle').innerText = titles[view] || view;
@@ -1133,6 +1298,7 @@ JAVASCRIPT – FULL LOGIKA
         if (view === 'products') loadProducts();
         if (view === 'orders') loadOrders();
         if (view === 'categories') loadCategories();
+        if (view === 'reports') loadMonthlyReport();
         if (view === 'settings') loadSettings();
     }
 
@@ -1186,24 +1352,10 @@ JAVASCRIPT – FULL LOGIKA
         Promise.all([
             authFetch(`${API_BASE}?action=transactions`).then(r => r.json()),
             authFetch(`${API_BASE}?action=list`).then(r => r.json()),
-            // Ambil kategori dari database categories, fallback dari produk
             authFetch(`${API_BASE}?action=categories`).then(r => r.json()).catch(() => [])
         ]).then(([orders, products, categories]) => {
             allOrders = orders || [];
             allProducts = products || [];
-            
-            // Jika tidak ada kategori di database, buat dari produk yang ada
-            if (!categories || categories.length === 0) {
-                // Ekstrak kategori unik dari produk
-                const uniqueCategories = [...new Set(allProducts.map(p => p.category || 'lainnya').filter(Boolean))];
-                categories = uniqueCategories.map(name => ({
-                    name: name,
-                    icon: 'category',
-                    image: '',
-                    createdAt: new Date().toISOString()
-                }));
-                // Simpan ke database (opsional, bisa via API nanti)
-            }
             allCategories = categories || [];
 
             document.getElementById('productBadge').innerText = allProducts.length;
@@ -1213,7 +1365,6 @@ JAVASCRIPT – FULL LOGIKA
             if (pending.length > 0) document.getElementById('notifDot').classList.remove('hidden');
 
             updateCategoryDropdowns();
-
             navigateTo('dashboard');
         }).catch(err => {
             console.error('Gagal load data:', err);
@@ -1225,7 +1376,6 @@ JAVASCRIPT – FULL LOGIKA
     // UPDATE CATEGORY DROPDOWNS
     // ================================================================
     function updateCategoryDropdowns() {
-        // Update dropdown di modal produk
         const select = document.getElementById('pCategory');
         if (select) {
             const currentValue = select.value;
@@ -1241,7 +1391,6 @@ JAVASCRIPT – FULL LOGIKA
             }
         }
 
-        // Update filter di produk
         const filterSelect = document.getElementById('productCategoryFilter');
         if (filterSelect) {
             const currentValue = filterSelect.value;
@@ -1332,7 +1481,7 @@ JAVASCRIPT – FULL LOGIKA
     }
 
     // ================================================================
-    // CHART
+    // CHART DASHBOARD
     // ================================================================
     function renderChart() {
         const ctx = document.getElementById('revenueChart').getContext('2d');
@@ -1565,8 +1714,6 @@ JAVASCRIPT – FULL LOGIKA
                 closeProductModal();
                 loadProducts();
                 loadDashboard();
-                // Refresh kategori setelah produk berubah
-                loadCategories();
                 showToast(id ? 'Produk berhasil diupdate' : 'Produk berhasil ditambahkan', 'success');
             })
             .catch(err => showToast('Gagal simpan: ' + err.message, 'error'));
@@ -1575,12 +1722,9 @@ JAVASCRIPT – FULL LOGIKA
     function deleteProduct(id) {
         if (!confirm('Yakin hapus produk ini?')) return;
         authFetch(API_BASE, { method: 'POST', body: JSON.stringify({ action: 'delete', id: Number(id) }) })
-            .then(() => {
-                loadProducts();
+            .then(() => { loadProducts();
                 loadDashboard();
-                loadCategories();
-                showToast('Produk berhasil dihapus', 'success');
-            })
+                showToast('Produk berhasil dihapus', 'success'); })
             .catch(err => showToast('Gagal hapus: ' + err.message, 'error'));
     }
 
@@ -1895,56 +2039,22 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // KATEGORI (Sinkron dengan Produk)
+    // KATEGORI
     // ================================================================
     function loadCategories() {
-        // Ambil kategori dari produk yang ada
-        const categoryNames = [...new Set(allProducts.map(p => p.category || 'lainnya').filter(Boolean))];
-        
-        // Buat objek kategori dari nama yang ada
-        const categoriesFromProducts = categoryNames.map(name => ({
-            name: name,
-            icon: 'category',
-            image: '',
-            productCount: allProducts.filter(p => (p.category || 'lainnya') === name).length
-        }));
-
-        // Gabungkan dengan kategori yang sudah ada di database (jika ada)
-        // Prioritaskan data dari database jika ada
         authFetch(`${API_BASE}?action=categories`)
             .then(res => res.json())
-            .then(dbCategories => {
-                if (dbCategories && dbCategories.length > 0) {
-                    // Merge: kategori dari database memiliki prioritas, tapi tambahkan produkCount
-                    allCategories = dbCategories.map(cat => {
-                        const count = allProducts.filter(p => (p.category || 'lainnya') === cat.name).length;
-                        return { ...cat, productCount: count };
-                    });
-                    // Tambahkan kategori yang ada di produk tapi tidak di database
-                    const dbNames = new Set(dbCategories.map(c => c.name));
-                    categoriesFromProducts.forEach(cat => {
-                        if (!dbNames.has(cat.name)) {
-                            allCategories.push(cat);
-                        }
-                    });
-                } else {
-                    allCategories = categoriesFromProducts;
-                }
-                
+            .then(data => {
+                allCategories = data || [];
                 document.getElementById('categoryTotalItems').innerText = allCategories.length;
                 document.getElementById('categoryCount').innerText = allCategories.length + ' Kategori';
                 document.getElementById('categoryBadge').innerText = allCategories.length;
                 renderCategoryTable();
                 updateCategoryDropdowns();
             })
-            .catch(() => {
-                // Jika gagal fetch, pakai dari produk
-                allCategories = categoriesFromProducts;
-                document.getElementById('categoryTotalItems').innerText = allCategories.length;
-                document.getElementById('categoryCount').innerText = allCategories.length + ' Kategori';
-                document.getElementById('categoryBadge').innerText = allCategories.length;
-                renderCategoryTable();
-                updateCategoryDropdowns();
+            .catch(err => {
+                console.error('Gagal load kategori:', err);
+                showToast('Gagal load kategori: ' + err.message, 'error');
             });
     }
 
@@ -1966,13 +2076,12 @@ JAVASCRIPT – FULL LOGIKA
         tbody.innerHTML = '';
         if (pageItems.length === 0) {
             tbody.innerHTML =
-                '<tr><td colspan="5" class="text-center text-[#ccc3d8] py-8">Tidak ada kategori</td></tr>';
+                '<tr><td colspan="4" class="text-center text-[#ccc3d8] py-8">Tidak ada kategori</td></tr>';
             return;
         }
         pageItems.forEach(c => {
             const iconName = c.icon || 'category';
             const imageUrl = c.image || '';
-            const productCount = c.productCount || allProducts.filter(p => (p.category || 'lainnya') === c.name).length;
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-[#222a3d]/30 transition';
             tr.innerHTML = `
@@ -1981,11 +2090,8 @@ JAVASCRIPT – FULL LOGIKA
                             ${imageUrl ? `<img src="${imageUrl}" alt="${c.name}" onerror="this.parentElement.innerHTML='<span class=material-symbols-outlined>${iconName}</span>'">` : `<span class="material-symbols-outlined">${iconName}</span>`}
                         </div>
                     </td>
-                    <td class="py-3 px-4"><span class="font-medium">${c.name.charAt(0).toUpperCase() + c.name.slice(1)}</span></td>
-                    <td class="py-3 px-4 hidden sm:table-cell">
-                        <span class="text-xs bg-[#d2bbff]/10 text-[#d2bbff] px-2 py-0.5 rounded-full">${productCount} produk</span>
-                    </td>
-                    <td class="py-3 px-4 hidden md:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
+                    <td class="py-3 px-4"><span class="font-medium">${c.name}</span></td>
+                    <td class="py-3 px-4 hidden sm:table-cell text-xs text-[#ccc3d8]">${imageUrl ? '✅ Ada gambar' : '❌ Tidak ada gambar'}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex items-center justify-end gap-1.5">
                             <button onclick="openCategoryModal('${c.name}')" class="p-1.5 rounded-lg hover:bg-[#222a3d] text-[#ccc3d8] hover:text-[#d2bbff] transition" data-tooltip="Edit"><span class="material-symbols-outlined text-[18px]">edit</span></button>
@@ -2104,6 +2210,377 @@ JAVASCRIPT – FULL LOGIKA
             }
         })
         .catch(err => showToast('Gagal hapus kategori: ' + err.message, 'error'));
+    }
+
+    // ================================================================
+    // LAPORAN BULANAN (NEW)
+    // ================================================================
+    function loadMonthlyReport() {
+        const year = document.getElementById('reportYear').value || new Date().getFullYear();
+
+        // Filter orders by year
+        const yearOrders = allOrders.filter(o => {
+            const d = new Date(o.createdAt);
+            return d.getFullYear() === parseInt(year);
+        });
+
+        // Group by month
+        const monthlyData = {};
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+        // Initialize all months
+        for (let i = 0; i < 12; i++) {
+            monthlyData[i] = {
+                orders: 0,
+                revenue: 0,
+                profit: 0,
+                count: 0
+            };
+        }
+
+        yearOrders.forEach(o => {
+            const d = new Date(o.createdAt);
+            const month = d.getMonth();
+            monthlyData[month].orders += 1;
+            monthlyData[month].revenue += (o.total || 0);
+            monthlyData[month].profit += (o.profit || 0);
+            monthlyData[month].count += 1;
+        });
+
+        // Build report data
+        monthlyReportData = [];
+        let cumulativeRevenue = 0;
+        let cumulativeProfit = 0;
+
+        for (let i = 0; i < 12; i++) {
+            const data = monthlyData[i];
+            const avgOrder = data.count > 0 ? data.revenue / data.count : 0;
+            const margin = data.revenue > 0 ? (data.profit / data.revenue) * 100 : 0;
+
+            // Growth calculation (vs previous month)
+            let growth = 0;
+            let growthType = 'neutral';
+            if (i > 0 && monthlyData[i - 1].revenue > 0) {
+                growth = ((data.revenue - monthlyData[i - 1].revenue) / monthlyData[i - 1].revenue) * 100;
+                growthType = growth > 0 ? 'positive' : growth < 0 ? 'negative' : 'neutral';
+            }
+
+            monthlyReportData.push({
+                month: i,
+                monthName: monthNames[i],
+                orders: data.count,
+                revenue: data.revenue,
+                profit: data.profit,
+                avgOrder: avgOrder,
+                margin: margin,
+                growth: growth,
+                growthType: growthType,
+                hasData: data.count > 0
+            });
+
+            cumulativeRevenue += data.revenue;
+            cumulativeProfit += data.profit;
+        }
+
+        // Update summary stats
+        const totalRevenue = monthlyReportData.reduce((s, d) => s + d.revenue, 0);
+        const totalProfit = monthlyReportData.reduce((s, d) => s + d.profit, 0);
+        const totalOrders = monthlyReportData.reduce((s, d) => s + d.orders, 0);
+        const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+        document.getElementById('reportTotalRevenue').innerText = formatRupiah(totalRevenue);
+        document.getElementById('reportTotalProfit').innerText = formatRupiah(totalProfit);
+        document.getElementById('reportTotalOrders').innerText = totalOrders;
+        document.getElementById('reportAvgOrder').innerText = formatRupiah(avgOrder);
+
+        // Growth vs previous year (sederhana)
+        const prevYear = parseInt(year) - 1;
+        const prevYearOrders = allOrders.filter(o => {
+            const d = new Date(o.createdAt);
+            return d.getFullYear() === prevYear;
+        });
+        const prevRevenue = prevYearOrders.reduce((s, o) => s + (o.total || 0), 0);
+        const prevProfit = prevYearOrders.reduce((s, o) => s + (o.profit || 0), 0);
+
+        const revGrowth = prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue * 100).toFixed(1) : 0;
+        const profGrowth = prevProfit > 0 ? ((totalProfit - prevProfit) / prevProfit * 100).toFixed(1) : 0;
+
+        document.getElementById('reportRevenueGrowth').innerHTML =
+            `${revGrowth > 0 ? '📈' : revGrowth < 0 ? '📉' : '➡️'} ${revGrowth}%`;
+        document.getElementById('reportRevenueGrowth').className =
+            `text-xs font-medium ${revGrowth > 0 ? 'growth-positive' : revGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
+        document.getElementById('reportProfitGrowth').innerHTML =
+            `${profGrowth > 0 ? '📈' : profGrowth < 0 ? '📉' : '➡️'} ${profGrowth}%`;
+        document.getElementById('reportProfitGrowth').className =
+            `text-xs font-medium ${profGrowth > 0 ? 'growth-positive' : profGrowth < 0 ? 'growth-negative' : 'growth-neutral'}`;
+
+        // Best month
+        const bestMonth = monthlyReportData.reduce((a, b) => a.revenue > b.revenue ? a : b);
+        const highestRevenue = Math.max(...monthlyReportData.map(d => d.revenue));
+        const highestProfit = Math.max(...monthlyReportData.map(d => d.profit));
+
+        document.getElementById('bestMonth').innerText = bestMonth.revenue > 0 ? bestMonth.monthName : '-';
+        document.getElementById('highestRevenue').innerText = formatRupiah(highestRevenue);
+        document.getElementById('highestProfit').innerText = formatRupiah(highestProfit);
+        document.getElementById('totalOrdersYear').innerText = totalOrders;
+
+        // Update table
+        document.getElementById('reportTableYear').innerText = 'Tahun ' + year;
+        renderReportTable();
+
+        // Update chart
+        renderMonthlyChart();
+    }
+
+    function renderReportTable() {
+        const tbody = document.getElementById('reportTableBody');
+        tbody.innerHTML = '';
+
+        const hasData = monthlyReportData.some(d => d.hasData);
+        if (!hasData) {
+            tbody.innerHTML =
+                '<tr><td colspan="6" class="text-center text-[#ccc3d8] py-8">Belum ada data untuk tahun ini</td></tr>';
+            document.getElementById('reportTableTotal').innerText = '0';
+            document.getElementById('reportTotalItems').innerText = '0';
+            return;
+        }
+
+        const totalItems = monthlyReportData.filter(d => d.hasData).length;
+        document.getElementById('reportTotalItems').innerText = totalItems;
+        document.getElementById('reportTableTotal').innerText = totalItems;
+
+        monthlyReportData.forEach((d, idx) => {
+            const tr = document.createElement('tr');
+            tr.className = d.hasData ? 'hover:bg-[#222a3d]/30 transition' : 'opacity-40';
+
+            const growthDisplay = d.hasData ? (d.growth > 0 ? `+${d.growth.toFixed(1)}%` : d.growth < 0 ?
+                `${d.growth.toFixed(1)}%` : '0%') : '-';
+            const growthClass = d.growthType === 'positive' ? 'growth-positive' : d.growthType === 'negative' ?
+                'growth-negative' : 'growth-neutral';
+
+            tr.innerHTML = `
+                    <td class="py-3 px-4 font-medium ${d.hasData ? 'text-[#dae2fc]' : 'text-[#ccc3d8]'}">
+                        ${d.hasData ? d.monthName : d.monthName}
+                        ${!d.hasData ? ' <span class="text-xs text-[#4a4455]">(kosong)</span>' : ''}
+                    </td>
+                    <td class="py-3 px-4 text-right">${d.hasData ? d.orders : '-'}</td>
+                    <td class="py-3 px-4 text-right">${d.hasData ? formatRupiah(d.revenue) : '-'}</td>
+                    <td class="py-3 px-4 text-right text-[#4ade80]">${d.hasData ? formatRupiah(d.profit) : '-'}</td>
+                    <td class="py-3 px-4 text-right">${d.hasData ? d.margin.toFixed(1) + '%' : '-'}</td>
+                    <td class="py-3 px-4 text-right ${growthClass}">${growthDisplay}</td>
+                `;
+            tbody.appendChild(tr);
+        });
+
+        // Show from-to
+        document.getElementById('reportShowFrom').innerText = '1';
+        document.getElementById('reportShowTo').innerText = '12';
+    }
+
+    function renderMonthlyChart() {
+        const ctx = document.getElementById('monthlyReportChart').getContext('2d');
+        if (monthlyChartInstance) monthlyChartInstance.destroy();
+
+        const labels = monthlyReportData.map(d => d.monthName);
+        const revenueData = monthlyReportData.map(d => d.revenue);
+        const profitData = monthlyReportData.map(d => d.profit);
+
+        monthlyChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Pendapatan',
+                    data: revenueData,
+                    borderColor: 'rgba(210, 187, 255, 0.9)',
+                    backgroundColor: 'rgba(210, 187, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(210, 187, 255, 1)',
+                    pointBorderColor: 'rgba(210, 187, 255, 1)',
+                    borderWidth: 3
+                }, {
+                    label: 'Keuntungan',
+                    data: profitData,
+                    borderColor: 'rgba(74, 222, 128, 0.9)',
+                    backgroundColor: 'rgba(74, 222, 128, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(74, 222, 128, 1)',
+                    pointBorderColor: 'rgba(74, 222, 128, 1)',
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#ccc3d8',
+                            font: { size: 11, family: 'Inter' },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(74, 68, 85, 0.2)', display: false },
+                        ticks: { color: '#ccc3d8', font: { size: 10 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(74, 68, 85, 0.2)' },
+                        ticks: {
+                            color: '#ccc3d8',
+                            font: { size: 10 },
+                            callback: function(value) { return 'Rp ' + (value / 1000).toFixed(0) + 'k'; }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+    }
+
+    // Year change listener
+    document.getElementById('reportYear').addEventListener('change', function() {
+        loadMonthlyReport();
+    });
+
+    // ================================================================
+    // EXPORT MONTHLY REPORT TO EXCEL
+    // ================================================================
+    function exportMonthlyReport() {
+        const year = document.getElementById('reportYear').value || new Date().getFullYear();
+
+        if (monthlyReportData.length === 0 || !monthlyReportData.some(d => d.hasData)) {
+            showToast('Tidak ada data untuk diekspor', 'warning');
+            return;
+        }
+
+        // Build HTML table for Excel
+        let html = `
+            <html xmlns:o="urn:schemas-microsoft-com:office:office" 
+                  xmlns:x="urn:schemas-microsoft-com:office:excel" 
+                  xmlns="http://www.w3.org/TR/REC-html40">
+            <head>
+                <meta charset="utf-8">
+                <title>Laporan Keuangan Bulanan ${year}</title>
+                <!--[if gte mso 9]>
+                <xml>
+                    <x:ExcelWorkbook>
+                        <x:ExcelWorksheets>
+                            <x:ExcelWorksheet>
+                                <x:Name>Laporan Bulanan</x:Name>
+                                <x:WorksheetOptions>
+                                    <x:DisplayGridlines/>
+                                </x:WorksheetOptions>
+                            </x:ExcelWorksheet>
+                        </x:ExcelWorksheets>
+                    </x:ExcelWorkbook>
+                </xml>
+                <![endif]-->
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    .header { background: #7c3aed; color: white; padding: 10px; text-align: center; font-size: 18pt; font-weight: bold; }
+                    .sub-header { background: #1e293b; color: #dae2fc; padding: 8px; text-align: center; font-size: 12pt; }
+                    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+                    th { background: #2d3449; color: #dae2fc; font-weight: bold; padding: 10px; border: 1px solid #4a4455; text-align: center; }
+                    td { padding: 8px 10px; border: 1px solid #4a4455; text-align: right; }
+                    td:first-child { text-align: left; font-weight: bold; }
+                    .total-row { background: #1e293b; font-weight: bold; }
+                    .total-row td { color: #d2bbff; }
+                    .profit-col { color: #4ade80; }
+                    .growth-positive { color: #4ade80; }
+                    .growth-negative { color: #ffb4ab; }
+                    .footer { text-align: center; color: #94a3b8; font-size: 9pt; margin-top: 20px; padding-top: 10px; border-top: 1px solid #4a4455; }
+                </style>
+            </head>
+            <body>
+                <div class="header">📊 LAPORAN KEUANGAN BULANAN</div>
+                <div class="sub-header">LekszyStore - Tahun ${year}</div>
+                <br>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bulan</th>
+                            <th>Jumlah Pesanan</th>
+                            <th>Pendapatan</th>
+                            <th>Keuntungan</th>
+                            <th>Margin</th>
+                            <th>Pertumbuhan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        let totalOrders = 0,
+            totalRevenue = 0,
+            totalProfit = 0;
+
+        monthlyReportData.forEach(d => {
+            if (!d.hasData) return;
+            totalOrders += d.orders;
+            totalRevenue += d.revenue;
+            totalProfit += d.profit;
+
+            const growthDisplay = d.growth > 0 ? `+${d.growth.toFixed(1)}%` : d.growth < 0 ? `${d.growth.toFixed(1)}%` :
+                '0%';
+            const growthClass = d.growth > 0 ? 'growth-positive' : d.growth < 0 ? 'growth-negative' : '';
+
+            html += `
+                        <tr>
+                            <td>${d.monthName}</td>
+                            <td>${d.orders}</td>
+                            <td>Rp ${d.revenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                            <td class="profit-col">Rp ${d.profit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                            <td>${d.margin.toFixed(1)}%</td>
+                            <td class="${growthClass}">${growthDisplay}</td>
+                        </tr>
+                    `;
+        });
+
+        html += `
+                        <tr class="total-row">
+                            <td><strong>TOTAL</strong></td>
+                            <td><strong>${totalOrders}</strong></td>
+                            <td><strong>Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong></td>
+                            <td><strong>Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong></td>
+                            <td>${totalRevenue > 0 ? ((totalProfit/totalRevenue)*100).toFixed(1) : 0}%</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <div style="display:flex; justify-content:space-between; padding:0 10px;">
+                    <div><strong>📈 Total Pesanan:</strong> ${totalOrders}</div>
+                    <div><strong>💰 Total Pendapatan:</strong> Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</div>
+                    <div><strong>💎 Total Keuntungan:</strong> Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</div>
+                    <div><strong>📊 Rata-rata per Order:</strong> Rp ${totalOrders > 0 ? (totalRevenue/totalOrders).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0}</div>
+                </div>
+                <div class="footer">
+                    Dihasilkan pada: ${new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })}<br>
+                    LekszyStore - Panel Admin
+                </div>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob([html], {
+            type: 'application/vnd.ms-excel;charset=utf-8'
+        });
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xls`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        showToast('✅ Laporan Excel berhasil diunduh!', 'success');
     }
 
     // ================================================================
