@@ -17,6 +17,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+    <!-- SheetJS (xlsx) untuk export Excel profesional -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <style>
         /* ================================================================
            ROOT VARIABLES & BASE
@@ -2387,7 +2390,7 @@ JAVASCRIPT – FULL LOGIKA
     });
 
     // ================================================================
-    // EXPORT MONTHLY REPORT TO EXCEL (RAPI)
+    // EXPORT MONTHLY REPORT TO EXCEL (Menggunakan SheetJS - xlsx)
     // ================================================================
     function exportMonthlyReport() {
         const year = document.getElementById('reportYear').value || new Date().getFullYear();
@@ -2414,140 +2417,86 @@ JAVASCRIPT – FULL LOGIKA
         const avgOrder = totalOrders > 0 ? totalRevenue / totalOrders : 0;
         const overallMargin = totalRevenue > 0 ? (totalProfit / totalRevenue) * 100 : 0;
 
-        let html = `
-        <html xmlns:o="urn:schemas-microsoft-com:office:office" 
-              xmlns:x="urn:schemas-microsoft-com:office:excel" 
-              xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-            <meta charset="utf-8">
-            <title>Laporan Keuangan Bulanan ${year}</title>
-            <!--[if gte mso 9]>
-            <xml>
-                <x:ExcelWorkbook>
-                    <x:ExcelWorksheets>
-                        <x:ExcelWorksheet>
-                            <x:Name>Laporan Bulanan</x:Name>
-                            <x:WorksheetOptions>
-                                <x:DisplayGridlines/>
-                            </x:WorksheetOptions>
-                        </x:ExcelWorksheet>
-                    </x:ExcelWorksheets>
-                </x:ExcelWorkbook>
-            </xml>
-            <![endif]-->
-            <style>
-                body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background: #ffffff; }
-                .header-main { background: #1a1a2e; color: #ffffff; padding: 20px 25px; border-radius: 8px 8px 0 0; margin-bottom: 0; }
-                .header-main h1 { font-size: 22pt; font-weight: 700; margin: 0; letter-spacing: 1px; }
-                .header-main .sub { font-size: 11pt; color: #a8b2d1; margin-top: 4px; font-weight: 400; }
-                .info-box { background: #f0f4ff; padding: 15px 25px; border-left: 4px solid #7c3aed; margin-bottom: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; border-radius: 0 0 8px 8px; }
-                .info-box .item { font-size: 11pt; color: #1a1a2e; }
-                .info-box .item strong { color: #7c3aed; }
-                .info-box .item .label { color: #64748b; font-weight: 400; }
-                table { border-collapse: collapse; width: 100%; margin-top: 15px; font-size: 11pt; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-                th { background: #1e293b; color: #ffffff; font-weight: 600; padding: 12px 14px; border: 1px solid #334155; text-align: center; font-size: 10pt; text-transform: uppercase; letter-spacing: 0.5px; }
-                td { padding: 10px 14px; border: 1px solid #e2e8f0; text-align: right; }
-                td:first-child { text-align: left; font-weight: 600; color: #1a1a2e; }
-                td:nth-child(2) { text-align: center; }
-                tr:nth-child(even) td { background: #f8fafc; }
-                tr:hover td { background: #eef2ff; }
-                .profit-col { color: #22c55e; font-weight: 600; }
-                .revenue-col { color: #7c3aed; font-weight: 600; }
-                .growth-positive { color: #22c55e; font-weight: 600; }
-                .growth-negative { color: #ef4444; font-weight: 600; }
-                .growth-neutral { color: #f59e0b; font-weight: 600; }
-                .total-row td { background: #1e293b !important; color: #ffffff !important; font-weight: 700; font-size: 12pt; border-color: #334155; }
-                .total-row td:first-child { color: #ffffff !important; }
-                .footer { margin-top: 25px; padding-top: 15px; border-top: 2px solid #e2e8f0; display: flex; justify-content: space-between; font-size: 9.5pt; color: #94a3b8; }
-                .summary-box { display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0 10px 0; padding: 15px 20px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
-                .summary-box .sum-item { flex: 1; min-width: 120px; text-align: center; padding: 5px 10px; }
-                .summary-box .sum-item .number { font-size: 16pt; font-weight: 700; display: block; }
-                .summary-box .sum-item .lbl { font-size: 9pt; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; }
-                .summary-box .sum-item .number.green { color: #22c55e; }
-                .summary-box .sum-item .number.purple { color: #7c3aed; }
-                .summary-box .sum-item .number.blue { color: #3b82f6; }
-                .summary-box .sum-item .number.gold { color: #f59e0b; }
-                @media print { body { margin: 0; padding: 10px; } }
-            </style>
-        </head>
-        <body>
-            <div class="header-main">
-                <h1>📊 LAPORAN KEUANGAN BULANAN</h1>
-                <div class="sub">LekszyStore — Periode Tahun ${year}</div>
-            </div>
-            <div class="info-box">
-                <div class="item"><span class="label">📅 Tahun</span> <strong>${year}</strong></div>
-                <div class="item"><span class="label">📦 Total Bulan Aktif</span> <strong>${dataWithData.length}</strong></div>
-                <div class="item"><span class="label">📊 Total Transaksi</span> <strong>${totalOrders}</strong></div>
-                <div class="item"><span class="label">🕒 Diekspor</span> <strong>${new Date().toLocaleDateString('id-ID')}</strong></div>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th style="text-align:left;padding-left:20px;">Bulan</th>
-                        <th>Pesanan</th>
-                        <th>Pendapatan</th>
-                        <th>Keuntungan</th>
-                        <th>Margin</th>
-                        <th>Pertumbuhan</th>
-                    </tr>
-                </thead>
-                <tbody>
-    `;
+        // ===== BUAT DATA UNTUK WORKBOOK =====
+        const rows = [];
 
-        dataWithData.forEach((d) => {
+        // Header
+        rows.push(['LAPORAN KEUANGAN BULANAN']);
+        rows.push(['LekszyStore — Periode Tahun ' + year]);
+        rows.push([]);
+
+        // Info
+        rows.push(['Tahun', year]);
+        rows.push(['Total Bulan Aktif', dataWithData.length]);
+        rows.push(['Total Transaksi', totalOrders]);
+        rows.push(['Diekspor', new Date().toLocaleDateString('id-ID')]);
+        rows.push([]);
+
+        // Header tabel
+        rows.push(['Bulan', 'Pesanan', 'Pendapatan', 'Keuntungan', 'Margin', 'Pertumbuhan']);
+
+        // Data per bulan
+        dataWithData.forEach(d => {
             const growthDisplay = d.growth > 0 ? `+${d.growth.toFixed(1)}%` : d.growth < 0 ? `${d.growth.toFixed(1)}%` : '0%';
-            let growthClass = 'growth-neutral';
-            if (d.growth > 0) growthClass = 'growth-positive';
-            else if (d.growth < 0) growthClass = 'growth-negative';
-
-            html += `
-                        <tr>
-                            <td style="padding-left:20px;">${d.monthName}</td>
-                            <td>${d.orders}</td>
-                            <td class="revenue-col">Rp ${d.revenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
-                            <td class="profit-col">Rp ${d.profit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
-                            <td>${d.margin.toFixed(1)}%</td>
-                            <td class="${growthClass}">${growthDisplay}</td>
-                        </tr>
-                    `;
+            rows.push([
+                d.monthName,
+                d.orders,
+                d.revenue,
+                d.profit,
+                d.margin.toFixed(1) + '%',
+                growthDisplay
+            ]);
         });
 
-        html += `
-                    <tr class="total-row">
-                        <td style="padding-left:20px;">📌 TOTAL</td>
-                        <td>${totalOrders}</td>
-                        <td>Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
-                        <td>Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
-                        <td>${overallMargin.toFixed(1)}%</td>
-                        <td>—</td>
-                    </tr>
-                </tbody>
-            </table>
+        // Total row
+        rows.push([
+            'TOTAL',
+            totalOrders,
+            totalRevenue,
+            totalProfit,
+            overallMargin.toFixed(1) + '%',
+            '—'
+        ]);
 
-            <div class="summary-box">
-                <div class="sum-item"><span class="lbl">📦 Total Pesanan</span><span class="number blue">${totalOrders}</span></div>
-                <div class="sum-item"><span class="lbl">💰 Total Pendapatan</span><span class="number purple">Rp ${totalRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
-                <div class="sum-item"><span class="lbl">💎 Total Keuntungan</span><span class="number green">Rp ${totalProfit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
-                <div class="sum-item"><span class="lbl">📊 Rata-rata per Order</span><span class="number gold">Rp ${avgOrder.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</span></div>
-                <div class="sum-item"><span class="lbl">📈 Margin Keuntungan</span><span class="number green">${overallMargin.toFixed(1)}%</span></div>
-            </div>
+        rows.push([]);
 
-            <div class="footer">
-                <div class="left"><strong>LekszyStore</strong> — Panel Admin<br><span style="font-size:8.5pt;">Dihasilkan secara otomatis oleh sistem</span></div>
-                <div class="right">Dicetak: ${new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })}</div>
-            </div>
-            <div style="text-align:center;font-size:8pt;color:#cbd5e1;margin-top:12px;">© ${year} LekszyStore — Laporan Keuangan Bulanan</div>
-        </body>
-        </html>
-        `;
+        // Summary
+        rows.push(['RINGKASAN']);
+        rows.push(['Total Pesanan', totalOrders]);
+        rows.push(['Total Pendapatan', totalRevenue]);
+        rows.push(['Total Keuntungan', totalProfit]);
+        rows.push(['Rata-rata per Order', avgOrder]);
+        rows.push(['Margin Keuntungan', overallMargin.toFixed(1) + '%']);
 
-        const blob = new Blob([html], { type: 'application/vnd.ms-excel;charset=utf-8' });
+        rows.push([]);
+        rows.push(['Dihasilkan pada: ' + new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' })]);
+        rows.push(['© ' + year + ' LekszyStore — Laporan Keuangan Bulanan']);
+
+        // ===== BUAT WORKBOOK =====
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.aoa_to_sheet(rows);
+
+        // Set column width
+        ws['!cols'] = [
+            { wch: 25 }, // Bulan
+            { wch: 12 }, // Pesanan
+            { wch: 18 }, // Pendapatan
+            { wch: 18 }, // Keuntungan
+            { wch: 14 }, // Margin
+            { wch: 16 }  // Pertumbuhan
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, 'Laporan Bulanan');
+
+        // ===== GENERATE FILE =====
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([wbout], { type: 'application/octet-stream' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.download = `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xls`;
+        link.download = `Laporan_Keuangan_${year}_${new Date().toISOString().split('T')[0]}.xlsx`;
         link.click();
         URL.revokeObjectURL(link.href);
+
         showToast('✅ Laporan Excel berhasil diunduh!', 'success');
     }
 
