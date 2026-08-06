@@ -1308,7 +1308,8 @@
             const res = await fetch('/api/announcements?_=' + Date.now());
             if (!res.ok) throw new Error('Gagal mengambil pengumuman');
             const data = await res.json();
-            const active = Array.isArray(data) ? data.filter(a => a.isActive) : [];
+            const announcements = Array.isArray(data) ? data : (data ? [data] : []);
+            const active = announcements.filter(a => a && (a.isActive !== false) && (a.active === true || a.isActive === true));
             renderAnnouncements(active);
         } catch (err) {
             console.error('Error fetching announcements:', err);
@@ -1336,7 +1337,7 @@
             html += `
                 <div class="announcement-item">
                     <h4>${escapeHtml(a.title) || 'Pengumuman'}</h4>
-                    <p>${escapeHtml(a.content) || ''}</p>
+                    <p>${escapeHtml(a.content || a.message || '')}</p>
                 </div>
             `;
         });
@@ -1611,14 +1612,16 @@
                 fetch('/api/announcements?_=' + Date.now()),
                 fetch('/api/products?_=' + Date.now())
             ]);
-            const announcement = await announcementRes.json();
+            const announcementPayload = await announcementRes.json();
             const products = await productsRes.json();
+            const announcements = Array.isArray(announcementPayload) ? announcementPayload : (announcementPayload ? [announcementPayload] : []);
             let hasNew = false;
             let announcementData = null;
-            if (announcement && announcement._id && announcement._id !== lastSeenAnnouncementId) {
+            const latestAnnouncement = announcements.find(a => a && (a.isActive !== false) && (a.active === true || a.isActive === true));
+            if (latestAnnouncement && latestAnnouncement._id && latestAnnouncement._id !== lastSeenAnnouncementId) {
                 hasNew = true;
-                announcementData = announcement;
-                lastSeenAnnouncementId = announcement._id;
+                announcementData = latestAnnouncement;
+                lastSeenAnnouncementId = latestAnnouncement._id;
                 localStorage.setItem('lastSeenAnnouncementId', lastSeenAnnouncementId);
             }
             const newProducts = products.filter(p => {
@@ -1663,7 +1666,7 @@
             }
             announcementDiv.innerHTML = `
                 <div class="announcement-title"><i class="fas fa-megaphone"></i> ${escapeHtml(announcement.title || 'Pengumuman')}</div>
-                <div class="announcement-message">${escapeHtml(announcement.message || '')}</div>
+                <div class="announcement-message">${escapeHtml(announcement.content || announcement.message || '')}</div>
                 ${imgHtml}
             `;
             announcementDiv.style.display = 'block';
