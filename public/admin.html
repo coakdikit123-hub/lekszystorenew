@@ -551,8 +551,9 @@ DASHBOARD UTAMA
 
             <!-- Notifikasi -->
             <div class="relative">
-                <button onclick="toggleNotificationDropdown()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative" data-tooltip="Notifikasi">
+                <button onclick="toggleNotificationDropdown()" class="text-[#ccc3d8] hover:text-[#d2bbff] transition relative flex flex-col items-center gap-1" data-tooltip="Notifikasi">
                     <i class="fas fa-bell text-xl"></i>
+                    <span class="notif-btn-label text-[10px] leading-none">Notifikasi</span>
                     <span id="notifDot" class="absolute top-0 right-0 w-2.5 h-2.5 bg-[#ffb4ab] rounded-full animate-pulse hidden"></span>
                     <span id="notifCount" class="absolute -top-1 -right-1 text-[10px] bg-[#ffb4ab] text-[#020617] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 hidden">0</span>
                 </button>
